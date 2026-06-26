@@ -5,620 +5,403 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GymTrack — Dashboard de Treinos</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-  :root {
-    --bg: #0d0f14; --surface: #161922; --surface2: #1e2330; --border: #2a2f3d;
-    --accent: #f5a623; --text: #e8eaf0; --muted: #6b7280; --success: #34d399;
-    --tab-a: #f5a623; --tab-b: #3b82f6; --tab-c: #a855f7; --tab-d: #e8593a;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+:root {
+  --bg:#0d0f14;--surface:#161922;--surface2:#1e2330;--border:#2a2f3d;
+  --accent:#f5a623;--text:#e8eaf0;--muted:#6b7280;--success:#34d399;
+  --tab-a:#f5a623;--tab-b:#3b82f6;--tab-c:#a855f7;--tab-d:#e8593a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
 
-  header {
-    padding:28px 40px 0; display:flex; align-items:flex-end; gap:16px;
-    border-bottom:1px solid var(--border);
-    background:linear-gradient(180deg,#12151f 0%,var(--bg) 100%);
-  }
-  .logo { font-family:'Bebas Neue',sans-serif; font-size:2.6rem; letter-spacing:3px; color:var(--accent); line-height:1; padding-bottom:18px; }
-  .logo span { color:var(--text); }
-  .header-sub { font-size:0.75rem; color:var(--muted); letter-spacing:2px; text-transform:uppercase; padding-bottom:22px; }
+header{padding:20px 40px 0;display:flex;align-items:flex-end;gap:16px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#12151f 0%,var(--bg) 100%);flex-wrap:wrap;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:3px;color:var(--accent);line-height:1;padding-bottom:16px;}
+.logo span{color:var(--text);}
+.header-sub{font-size:.75rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;padding-bottom:20px;}
+.header-right{margin-left:auto;display:flex;align-items:flex-end;gap:14px;padding-bottom:16px;}
+#save-indicator{font-size:.75rem;color:var(--success);letter-spacing:1px;opacity:0;transition:opacity .4s;}
 
-  .tabs { display:flex; gap:4px; padding:20px 40px 0; overflow-x:auto; }
-  .tab-btn {
-    font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:2px;
-    padding:10px 28px; border:1px solid var(--border); border-bottom:none;
-    background:var(--surface); color:var(--muted); border-radius:8px 8px 0 0;
-    cursor:pointer; transition:all .2s; position:relative; white-space:nowrap;
-  }
-  .tab-btn::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; border-radius:3px 3px 0 0; opacity:0; transition:opacity .2s; }
-  .tab-btn[data-tab="A"]::after { background:var(--tab-a); }
-  .tab-btn[data-tab="B"]::after { background:var(--tab-b); }
-  .tab-btn[data-tab="C"]::after { background:var(--tab-c); }
-  .tab-btn[data-tab="D"]::after { background:var(--tab-d); }
-  .tab-btn.active { background:var(--surface2); color:var(--text); }
-  .tab-btn.active::after { opacity:1; }
-  .tab-btn[data-tab="A"].active { color:var(--tab-a); }
-  .tab-btn[data-tab="B"].active { color:var(--tab-b); }
-  .tab-btn[data-tab="C"].active { color:var(--tab-c); }
-  .tab-btn[data-tab="D"].active { color:var(--tab-d); }
+/* TIMER WIDGET */
+.timer-widget{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 16px;display:flex;align-items:center;gap:12px;}
+.timer-display{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;color:var(--accent);min-width:60px;}
+.timer-btns{display:flex;gap:6px;}
+.timer-btns button{background:none;border:1px solid var(--border);color:var(--muted);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:.8rem;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.timer-btns button:hover{border-color:var(--accent);color:var(--accent);}
+.timer-btns button.active{background:var(--accent);border-color:var(--accent);color:#0d0f14;}
 
-  main { padding:0 40px 40px; background:var(--surface2); border:1px solid var(--border); border-top:none; margin:0 40px; border-radius:0 0 12px 12px; min-height:500px; }
+/* NAV TABS */
+.nav-bar{display:flex;gap:4px;padding:20px 40px 0;overflow-x:auto;background:var(--bg);}
+.tab-btn{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;padding:9px 22px;border:1px solid var(--border);border-bottom:none;background:var(--surface);color:var(--muted);border-radius:8px 8px 0 0;cursor:pointer;transition:all .2s;position:relative;white-space:nowrap;}
+.tab-btn::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0;opacity:0;transition:opacity .2s;}
+.tab-btn[data-tab="A"]::after{background:var(--tab-a);}
+.tab-btn[data-tab="B"]::after{background:var(--tab-b);}
+.tab-btn[data-tab="C"]::after{background:var(--tab-c);}
+.tab-btn[data-tab="D"]::after{background:var(--tab-d);}
+.tab-btn.extra::after{background:var(--muted);}
+.tab-btn.active{background:var(--surface2);color:var(--text);}
+.tab-btn.active::after{opacity:1;}
+.tab-btn[data-tab="A"].active{color:var(--tab-a);}
+.tab-btn[data-tab="B"].active{color:var(--tab-b);}
+.tab-btn[data-tab="C"].active{color:var(--tab-c);}
+.tab-btn[data-tab="D"].active{color:var(--tab-d);}
+.tab-btn.extra.active{color:var(--text);}
 
-  .tab-panel { display:none; padding-top:28px; }
-  .tab-panel.active { display:block; animation:fadeIn .25s ease; }
-  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+main{padding:0 40px 40px;background:var(--surface2);border:1px solid var(--border);border-top:none;margin:0 40px;border-radius:0 0 12px 12px;min-height:500px;}
+.tab-panel{display:none;padding-top:28px;}
+.tab-panel.active{display:block;animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-  .panel-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; }
-  .panel-tag {
-    font-family:'Bebas Neue',sans-serif; font-size:3rem; line-height:1;
-    width:60px; height:60px; display:flex; align-items:center; justify-content:center; border-radius:10px;
-  }
-  [data-panel="A"] .panel-tag { background:rgba(245,166,35,.12); color:var(--tab-a); }
-  [data-panel="B"] .panel-tag { background:rgba(59,130,246,.12); color:var(--tab-b); }
-  [data-panel="C"] .panel-tag { background:rgba(168,85,247,.12); color:var(--tab-c); }
-  [data-panel="D"] .panel-tag { background:rgba(232,89,58,.12); color:var(--tab-d); }
-  .panel-title h2 { font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:2px; }
-  .panel-title p { font-size:.8rem; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
+.panel-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;flex-wrap:wrap;}
+.panel-tag{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;line-height:1;width:56px;height:56px;display:flex;align-items:center;justify-content:center;border-radius:10px;flex-shrink:0;}
+[data-panel="A"] .panel-tag{background:rgba(245,166,35,.12);color:var(--tab-a);}
+[data-panel="B"] .panel-tag{background:rgba(59,130,246,.12);color:var(--tab-b);}
+[data-panel="C"] .panel-tag{background:rgba(168,85,247,.12);color:var(--tab-c);}
+[data-panel="D"] .panel-tag{background:rgba(232,89,58,.12);color:var(--tab-d);}
+.panel-tag.icon{font-size:1.6rem;}
+.panel-title h2{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;}
+.panel-title p{font-size:.78rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.panel-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;}
 
-  .btn-add {
-    margin-left:auto; background:none; border:1px solid var(--border); color:var(--muted);
-    padding:8px 18px; border-radius:8px; cursor:pointer; font-family:'DM Sans',sans-serif;
-    font-size:.82rem; transition:all .2s; display:flex; align-items:center; gap:6px;
-  }
-  .btn-add:hover { border-color:var(--accent); color:var(--accent); }
+.btn-action{background:none;border:1px solid var(--border);color:var(--muted);padding:7px 16px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.8rem;transition:all .2s;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.btn-action:hover{border-color:var(--accent);color:var(--accent);}
+.btn-action.primary{background:var(--accent);border-color:var(--accent);color:#0d0f14;font-weight:600;}
+.btn-action.primary:hover{opacity:.85;}
+.btn-action.green{border-color:var(--success);color:var(--success);}
+.btn-action.green:hover{background:var(--success);color:#0d0f14;}
 
-  .table-wrap { overflow-x:auto; }
-  table { width:100%; border-collapse:collapse; font-size:.875rem; }
-  thead tr { border-bottom:1px solid var(--border); }
-  th { text-align:left; font-size:.7rem; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); padding:10px 14px; }
-  tbody tr { border-bottom:1px solid rgba(255,255,255,.04); transition:background .15s; }
-  tbody tr:hover { background:rgba(255,255,255,.03); }
-  td { padding:14px; vertical-align:middle; }
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.875rem;}
+thead tr{border-bottom:1px solid var(--border);}
+th{text-align:left;font-size:.68rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:10px 12px;}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s;}
+tbody tr:hover{background:rgba(255,255,255,.03);}
+td{padding:12px;vertical-align:middle;}
+.bloco-header td{background:rgba(255,255,255,.03);color:var(--muted);font-size:.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:6px 12px;}
+.muscle-badge{display:inline-block;font-size:.68rem;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap;letter-spacing:.5px;}
+[data-panel="A"] .muscle-badge{background:rgba(245,166,35,.12);color:var(--tab-a);}
+[data-panel="B"] .muscle-badge{background:rgba(59,130,246,.12);color:var(--tab-b);}
+[data-panel="C"] .muscle-badge{background:rgba(168,85,247,.12);color:var(--tab-c);}
+[data-panel="D"] .muscle-badge{background:rgba(232,89,58,.12);color:var(--tab-d);}
+.ex-name{font-weight:500;color:var(--text);}
+.ex-desc{font-size:.75rem;color:var(--muted);margin-top:2px;}
+.sets-reps{font-size:.8rem;color:var(--muted);}
+.sets-reps strong{color:var(--text);}
+.carga-input{width:76px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;padding:5px 8px;text-align:center;transition:border-color .2s;}
+.carga-input:focus{outline:none;border-color:var(--accent);}
+.carga-nova{border-color:var(--success)!important;color:var(--success)!important;}
+.video-btn{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;color:var(--muted);border:1px solid var(--border);background:none;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all .2s;text-decoration:none;white-space:nowrap;}
+.video-btn:hover{color:var(--text);border-color:var(--text);}
+.del-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:.9rem;padding:4px 8px;transition:color .2s;}
+.del-btn:hover{color:#e8593a;}
+.empty-row td{text-align:center;padding:50px 20px;color:var(--muted);font-size:.85rem;}
+.empty-icon{font-size:2rem;display:block;margin-bottom:8px;opacity:.3;}
 
-  .bloco-header td {
-    background:rgba(255,255,255,.03); color:var(--muted); font-size:.68rem;
-    font-weight:600; letter-spacing:2px; text-transform:uppercase; padding:7px 14px;
-  }
+.panel-stats{display:flex;gap:12px;margin-top:20px;padding-top:18px;border-top:1px solid var(--border);flex-wrap:wrap;}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;min-width:100px;}
+.stat-box .stat-val{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;line-height:1;color:var(--text);}
+.stat-box .stat-label{font-size:.65rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
 
-  .muscle-badge {
-    display:inline-block; font-size:.7rem; font-weight:600;
-    padding:3px 10px; border-radius:20px; white-space:nowrap; letter-spacing:.5px;
-  }
-  [data-panel="A"] .muscle-badge { background:rgba(245,166,35,.12); color:var(--tab-a); }
-  [data-panel="B"] .muscle-badge { background:rgba(59,130,246,.12); color:var(--tab-b); }
-  [data-panel="C"] .muscle-badge { background:rgba(168,85,247,.12); color:var(--tab-c); }
-  [data-panel="D"] .muscle-badge { background:rgba(232,89,58,.12); color:var(--tab-d); }
+/* ── HISTÓRICO ── */
+#panel-historico .hist-list{display:flex;flex-direction:column;gap:12px;margin-top:8px;}
+.hist-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;}
+.hist-card-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.hist-badge{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:7px;flex-shrink:0;}
+.hist-badge.A{background:rgba(245,166,35,.12);color:var(--tab-a);}
+.hist-badge.B{background:rgba(59,130,246,.12);color:var(--tab-b);}
+.hist-badge.C{background:rgba(168,85,247,.12);color:var(--tab-c);}
+.hist-badge.D{background:rgba(232,89,58,.12);color:var(--tab-d);}
+.hist-date{font-size:.78rem;color:var(--muted);}
+.hist-title{font-weight:600;font-size:.9rem;}
+.hist-entries{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;}
+.hist-entry{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 12px;}
+.hist-entry .he-name{font-size:.78rem;font-weight:500;margin-bottom:3px;}
+.hist-entry .he-vals{font-size:.72rem;color:var(--muted);display:flex;gap:8px;}
+.hist-entry .he-vals span{color:var(--success);}
+.hist-del{margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem;padding:2px 6px;transition:color .2s;}
+.hist-del:hover{color:#e8593a;}
+.hist-empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:.85rem;}
 
-  .ex-name { font-weight:500; color:var(--text); }
-  .ex-desc { font-size:.78rem; color:var(--muted); margin-top:3px; }
-  .sets-reps { font-size:.82rem; color:var(--muted); }
-  .sets-reps strong { color:var(--text); }
+/* ── GRÁFICO ── */
+#panel-graficos .chart-controls{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
+.select-input{background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;padding:8px 12px;cursor:pointer;}
+.select-input:focus{outline:none;border-color:var(--accent);}
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;position:relative;min-height:320px;}
+.chart-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.85rem;flex-direction:column;gap:8px;}
+.chart-empty .empty-icon{font-size:2rem;opacity:.3;}
 
-  .carga-input {
-    width:80px; background:var(--surface); border:1px solid var(--border);
-    border-radius:6px; color:var(--text); font-family:'DM Sans',sans-serif;
-    font-size:.875rem; padding:6px 10px; text-align:center; transition:border-color .2s;
-  }
-  .carga-input:focus { outline:none; border-color:var(--accent); }
-  .carga-nova { border-color:var(--success)!important; color:var(--success)!important; }
+/* ── NOVO TREINO ── */
+#panel-novo .novo-form{max-width:600px;}
+.form-section{margin-bottom:24px;}
+.form-section h3{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--accent);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group.full{grid-column:1/-1;}
+.form-group label{font-size:.7rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.form-group input,.form-group textarea,.form-group select{background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;padding:9px 12px;transition:border-color .2s;resize:none;}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--accent);}
+.ex-builder{margin-top:8px;}
+.ex-row{display:grid;grid-template-columns:1fr 80px 60px 60px auto;gap:8px;align-items:end;margin-bottom:8px;}
+.ex-row input{background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82rem;padding:7px 10px;}
+.ex-row input:focus{outline:none;border-color:var(--accent);}
+.ex-row .rm-ex{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;cursor:pointer;padding:7px 10px;font-size:.8rem;transition:all .2s;}
+.ex-row .rm-ex:hover{border-color:#e8593a;color:#e8593a;}
+.ex-row-header{display:grid;grid-template-columns:1fr 80px 60px 60px auto;gap:8px;margin-bottom:6px;}
+.ex-row-header span{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
 
-  .video-btn {
-    display:inline-flex; align-items:center; gap:6px; font-size:.78rem; color:var(--muted);
-    border:1px solid var(--border); background:none; padding:5px 12px; border-radius:6px;
-    cursor:pointer; transition:all .2s; text-decoration:none; white-space:nowrap;
-  }
-  .video-btn:hover { color:var(--text); border-color:var(--text); }
+/* MODAL OVERLAY */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:28px;width:540px;max-width:95vw;max-height:90vh;overflow-y:auto;animation:fadeIn .2s ease;}
+.modal h3{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;margin-bottom:18px;color:var(--accent);}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;}
+.btn-cancel{background:none;border:1px solid var(--border);color:var(--muted);padding:9px 20px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.875rem;transition:all .2s;}
+.btn-cancel:hover{border-color:var(--text);color:var(--text);}
+.btn-save{background:var(--accent);border:none;color:#0d0f14;padding:9px 22px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:600;transition:opacity .2s;}
+.btn-save:hover{opacity:.85;}
 
-  .del-btn {
-    background:none; border:none; cursor:pointer; color:var(--muted);
-    font-size:1rem; padding:4px 8px; transition:color .2s;
-  }
-  .del-btn:hover { color:#e8593a; }
+/* REGISTRAR TREINO MODAL */
+.reg-ex-list{display:flex;flex-direction:column;gap:8px;max-height:350px;overflow-y:auto;margin-bottom:4px;}
+.reg-ex-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;display:grid;grid-template-columns:1fr 90px 90px;gap:10px;align-items:center;}
+.reg-ex-item .rei-name{font-size:.82rem;font-weight:500;}
+.reg-ex-item input{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82rem;padding:6px 10px;text-align:center;width:100%;}
+.reg-ex-item input:focus{outline:none;border-color:var(--accent);}
+.reg-header{display:grid;grid-template-columns:1fr 90px 90px;gap:10px;margin-bottom:6px;}
+.reg-header span{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
 
-  .empty-row td { text-align:center; padding:60px 20px; color:var(--muted); font-size:.85rem; }
-  .empty-icon { font-size:2.5rem; display:block; margin-bottom:10px; opacity:.3; }
-
-  .panel-stats { display:flex; gap:16px; margin-top:24px; padding-top:20px; border-top:1px solid var(--border); flex-wrap:wrap; }
-  .stat-box { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 18px; min-width:110px; }
-  .stat-box .stat-val { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; line-height:1; color:var(--text); }
-  .stat-box .stat-label { font-size:.68rem; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-top:4px; }
-
-  /* MODAL */
-  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:100; align-items:center; justify-content:center; }
-  .modal-overlay.open { display:flex; }
-  .modal { background:var(--surface2); border:1px solid var(--border); border-radius:14px; padding:28px; width:520px; max-width:95vw; animation:fadeIn .2s ease; }
-  .modal h3 { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:2px; margin-bottom:20px; color:var(--accent); }
-  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  .form-group { display:flex; flex-direction:column; gap:6px; }
-  .form-group.full { grid-column:1/-1; }
-  .form-group label { font-size:.72rem; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
-  .form-group input, .form-group textarea, .form-group select {
-    background:var(--surface); border:1px solid var(--border); border-radius:7px;
-    color:var(--text); font-family:'DM Sans',sans-serif; font-size:.875rem;
-    padding:9px 12px; transition:border-color .2s; resize:none;
-  }
-  .form-group input:focus, .form-group textarea:focus { outline:none; border-color:var(--accent); }
-  .modal-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:22px; }
-  .btn-cancel { background:none; border:1px solid var(--border); color:var(--muted); padding:9px 20px; border-radius:8px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:.875rem; transition:all .2s; }
-  .btn-cancel:hover { border-color:var(--text); color:var(--text); }
-  .btn-save { background:var(--accent); border:none; color:#0d0f14; padding:9px 22px; border-radius:8px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:.875rem; font-weight:600; transition:opacity .2s; }
-  .btn-save:hover { opacity:.85; }
-
-  @media(max-width:700px){
-    header{padding:20px 16px 0;} .tabs{padding:12px 16px 0;} main{margin:0 16px;padding:0 16px 24px;}
-  }
+@media(max-width:700px){
+  header{padding:16px 16px 0;}
+  .nav-bar,.tabs{padding:12px 16px 0;}
+  main{margin:0 16px;padding:0 16px 24px;}
+  .ex-row{grid-template-columns:1fr 70px 50px auto;}
+  .reg-ex-item{grid-template-columns:1fr 80px 80px;}
+}
 </style>
 </head>
 <body>
 
 <header>
   <div class="logo">GYM<span>TRACK</span></div>
-  <div class="header-sub">Controle de Treinos — Musculação</div>
-  <div id="save-indicator" style="margin-left:auto;padding-bottom:20px;font-size:.75rem;color:#34d399;letter-spacing:1px;opacity:0;transition:opacity .4s;">✓ Salvo</div>
+  <div class="header-sub">Controle de Treinos</div>
+  <div class="header-right">
+    <div class="timer-widget">
+      <div class="timer-display" id="timerDisplay">00:00</div>
+      <div class="timer-btns">
+        <button id="timerStart" onclick="timerToggle()" title="Iniciar/Pausar">▶</button>
+        <button onclick="timerReset()" title="Resetar">↺</button>
+      </div>
+    </div>
+    <div id="save-indicator">✓ Salvo</div>
+  </div>
 </header>
 
-<div class="tabs">
+<div class="nav-bar" id="tabBar">
   <button class="tab-btn active" data-tab="A">TREINO A</button>
   <button class="tab-btn" data-tab="B">TREINO B</button>
   <button class="tab-btn" data-tab="C">TREINO C</button>
   <button class="tab-btn" data-tab="D">TREINO D</button>
+  <button class="tab-btn extra" data-tab="historico">📋 HISTÓRICO</button>
+  <button class="tab-btn extra" data-tab="graficos">📈 EVOLUÇÃO</button>
+  <button class="tab-btn extra" data-tab="novo">＋ NOVO TREINO</button>
 </div>
 
 <main>
 
-<!-- ══════════════ TREINO A ══════════════ -->
+<!-- ══ TREINO A ══ -->
 <div class="tab-panel active" data-panel="A" id="panel-A">
   <div class="panel-header">
     <div class="panel-tag">A</div>
-    <div class="panel-title">
-      <h2>Treino A</h2>
-      <p>Quadríceps · Adutores · Ombros</p>
+    <div class="panel-title"><h2>Treino A</h2><p>Quadríceps · Adutores · Ombros</p></div>
+    <div class="panel-actions">
+      <button class="btn-action green" onclick="registrarTreino('A')">✓ Registrar Sessão</button>
+      <button class="btn-action" onclick="openModal('A')">+ Exercício</button>
     </div>
-    <button class="btn-add" onclick="openModal('A')">
-      <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      Adicionar exercício
-    </button>
   </div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr>
-        <th>Grupo</th><th>Exercício</th><th>Séries / Reps</th>
-        <th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th>
-      </tr></thead>
-      <tbody id="tbody-A">
-        <tr class="bloco-header"><td colspan="7">▸ Bloco 1</td></tr>
-        <tr data-tab="A" data-idx="0">
-          <td><span class="muscle-badge">Quadríceps</span></td>
-          <td><div class="ex-name">Leg Press 45°</div></td>
-          <td class="sets-reps"><strong>4</strong> × 12 a 15</td>
-          <td><input class="carga-input" type="number" value="50" step="0.5" min="0" onchange="updateCarga('A',0,'ci',this.value)"></td>
-          <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—" onchange="updateCarga('A',0,'cn',this.value)"></td>
-          <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCPoWqU2zScSZcEwk6pzBaFAZG9XIrMtV66FkMQX6s_3OI?e=2WMlrx" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-          <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-        </tr>
-        <tr data-tab="A" data-idx="1">
-          <td><span class="muscle-badge">Quadríceps</span></td>
-          <td><div class="ex-name">Agachamento Livre</div></td>
-          <td class="sets-reps"><strong>4</strong> × 12 a 15</td>
-          <td><input class="carga-input" type="number" value="14" step="0.5" min="0" onchange="updateCarga('A',1,'ci',this.value)"></td>
-          <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—" onchange="updateCarga('A',1,'cn',this.value)"></td>
-          <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBULaqWsmeCS63GMZZLQunPAesAOPPFVEE1FXs6HFc4o8Q?e=8ZJ70z" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-          <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-        </tr>
-        <tr data-tab="A" data-idx="2">
-          <td><span class="muscle-badge">Adutores</span></td>
-          <td><div class="ex-name">Adutores</div><div class="ex-desc">Última série: 15 duplo + 15 direto</div></td>
-          <td class="sets-reps"><strong>4</strong> × 15</td>
-          <td><input class="carga-input" type="number" value="55" step="0.5" min="0" onchange="updateCarga('A',2,'ci',this.value)"></td>
-          <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—" onchange="updateCarga('A',2,'cn',this.value)"></td>
-          <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDJzD2k7LCdTY4x2wwu_wU4ASOub7X1-1xfJZKAlvyocVg?e=Mh3KjL" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-          <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-        </tr>
-
-        <tr class="bloco-header"><td colspan="7">▸ Bloco 2</td></tr>
-        <tr data-tab="A" data-idx="3">
-          <td><span class="muscle-badge">Quadríceps</span></td>
-          <td><div class="ex-name">Extensora</div><div class="ex-desc">Com isometria</div></td>
-          <td class="sets-reps"><strong>3</strong> × 8</td>
-          <td><input class="carga-input" type="number" value="60" step="0.5" min="0" onchange="updateCarga('A',3,'ci',this.value)"></td>
-          <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—" onchange="updateCarga('A',3,'cn',this.value)"></td>
-          <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQABk4uTCY4dQpV_OzuzUnU5ATcTn2EI4eL9TJtM8sNPYHQ?e=xjO46T" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-          <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-        </tr>
-        <tr data-tab="A" data-idx="4">
-          <td><span class="muscle-badge">Quadríceps</span></td>
-          <td><div class="ex-name">Afundo com Pé no Step</div></td>
-          <td class="sets-reps"><strong>3</strong> × 10</td>
-          <td><input class="carga-input" type="number" value="12" step="0.5" min="0" onchange="updateCarga('A',4,'ci',this.value)"></td>
-          <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—" onchange="updateCarga('A',4,'cn',this.value)"></td>
-          <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQABk4uTCY4dQpV_OzuzUnU5ATcTn2EI4eL9TJtM8sNPYHQ?e=xjO46T" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-          <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-        </tr>
-        <tr data-tab="A" data-idx="5">
-          <td><span class="muscle-badge">Ombros</span></td>
-          <td><div class="ex-name">Ombros Alternado + Direto</div></td>
-          <td class="sets-reps"><strong>3</strong> × 6 + 6</td>
-          <td><input class="carga-input" type="number" value="7" step="0.5" min="0" onchange="updateCarga('A',5,'ci',this.value)"></td>
-          <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—" onchange="updateCarga('A',5,'cn',this.value)"></td>
-          <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBWn3bHGq_0T5gqAIQD-WQTARQ-E5IGkBkumg72tAHo_bE?e=lrwMoi" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-          <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-        </tr>
-
-        <tr class="bloco-header"><td colspan="7">▸ Bloco 3</td></tr>
-        <tr data-tab="A" data-idx="6">
-          <td><span class="muscle-badge">Quadríceps</span></td>
-          <td><div class="ex-name">Agachamento com Triângulo no Cross</div></td>
-          <td class="sets-reps"><strong>3</strong> × 10</td>
-          <td><input class="carga-input" type="number" value="40" step="0.5" min="0" onchange="updateCarga('A',6,'ci',this.value)"></td>
-          <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—" onchange="updateCarga('A',6,'cn',this.value)"></td>
-          <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCoMkcbpNT5RJaEC1Ua1HpjAe_LSJZyajDPeAAnznFssgQ?e=87OBC5" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-          <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-        </tr>
-        <tr data-tab="A" data-idx="7">
-          <td><span class="muscle-badge">Ombros</span></td>
-          <td><div class="ex-name">Agachamento Triângulo Cross + Desenvolvimento</div></td>
-          <td class="sets-reps"><strong>3</strong> × 10</td>
-          <td><input class="carga-input" type="number" value="25" step="0.5" min="0" onchange="updateCarga('A',7,'ci',this.value)"></td>
-          <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—" onchange="updateCarga('A',7,'cn',this.value)"></td>
-          <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCoMkcbpNT5RJaEC1Ua1HpjAe_LSJZyajDPeAAnznFssgQ?e=87OBC5" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-          <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-        </tr>
-
-        <tr class="bloco-header"><td colspan="7">▸ Bloco 4</td></tr>
-        <tr data-tab="A" data-idx="8">
-          <td><span class="muscle-badge">Ombros</span></td>
-          <td><div class="ex-name">Elevação Lateral no Cross</div><div class="ex-desc">Progressão por série</div></td>
-          <td class="sets-reps"><strong>3</strong> × 5, 6, 7</td>
-          <td><input class="carga-input" type="number" value="5" step="0.5" min="0" onchange="updateCarga('A',8,'ci',this.value)"></td>
-          <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—" onchange="updateCarga('A',8,'cn',this.value)"></td>
-          <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCuxb2tAA4LQo7oUjbDiU1cAQvBXbPu2YE2Jn6FhT1Z4lE?e=nUeKBJ" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-          <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-        </tr>
-
-        <tr class="bloco-header"><td colspan="7">▸ Bloco 5</td></tr>
-        <tr data-tab="A" data-idx="9">
-          <td><span class="muscle-badge">Ombros</span></td>
-          <td><div class="ex-name">Crucifixo Invertido Unilateral</div></td>
-          <td class="sets-reps"><strong>3</strong> × 8 a 10</td>
-          <td><input class="carga-input" type="number" value="8" step="0.5" min="0" onchange="updateCarga('A',9,'ci',this.value)"></td>
-          <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—" onchange="updateCarga('A',9,'cn',this.value)"></td>
-          <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDaa2hpqPaZTaNVbSbmCHRvAWS_CrwAfJusYkfnXmCuso4?e=Jlhg7W" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-          <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-        </tr>
-
-        <tr class="bloco-header"><td colspan="7">▸ Bloco 6</td></tr>
-        <tr data-tab="A" data-idx="10">
-          <td><span class="muscle-badge">Abdômen</span></td>
-          <td><div class="ex-name">Abdominal Rodinha</div></td>
-          <td class="sets-reps"><strong>3</strong> × 15</td>
-          <td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—" onchange="updateCarga('A',10,'ci',this.value)"></td>
-          <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—" onchange="updateCarga('A',10,'cn',this.value)"></td>
-          <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQC29SLUpMw8QqSNFkEnkpZtASp0nfD2M3aHRpkhH8JqEAM?e=2YYfTD" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-          <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="panel-stats">
-    <div class="stat-box"><div class="stat-val">11</div><div class="stat-label">Exercícios</div></div>
-    <div class="stat-box"><div class="stat-val">281</div><div class="stat-label">Carga Total (kg)</div></div>
-  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Grupo</th><th>Exercício</th><th>Séries/Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>
+    <tbody id="tbody-A">
+      <tr class="bloco-header"><td colspan="7">▸ Bloco 1</td></tr>
+      <tr data-tab="A" data-idx="0"><td><span class="muscle-badge">Quadríceps</span></td><td><div class="ex-name">Leg Press 45°</div></td><td class="sets-reps"><strong>4</strong> × 12 a 15</td><td><input class="carga-input" type="number" value="50" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCPoWqU2zScSZcEwk6pzBaFAZG9XIrMtV66FkMQX6s_3OI?e=2WMlrx" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="A" data-idx="1"><td><span class="muscle-badge">Quadríceps</span></td><td><div class="ex-name">Agachamento Livre</div></td><td class="sets-reps"><strong>4</strong> × 12 a 15</td><td><input class="carga-input" type="number" value="14" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBULaqWsmeCS63GMZZLQunPAesAOPPFVEE1FXs6HFc4o8Q?e=8ZJ70z" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="A" data-idx="2"><td><span class="muscle-badge">Adutores</span></td><td><div class="ex-name">Adutores</div><div class="ex-desc">Última série: 15 duplo + 15 direto</div></td><td class="sets-reps"><strong>4</strong> × 15</td><td><input class="carga-input" type="number" value="55" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDJzD2k7LCdTY4x2wwu_wU4ASOub7X1-1xfJZKAlvyocVg?e=Mh3KjL" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr class="bloco-header"><td colspan="7">▸ Bloco 2</td></tr>
+      <tr data-tab="A" data-idx="3"><td><span class="muscle-badge">Quadríceps</span></td><td><div class="ex-name">Extensora</div><div class="ex-desc">Com isometria</div></td><td class="sets-reps"><strong>3</strong> × 8</td><td><input class="carga-input" type="number" value="60" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQABk4uTCY4dQpV_OzuzUnU5ATcTn2EI4eL9TJtM8sNPYHQ?e=xjO46T" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="A" data-idx="4"><td><span class="muscle-badge">Quadríceps</span></td><td><div class="ex-name">Afundo com Pé no Step</div></td><td class="sets-reps"><strong>3</strong> × 10</td><td><input class="carga-input" type="number" value="12" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQABk4uTCY4dQpV_OzuzUnU5ATcTn2EI4eL9TJtM8sNPYHQ?e=xjO46T" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="A" data-idx="5"><td><span class="muscle-badge">Ombros</span></td><td><div class="ex-name">Ombros Alternado + Direto</div></td><td class="sets-reps"><strong>3</strong> × 6 + 6</td><td><input class="carga-input" type="number" value="7" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBWn3bHGq_0T5gqAIQD-WQTARQ-E5IGkBkumg72tAHo_bE?e=lrwMoi" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr class="bloco-header"><td colspan="7">▸ Bloco 3</td></tr>
+      <tr data-tab="A" data-idx="6"><td><span class="muscle-badge">Quadríceps</span></td><td><div class="ex-name">Agachamento com Triângulo no Cross</div></td><td class="sets-reps"><strong>3</strong> × 10</td><td><input class="carga-input" type="number" value="40" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCoMkcbpNT5RJaEC1Ua1HpjAe_LSJZyajDPeAAnznFssgQ?e=87OBC5" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="A" data-idx="7"><td><span class="muscle-badge">Ombros</span></td><td><div class="ex-name">Agachamento Triângulo Cross + Desenvolvimento</div></td><td class="sets-reps"><strong>3</strong> × 10</td><td><input class="carga-input" type="number" value="25" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCoMkcbpNT5RJaEC1Ua1HpjAe_LSJZyajDPeAAnznFssgQ?e=87OBC5" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr class="bloco-header"><td colspan="7">▸ Bloco 4</td></tr>
+      <tr data-tab="A" data-idx="8"><td><span class="muscle-badge">Ombros</span></td><td><div class="ex-name">Elevação Lateral no Cross</div><div class="ex-desc">Progressão por série</div></td><td class="sets-reps"><strong>3</strong> × 5, 6, 7</td><td><input class="carga-input" type="number" value="5" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCuxb2tAA4LQo7oUjbDiU1cAQvBXbPu2YE2Jn6FhT1Z4lE?e=nUeKBJ" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr class="bloco-header"><td colspan="7">▸ Bloco 5</td></tr>
+      <tr data-tab="A" data-idx="9"><td><span class="muscle-badge">Ombros</span></td><td><div class="ex-name">Crucifixo Invertido Unilateral</div></td><td class="sets-reps"><strong>3</strong> × 8 a 10</td><td><input class="carga-input" type="number" value="8" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDaa2hpqPaZTaNVbSbmCHRvAWS_CrwAfJusYkfnXmCuso4?e=Jlhg7W" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr class="bloco-header"><td colspan="7">▸ Bloco 6</td></tr>
+      <tr data-tab="A" data-idx="10"><td><span class="muscle-badge">Abdômen</span></td><td><div class="ex-name">Abdominal Rodinha</div></td><td class="sets-reps"><strong>3</strong> × 15</td><td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQC29SLUpMw8QqSNFkEnkpZtASp0nfD2M3aHRpkhH8JqEAM?e=2YYfTD" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+    </tbody>
+  </table></div>
+  <div class="panel-stats"><div class="stat-box"><div class="stat-val">11</div><div class="stat-label">Exercícios</div></div><div class="stat-box"><div class="stat-val">281</div><div class="stat-label">Carga Total kg</div></div></div>
 </div>
 
-<!-- ══════════════ TREINO B ══════════════ -->
+<!-- ══ TREINO B ══ -->
 <div class="tab-panel" data-panel="B" id="panel-B">
   <div class="panel-header">
     <div class="panel-tag">B</div>
     <div class="panel-title"><h2>Treino B</h2><p>Bíceps · Tríceps</p></div>
-    <button class="btn-add" onclick="openModal('B')">
-      <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      Adicionar exercício
-    </button>
+    <div class="panel-actions">
+      <button class="btn-action green" onclick="registrarTreino('B')">✓ Registrar Sessão</button>
+      <button class="btn-action" onclick="openModal('B')">+ Exercício</button>
+    </div>
   </div>
   <div class="table-wrap"><table>
-    <thead><tr><th>Grupo</th><th>Exercício</th><th>Séries / Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>
+    <thead><tr><th>Grupo</th><th>Exercício</th><th>Séries/Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>
     <tbody id="tbody-B">
       <tr class="bloco-header"><td colspan="7">▸ Tríceps</td></tr>
-      <tr data-tab="B" data-idx="0">
-        <td><span class="muscle-badge">Tríceps</span></td>
-        <td><div class="ex-name">Francês Unilateral no Cross</div></td>
-        <td class="sets-reps"><strong>5</strong> × 10</td>
-        <td><input class="carga-input" type="number" value="15" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBclYbRMHw1Tb7p4PRfs7h5Adx3_iH-YLgbzjJY-qwcPvw?e=xOD5hs" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
-      <tr data-tab="B" data-idx="1">
-        <td><span class="muscle-badge">Tríceps</span></td>
-        <td><div class="ex-name">Tríceps na Máquina</div><div class="ex-desc">4 barras</div></td>
-        <td class="sets-reps"><strong>4</strong> × 12</td>
-        <td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDoPMfLt67BRbqo-AcYfVO0AbP68Uf17ayf2SdtsvlxKrA?e=3aZZro" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
-      <tr data-tab="B" data-idx="2">
-        <td><span class="muscle-badge">Tríceps</span></td>
-        <td><div class="ex-name">Francês Deitado</div></td>
-        <td class="sets-reps"><strong>3</strong> × 10</td>
-        <td><input class="carga-input" type="number" value="8" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQByPjW2-y_8S5rmsRl6_ZucAdhSAEcLxGY3T4XYaZ7uI78?e=O1ClGL" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
-      <tr data-tab="B" data-idx="3">
-        <td><span class="muscle-badge">Tríceps</span></td>
-        <td><div class="ex-name">Tríceps com Barra no Cross</div></td>
-        <td class="sets-reps"><strong>2</strong> × 20</td>
-        <td><input class="carga-input" type="number" value="40" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQC5-tpe8Ua7Sr8Z-YYwoN-SAe8hA81aeQc_TWpcJ9heelk?e=oLPIxi" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
-      <tr data-tab="B" data-idx="4">
-        <td><span class="muscle-badge">Tríceps</span></td>
-        <td><div class="ex-name">Flexão no Chão</div><div class="ex-desc">Até exaustão</div></td>
-        <td class="sets-reps"><strong>1</strong> × exaustão</td>
-        <td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCUQatFHVuER4S6a1YsK7UWAZAuhU-4n3Y_H4KtqILGWLk?e=kna2Wd" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
-
+      <tr data-tab="B" data-idx="0"><td><span class="muscle-badge">Tríceps</span></td><td><div class="ex-name">Francês Unilateral no Cross</div></td><td class="sets-reps"><strong>5</strong> × 10</td><td><input class="carga-input" type="number" value="15" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBclYbRMHw1Tb7p4PRfs7h5Adx3_iH-YLgbzjJY-qwcPvw?e=xOD5hs" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="B" data-idx="1"><td><span class="muscle-badge">Tríceps</span></td><td><div class="ex-name">Tríceps na Máquina</div><div class="ex-desc">4 barras</div></td><td class="sets-reps"><strong>4</strong> × 12</td><td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDoPMfLt67BRbqo-AcYfVO0AbP68Uf17ayf2SdtsvlxKrA?e=3aZZro" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="B" data-idx="2"><td><span class="muscle-badge">Tríceps</span></td><td><div class="ex-name">Francês Deitado</div></td><td class="sets-reps"><strong>3</strong> × 10</td><td><input class="carga-input" type="number" value="8" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQByPjW2-y_8S5rmsRl6_ZucAdhSAEcLxGY3T4XYaZ7uI78?e=O1ClGL" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="B" data-idx="3"><td><span class="muscle-badge">Tríceps</span></td><td><div class="ex-name">Tríceps com Barra no Cross</div></td><td class="sets-reps"><strong>2</strong> × 20</td><td><input class="carga-input" type="number" value="40" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQC5-tpe8Ua7Sr8Z-YYwoN-SAe8hA81aeQc_TWpcJ9heelk?e=oLPIxi" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="B" data-idx="4"><td><span class="muscle-badge">Tríceps</span></td><td><div class="ex-name">Flexão no Chão</div><div class="ex-desc">Até exaustão</div></td><td class="sets-reps"><strong>1</strong> × exaustão</td><td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCUQatFHVuER4S6a1YsK7UWAZAuhU-4n3Y_H4KtqILGWLk?e=kna2Wd" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
       <tr class="bloco-header"><td colspan="7">▸ Bíceps</td></tr>
-      <tr data-tab="B" data-idx="5">
-        <td><span class="muscle-badge">Bíceps</span></td>
-        <td><div class="ex-name">Bíceps na Máquina</div><div class="ex-desc">5 barras</div></td>
-        <td class="sets-reps"><strong>5</strong> × 10</td>
-        <td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQB1Qiya_7GUTqij6N1Gya4sAaSY3vgg8PgsC6P3zTXXt9A?e=hma9Pa" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
-      <tr data-tab="B" data-idx="6">
-        <td><span class="muscle-badge">Bíceps</span></td>
-        <td><div class="ex-name">Rosca Alternada</div></td>
-        <td class="sets-reps"><strong>4</strong> × 10</td>
-        <td><input class="carga-input" type="number" value="12" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBPCrXiDX78Qono_p8e8ibQAemKXyB90Yo5GiDOyY3AzVE?e=fZPlDd" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
-      <tr data-tab="B" data-idx="7">
-        <td><span class="muscle-badge">Bíceps</span></td>
-        <td><div class="ex-name">Rosca Concentrada no Cross</div></td>
-        <td class="sets-reps"><strong>3</strong> × 8 a 10</td>
-        <td><input class="carga-input" type="number" value="10" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDf2jA9yEDpTabB-bQwEuvtAW-it_cVaNq_dBgbGiAGIOk?e=x3XiJY" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
-      <tr data-tab="B" data-idx="8">
-        <td><span class="muscle-badge">Bíceps</span></td>
-        <td><div class="ex-name">Rosca Direta</div></td>
-        <td class="sets-reps"><strong>2</strong> × 20</td>
-        <td><input class="carga-input" type="number" value="30" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQD70oeYyJiUSo17C1XXCMbdAf4D3ya53FoKbLBMrKCB-Ec?e=KySrqS" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
-      <tr data-tab="B" data-idx="9">
-        <td><span class="muscle-badge">Bíceps</span></td>
-        <td><div class="ex-name">Barra W</div><div class="ex-desc">Até exaustão</div></td>
-        <td class="sets-reps"><strong>1</strong> × exaustão</td>
-        <td><input class="carga-input" type="number" value="2.5" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCwRwqG4u7GS62z73JTCEYDAcq6zCxM3kVDONgchm3mwDw?e=ewGE5M" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
+      <tr data-tab="B" data-idx="5"><td><span class="muscle-badge">Bíceps</span></td><td><div class="ex-name">Bíceps na Máquina</div><div class="ex-desc">5 barras</div></td><td class="sets-reps"><strong>5</strong> × 10</td><td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQB1Qiya_7GUTqij6N1Gya4sAaSY3vgg8PgsC6P3zTXXt9A?e=hma9Pa" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="B" data-idx="6"><td><span class="muscle-badge">Bíceps</span></td><td><div class="ex-name">Rosca Alternada</div></td><td class="sets-reps"><strong>4</strong> × 10</td><td><input class="carga-input" type="number" value="12" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBPCrXiDX78Qono_p8e8ibQAemKXyB90Yo5GiDOyY3AzVE?e=fZPlDd" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="B" data-idx="7"><td><span class="muscle-badge">Bíceps</span></td><td><div class="ex-name">Rosca Concentrada no Cross</div></td><td class="sets-reps"><strong>3</strong> × 8 a 10</td><td><input class="carga-input" type="number" value="10" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDf2jA9yEDpTabB-bQwEuvtAW-it_cVaNq_dBgbGiAGIOk?e=x3XiJY" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="B" data-idx="8"><td><span class="muscle-badge">Bíceps</span></td><td><div class="ex-name">Rosca Direta</div></td><td class="sets-reps"><strong>2</strong> × 20</td><td><input class="carga-input" type="number" value="30" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQD70oeYyJiUSo17C1XXCMbdAf4D3ya53FoKbLBMrKCB-Ec?e=KySrqS" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="B" data-idx="9"><td><span class="muscle-badge">Bíceps</span></td><td><div class="ex-name">Barra W</div><div class="ex-desc">Até exaustão</div></td><td class="sets-reps"><strong>1</strong> × exaustão</td><td><input class="carga-input" type="number" value="2.5" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCwRwqG4u7GS62z73JTCEYDAcq6zCxM3kVDONgchm3mwDw?e=ewGE5M" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
     </tbody>
   </table></div>
-  <div class="panel-stats">
-    <div class="stat-box"><div class="stat-val">10</div><div class="stat-label">Exercícios</div></div>
-    <div class="stat-box"><div class="stat-val">5 + 5</div><div class="stat-label">Tríceps · Bíceps</div></div>
-  </div>
+  <div class="panel-stats"><div class="stat-box"><div class="stat-val">10</div><div class="stat-label">Exercícios</div></div></div>
 </div>
 
-<!-- ══════════════ TREINO C ══════════════ -->
+<!-- ══ TREINO C ══ -->
 <div class="tab-panel" data-panel="C" id="panel-C">
   <div class="panel-header">
     <div class="panel-tag">C</div>
     <div class="panel-title"><h2>Treino C</h2><p>Costas · Posterior · Glúteos · Gêmeos</p></div>
-    <button class="btn-add" onclick="openModal('C')">
-      <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      Adicionar exercício
-    </button>
+    <div class="panel-actions">
+      <button class="btn-action green" onclick="registrarTreino('C')">✓ Registrar Sessão</button>
+      <button class="btn-action" onclick="openModal('C')">+ Exercício</button>
+    </div>
   </div>
   <div class="table-wrap"><table>
-    <thead><tr><th>Grupo</th><th>Exercício</th><th>Séries / Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>
+    <thead><tr><th>Grupo</th><th>Exercício</th><th>Séries/Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>
     <tbody id="tbody-C">
       <tr class="bloco-header"><td colspan="7">▸ Bloco 1</td></tr>
-      <tr data-tab="C" data-idx="0">
-        <td><span class="muscle-badge">Costas</span></td>
-        <td><div class="ex-name">Remada Sentada</div><div class="ex-desc">Aumentando 5kg a cada série</div></td>
-        <td class="sets-reps"><strong>5</strong> × 10</td>
-        <td><input class="carga-input" type="number" value="30" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDCHGQjT2R_TqizATRA4tyPAWJxqNQD5nqZoBW-kzAfKZQ?e=H1Vrgl" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
-      <tr data-tab="C" data-idx="1">
-        <td><span class="muscle-badge">Costas</span></td>
-        <td><div class="ex-name">Pulley Costas</div></td>
-        <td class="sets-reps"><strong>5</strong> × 10</td>
-        <td><input class="carga-input" type="number" value="30" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDCHGQjT2R_TqizATRA4tyPAWJxqNQD5nqZoBW-kzAfKZQ?e=H1Vrgl" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
-      <tr data-tab="C" data-idx="2">
-        <td><span class="muscle-badge">Gêmeos</span></td>
-        <td><div class="ex-name">Gêmeos Solear</div><div class="ex-desc">20 completos + 10 parciais por série</div></td>
-        <td class="sets-reps"><strong>5</strong> × 20+10</td>
-        <td><input class="carga-input" type="number" value="50" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQD-f72v35LLSZyI5We1jJa6AZ8FipZob_x-VrBj5V4z7QA?e=omHw1h" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
+      <tr data-tab="C" data-idx="0"><td><span class="muscle-badge">Costas</span></td><td><div class="ex-name">Remada Sentada</div><div class="ex-desc">Aumentando 5kg a cada série</div></td><td class="sets-reps"><strong>5</strong> × 10</td><td><input class="carga-input" type="number" value="30" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDCHGQjT2R_TqizATRA4tyPAWJxqNQD5nqZoBW-kzAfKZQ?e=H1Vrgl" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="C" data-idx="1"><td><span class="muscle-badge">Costas</span></td><td><div class="ex-name">Pulley Costas</div></td><td class="sets-reps"><strong>5</strong> × 10</td><td><input class="carga-input" type="number" value="30" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDCHGQjT2R_TqizATRA4tyPAWJxqNQD5nqZoBW-kzAfKZQ?e=H1Vrgl" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="C" data-idx="2"><td><span class="muscle-badge">Gêmeos</span></td><td><div class="ex-name">Gêmeos Solear</div><div class="ex-desc">20 completos + 10 parciais por série</div></td><td class="sets-reps"><strong>5</strong> × 20+10</td><td><input class="carga-input" type="number" value="50" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQD-f72v35LLSZyI5We1jJa6AZ8FipZob_x-VrBj5V4z7QA?e=omHw1h" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
       <tr class="bloco-header"><td colspan="7">▸ Bloco 2</td></tr>
-      <tr data-tab="C" data-idx="3">
-        <td><span class="muscle-badge">Costas</span></td>
-        <td><div class="ex-name">Pull Down</div></td>
-        <td class="sets-reps"><strong>4</strong> × 10</td>
-        <td><input class="carga-input" type="number" value="45" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCQGVqUrDbYTqm5QQarM25tATu9hKxudCBixLdeTmIRlIk?e=Zcr0xf" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
-      <tr data-tab="C" data-idx="4">
-        <td><span class="muscle-badge">Costas</span></td>
-        <td><div class="ex-name">Lombar com Remada</div></td>
-        <td class="sets-reps"><strong>4</strong> × 10</td>
-        <td><input class="carga-input" type="number" value="8" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCjbzIZEi5nR6MTuS1-gx_9ATLhdIx3lSF2jm3K5fs6D2k?e=Zcj8dL" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
+      <tr data-tab="C" data-idx="3"><td><span class="muscle-badge">Costas</span></td><td><div class="ex-name">Pull Down</div></td><td class="sets-reps"><strong>4</strong> × 10</td><td><input class="carga-input" type="number" value="45" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCQGVqUrDbYTqm5QQarM25tATu9hKxudCBixLdeTmIRlIk?e=Zcr0xf" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="C" data-idx="4"><td><span class="muscle-badge">Costas</span></td><td><div class="ex-name">Lombar com Remada</div></td><td class="sets-reps"><strong>4</strong> × 10</td><td><input class="carga-input" type="number" value="8" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCjbzIZEi5nR6MTuS1-gx_9ATLhdIx3lSF2jm3K5fs6D2k?e=Zcj8dL" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
       <tr class="bloco-header"><td colspan="7">▸ Bloco 3</td></tr>
-      <tr data-tab="C" data-idx="5">
-        <td><span class="muscle-badge">Gêmeos</span></td>
-        <td><div class="ex-name">Gêmeos</div></td>
-        <td class="sets-reps"><strong>4</strong> × 20</td>
-        <td><input class="carga-input" type="number" value="18" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQAhuS-N_3p7QZXWJADlf8gDAc5e26P6Fi8NmpMhjH88hxE?e=AFSpWq" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
+      <tr data-tab="C" data-idx="5"><td><span class="muscle-badge">Gêmeos</span></td><td><div class="ex-name">Gêmeos</div></td><td class="sets-reps"><strong>4</strong> × 20</td><td><input class="carga-input" type="number" value="18" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQAhuS-N_3p7QZXWJADlf8gDAc5e26P6Fi8NmpMhjH88hxE?e=AFSpWq" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
       <tr class="bloco-header"><td colspan="7">▸ Bloco 4</td></tr>
-      <tr data-tab="C" data-idx="6">
-        <td><span class="muscle-badge">Glúteos</span></td>
-        <td><div class="ex-name">Abdutores</div><div class="ex-desc">15 completos + 10 parciais por série</div></td>
-        <td class="sets-reps"><strong>4</strong> × 15+10</td>
-        <td><input class="carga-input" type="number" value="65" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDiB1Af2lwBRpaFmJBOyiSpAcJrMJbuIS2k_v0lL7WS7EU?e=CDd1kr" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
-      <tr data-tab="C" data-idx="7">
-        <td><span class="muscle-badge">Posterior</span></td>
-        <td><div class="ex-name">Elevação de Ombros com Stiff</div></td>
-        <td class="sets-reps"><strong>4</strong> × 10</td>
-        <td><input class="carga-input" type="number" value="18" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQC6NXQHS711Q4YK2YD62gO2AWqfOTvOXymQrUarM9HKu8g?e=prR6KU" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
+      <tr data-tab="C" data-idx="6"><td><span class="muscle-badge">Glúteos</span></td><td><div class="ex-name">Abdutores</div><div class="ex-desc">15 completos + 10 parciais por série</div></td><td class="sets-reps"><strong>4</strong> × 15+10</td><td><input class="carga-input" type="number" value="65" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDiB1Af2lwBRpaFmJBOyiSpAcJrMJbuIS2k_v0lL7WS7EU?e=CDd1kr" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="C" data-idx="7"><td><span class="muscle-badge">Posterior</span></td><td><div class="ex-name">Elevação de Ombros com Stiff</div></td><td class="sets-reps"><strong>4</strong> × 10</td><td><input class="carga-input" type="number" value="18" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQC6NXQHS711Q4YK2YD62gO2AWqfOTvOXymQrUarM9HKu8g?e=prR6KU" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
       <tr class="bloco-header"><td colspan="7">▸ Bloco 5</td></tr>
-      <tr data-tab="C" data-idx="8">
-        <td><span class="muscle-badge">Abdômen</span></td>
-        <td><div class="ex-name">Abdominal Oblíquo</div></td>
-        <td class="sets-reps"><strong>4</strong> × 10 a 15</td>
-        <td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBu5E2AtqUTTZlvrNh9Y2K0AQmX2TkLKrpbjzoTUe7x-MU?e=TUtiaH" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
+      <tr data-tab="C" data-idx="8"><td><span class="muscle-badge">Abdômen</span></td><td><div class="ex-name">Abdominal Oblíquo</div></td><td class="sets-reps"><strong>4</strong> × 10 a 15</td><td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBu5E2AtqUTTZlvrNh9Y2K0AQmX2TkLKrpbjzoTUe7x-MU?e=TUtiaH" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
     </tbody>
   </table></div>
-  <div class="panel-stats">
-    <div class="stat-box"><div class="stat-val">9</div><div class="stat-label">Exercícios</div></div>
-    <div class="stat-box"><div class="stat-val">5</div><div class="stat-label">Blocos</div></div>
-  </div>
+  <div class="panel-stats"><div class="stat-box"><div class="stat-val">9</div><div class="stat-label">Exercícios</div></div></div>
 </div>
 
-<!-- ══════════════ TREINO D ══════════════ -->
+<!-- ══ TREINO D ══ -->
 <div class="tab-panel" data-panel="D" id="panel-D">
   <div class="panel-header">
     <div class="panel-tag">D</div>
     <div class="panel-title"><h2>Treino D</h2><p>Peitoral · Abdômen</p></div>
-    <button class="btn-add" onclick="openModal('D')">
-      <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      Adicionar exercício
-    </button>
+    <div class="panel-actions">
+      <button class="btn-action green" onclick="registrarTreino('D')">✓ Registrar Sessão</button>
+      <button class="btn-action" onclick="openModal('D')">+ Exercício</button>
+    </div>
   </div>
   <div class="table-wrap"><table>
-    <thead><tr><th>Grupo</th><th>Exercício</th><th>Séries / Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>
+    <thead><tr><th>Grupo</th><th>Exercício</th><th>Séries/Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>
     <tbody id="tbody-D">
       <tr class="bloco-header"><td colspan="7">▸ Bloco 1</td></tr>
-      <tr data-tab="D" data-idx="0">
-        <td><span class="muscle-badge">Peitoral</span></td>
-        <td><div class="ex-name">Supino Reto</div></td>
-        <td class="sets-reps"><strong>5</strong> × 10</td>
-        <td><input class="carga-input" type="number" value="10" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDRD_rWRf5CQpEH9AEvqLTWAQI6aylXmFAs5tqp5_d71jI?e=TKzzAQ" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
+      <tr data-tab="D" data-idx="0"><td><span class="muscle-badge">Peitoral</span></td><td><div class="ex-name">Supino Reto</div></td><td class="sets-reps"><strong>5</strong> × 10</td><td><input class="carga-input" type="number" value="10" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDRD_rWRf5CQpEH9AEvqLTWAQI6aylXmFAs5tqp5_d71jI?e=TKzzAQ" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
       <tr class="bloco-header"><td colspan="7">▸ Bloco 2</td></tr>
-      <tr data-tab="D" data-idx="1">
-        <td><span class="muscle-badge">Peitoral</span></td>
-        <td><div class="ex-name">Peck Deck</div></td>
-        <td class="sets-reps"><strong>4</strong> × 12</td>
-        <td><input class="carga-input" type="number" value="30" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQAQ8bGKpT7BRJelg-xVjG0XAVSNDFY5ZumG0A2TkfuVmkA?e=OAtNAr" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
+      <tr data-tab="D" data-idx="1"><td><span class="muscle-badge">Peitoral</span></td><td><div class="ex-name">Peck Deck</div></td><td class="sets-reps"><strong>4</strong> × 12</td><td><input class="carga-input" type="number" value="30" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQAQ8bGKpT7BRJelg-xVjG0XAVSNDFY5ZumG0A2TkfuVmkA?e=OAtNAr" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
       <tr class="bloco-header"><td colspan="7">▸ Bloco 3</td></tr>
-      <tr data-tab="D" data-idx="2">
-        <td><span class="muscle-badge">Peitoral</span></td>
-        <td><div class="ex-name">Crucifixo Declinado</div></td>
-        <td class="sets-reps"><strong>3</strong> × 10</td>
-        <td><input class="carga-input" type="number" value="12" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCbtwRtpRsaQqMn-bFiZ0xLAWTylWxUK267hsW3YGr2JkE?e=Ftw9UP" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
+      <tr data-tab="D" data-idx="2"><td><span class="muscle-badge">Peitoral</span></td><td><div class="ex-name">Crucifixo Declinado</div></td><td class="sets-reps"><strong>3</strong> × 10</td><td><input class="carga-input" type="number" value="12" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCbtwRtpRsaQqMn-bFiZ0xLAWTylWxUK267hsW3YGr2JkE?e=Ftw9UP" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
       <tr class="bloco-header"><td colspan="7">▸ Bloco 4</td></tr>
-      <tr data-tab="D" data-idx="3">
-        <td><span class="muscle-badge">Peitoral</span></td>
-        <td><div class="ex-name">Supino Vertical</div></td>
-        <td class="sets-reps"><strong>2</strong> × 20</td>
-        <td><input class="carga-input" type="number" value="35" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDIUfziSpShQrLbNVXz3iBdAcRsQEklWZyutgtQhpNnqv8?e=0icAmP" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
+      <tr data-tab="D" data-idx="3"><td><span class="muscle-badge">Peitoral</span></td><td><div class="ex-name">Supino Vertical</div></td><td class="sets-reps"><strong>2</strong> × 20</td><td><input class="carga-input" type="number" value="35" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDIUfziSpShQrLbNVXz3iBdAcRsQEklWZyutgtQhpNnqv8?e=0icAmP" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
       <tr class="bloco-header"><td colspan="7">▸ Bloco 5</td></tr>
-      <tr data-tab="D" data-idx="4">
-        <td><span class="muscle-badge">Peitoral</span></td>
-        <td><div class="ex-name">Flexão no Banco</div></td>
-        <td class="sets-reps"><strong>1</strong> × 20</td>
-        <td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCIkNvudXgWS6n9Vcsd0pAXAXkULC3P6lXE7mwPaGrP084?e=Kaxh9g" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
+      <tr data-tab="D" data-idx="4"><td><span class="muscle-badge">Peitoral</span></td><td><div class="ex-name">Flexão no Banco</div></td><td class="sets-reps"><strong>1</strong> × 20</td><td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCIkNvudXgWS6n9Vcsd0pAXAXkULC3P6lXE7mwPaGrP084?e=Kaxh9g" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
       <tr class="bloco-header"><td colspan="7">▸ Bloco 6</td></tr>
-      <tr data-tab="D" data-idx="5">
-        <td><span class="muscle-badge">Abdômen</span></td>
-        <td><div class="ex-name">Abdominal Supra</div></td>
-        <td class="sets-reps"><strong>3</strong> × 10 a 15</td>
-        <td><input class="carga-input" type="number" value="10" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBDnI4Ed5CxRqf4v78WhJ0aAasnJ6DAtanPIfMpLxvCDJw?e=mukJfF" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
-      <tr data-tab="D" data-idx="6">
-        <td><span class="muscle-badge">Abdômen</span></td>
-        <td><div class="ex-name">Abdominal Infra</div></td>
-        <td class="sets-reps"><strong>4</strong> × 10 a 15</td>
-        <td><input class="carga-input" type="number" value="15" step="0.5" min="0"></td>
-        <td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>
-        <td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDtaSXU6wwPTb3ihTDnTbl9AUkK9QnzlT6VBT6r2BZfJlE?e=FKsgBD" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a></td>
-        <td><button class="del-btn" onclick="delRow(this)">✕</button></td>
-      </tr>
+      <tr data-tab="D" data-idx="5"><td><span class="muscle-badge">Abdômen</span></td><td><div class="ex-name">Abdominal Supra</div></td><td class="sets-reps"><strong>3</strong> × 10 a 15</td><td><input class="carga-input" type="number" value="10" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBDnI4Ed5CxRqf4v78WhJ0aAasnJ6DAtanPIfMpLxvCDJw?e=mukJfF" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
+      <tr data-tab="D" data-idx="6"><td><span class="muscle-badge">Abdômen</span></td><td><div class="ex-name">Abdominal Infra</div></td><td class="sets-reps"><strong>4</strong> × 10 a 15</td><td><input class="carga-input" type="number" value="15" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDtaSXU6wwPTb3ihTDnTbl9AUkK9QnzlT6VBT6r2BZfJlE?e=FKsgBD" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
     </tbody>
   </table></div>
-  <div class="panel-stats">
-    <div class="stat-box"><div class="stat-val">7</div><div class="stat-label">Exercícios</div></div>
-    <div class="stat-box"><div class="stat-val">6</div><div class="stat-label">Blocos</div></div>
+  <div class="panel-stats"><div class="stat-box"><div class="stat-val">7</div><div class="stat-label">Exercícios</div></div></div>
+</div>
+
+<!-- ══ HISTÓRICO ══ -->
+<div class="tab-panel" data-panel="historico" id="panel-historico">
+  <div class="panel-header">
+    <div class="panel-tag icon">📋</div>
+    <div class="panel-title"><h2>Histórico de Treinos</h2><p>Todas as sessões registradas</p></div>
+    <div class="panel-actions">
+      <button class="btn-action" onclick="exportarHistorico()">↓ Exportar CSV</button>
+    </div>
+  </div>
+  <div id="hist-list" class="hist-list"><div class="hist-empty"><span class="empty-icon">📋</span>Nenhuma sessão registrada ainda.<br>Clique em "✓ Registrar Sessão" em qualquer treino.</div></div>
+</div>
+
+<!-- ══ GRÁFICOS ══ -->
+<div class="tab-panel" data-panel="graficos" id="panel-graficos">
+  <div class="panel-header">
+    <div class="panel-tag icon">📈</div>
+    <div class="panel-title"><h2>Evolução de Cargas</h2><p>Progressão por exercício</p></div>
+  </div>
+  <div class="chart-controls">
+    <select class="select-input" id="chartTreino" onchange="updateChart()">
+      <option value="">Selecione o treino</option>
+      <option value="A">Treino A</option>
+      <option value="B">Treino B</option>
+      <option value="C">Treino C</option>
+      <option value="D">Treino D</option>
+    </select>
+    <select class="select-input" id="chartExercicio" onchange="renderChart()">
+      <option value="">Selecione o exercício</option>
+    </select>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-empty" id="chartEmpty"><span class="empty-icon">📈</span>Selecione um treino e exercício para ver a evolução</div>
+    <canvas id="myChart" style="display:none;"></canvas>
+  </div>
+</div>
+
+<!-- ══ NOVO TREINO ══ -->
+<div class="tab-panel" data-panel="novo" id="panel-novo">
+  <div class="panel-header">
+    <div class="panel-tag icon">＋</div>
+    <div class="panel-title"><h2>Criar Novo Treino</h2><p>Monte uma nova ficha de treino</p></div>
+  </div>
+  <div class="novo-form">
+    <div class="form-section">
+      <h3>Identificação</h3>
+      <div class="form-grid">
+        <div class="form-group"><label>Código do Treino</label><input type="text" id="novoId" placeholder="Ex: E, F, Hiit..." maxlength="6"></div>
+        <div class="form-group"><label>Nome / Foco</label><input type="text" id="novoFoco" placeholder="Ex: Glúteos e Posterior"></div>
+      </div>
+    </div>
+    <div class="form-section">
+      <h3>Exercícios</h3>
+      <div class="ex-row-header">
+        <span>Exercício</span><span>Grupo</span><span>Séries</span><span>Reps</span><span></span>
+      </div>
+      <div id="exBuilder"></div>
+      <button class="btn-action" style="margin-top:8px" onclick="addExRow()">+ Adicionar linha</button>
+    </div>
+    <div class="form-section">
+      <button class="btn-action primary" onclick="criarTreino()">Criar Treino</button>
+    </div>
   </div>
 </div>
 
 </main>
 
-<!-- MODAL -->
+<!-- MODAL ADICIONAR EXERCÍCIO -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <h3 id="modalTitle">Adicionar Exercício</h3>
@@ -631,7 +414,7 @@
       <div class="form-group"><label>Repetições</label><input type="text" id="fReps" placeholder="10-12"></div>
       <div class="form-group"><label>Carga Inicial (kg)</label><input type="number" id="fCargaInicial" placeholder="0" min="0" step="0.5"></div>
       <div class="form-group"><label>Nova Carga (kg)</label><input type="number" id="fCargaNova" placeholder="0" min="0" step="0.5"></div>
-      <div class="form-group full"><label>Link do Vídeo</label><input type="url" id="fVideo" placeholder="https://youtube.com/…"></div>
+      <div class="form-group full"><label>Link do Vídeo</label><input type="url" id="fVideo" placeholder="https://…"></div>
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
@@ -640,121 +423,404 @@
   </div>
 </div>
 
+<!-- MODAL REGISTRAR SESSÃO -->
+<div class="modal-overlay" id="modalReg">
+  <div class="modal">
+    <h3 id="regTitle">Registrar Sessão — Treino A</h3>
+    <input type="hidden" id="regTab">
+    <div class="form-group full" style="margin-bottom:14px;">
+      <label>Data</label>
+      <input type="date" id="regData">
+    </div>
+    <div class="reg-header"><span>Exercício</span><span>Carga (kg)</span><span>Obs</span></div>
+    <div class="reg-ex-list" id="regExList"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeReg()">Cancelar</button>
+      <button class="btn-save" onclick="salvarSessao()">Salvar Sessão</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  const STORAGE_KEY = 'gymtrack_cargas_v1';
+const SK = 'gymtrack_v3';
+let chartInstance = null;
 
-  // ── PERSISTÊNCIA localStorage ──
-  function saveCargas() {
-    const data = {};
-    document.querySelectorAll('tr[data-tab][data-idx]').forEach(tr => {
-      const key = tr.dataset.tab + '_' + tr.dataset.idx;
-      const inputs = tr.querySelectorAll('.carga-input');
-      if (inputs.length >= 2) {
-        data[key] = { ci: inputs[0].value, cn: inputs[1].value };
-      }
-    });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    showSaved();
-  }
+// ══ STORAGE ══
+function getData() { try { return JSON.parse(localStorage.getItem(SK) || '{}'); } catch(e) { return {}; } }
+function setData(d) { localStorage.setItem(SK, JSON.stringify(d)); }
 
-  function loadCargas() {
-    try {
-      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-      document.querySelectorAll('tr[data-tab][data-idx]').forEach(tr => {
-        const key = tr.dataset.tab + '_' + tr.dataset.idx;
-        if (data[key]) {
-          const inputs = tr.querySelectorAll('.carga-input');
-          if (inputs[0] && data[key].ci !== '') inputs[0].value = data[key].ci;
-          if (inputs[1] && data[key].cn !== '') inputs[1].value = data[key].cn;
-        }
-      });
-    } catch(e) {}
-  }
-
-  function showSaved() {
-    const el = document.getElementById('save-indicator');
-    if (!el) return;
-    el.style.opacity = '1';
-    clearTimeout(el._t);
-    el._t = setTimeout(() => el.style.opacity = '0', 2000);
-  }
-
-  // ── TABS ──
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
-    });
+function saveCargas() {
+  const d = getData();
+  d.cargas = d.cargas || {};
+  document.querySelectorAll('tr[data-tab][data-idx]').forEach(tr => {
+    const k = tr.dataset.tab + '_' + tr.dataset.idx;
+    const ins = tr.querySelectorAll('.carga-input');
+    if (ins.length >= 2) d.cargas[k] = { ci: ins[0].value, cn: ins[1].value };
   });
+  setData(d);
+  showSaved();
+}
 
-  // ── AUTO-SAVE AO MUDAR CARGA ──
-  document.addEventListener('change', e => {
-    if (e.target.classList.contains('carga-input')) saveCargas();
-  });
-
-  // ── DELETE ROW ──
-  function delRow(btn) {
-    if (confirm('Remover este exercício?')) { btn.closest('tr').remove(); saveCargas(); }
-  }
-
-  // ── ADD VIDEO INLINE ──
-  function addVideoInline(tab, idx, btn) {
-    const url = prompt('Cole o link do vídeo (YouTube ou outro):');
-    if (url && url.trim()) {
-      btn.outerHTML = '<a class="video-btn" href="' + url.trim() + '" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a>';
+function loadCargas() {
+  const d = getData();
+  if (!d.cargas) return;
+  document.querySelectorAll('tr[data-tab][data-idx]').forEach(tr => {
+    const k = tr.dataset.tab + '_' + tr.dataset.idx;
+    if (d.cargas[k]) {
+      const ins = tr.querySelectorAll('.carga-input');
+      if (ins[0] && d.cargas[k].ci !== '') ins[0].value = d.cargas[k].ci;
+      if (ins[1] && d.cargas[k].cn !== '') ins[1].value = d.cargas[k].cn;
     }
+  });
+}
+
+function showSaved() {
+  const el = document.getElementById('save-indicator');
+  el.style.opacity = '1';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.style.opacity = '0', 2000);
+}
+
+// ══ TABS ══
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    const t = btn.dataset.tab;
+    document.getElementById('panel-' + t).classList.add('active');
+    if (t === 'historico') renderHistorico();
+    if (t === 'graficos') updateChart();
+    if (t === 'novo') initNovoForm();
+  });
+});
+
+document.addEventListener('change', e => {
+  if (e.target.classList.contains('carga-input')) saveCargas();
+});
+
+// ══ TIMER ══
+let timerSec = 0, timerRunning = false, timerInt = null;
+function timerToggle() {
+  timerRunning = !timerRunning;
+  const btn = document.getElementById('timerStart');
+  if (timerRunning) {
+    btn.textContent = '⏸'; btn.classList.add('active');
+    timerInt = setInterval(() => { timerSec++; updateTimerDisplay(); }, 1000);
+  } else {
+    btn.textContent = '▶'; btn.classList.remove('active');
+    clearInterval(timerInt);
   }
+}
+function timerReset() {
+  clearInterval(timerInt); timerRunning = false; timerSec = 0;
+  document.getElementById('timerStart').textContent = '▶';
+  document.getElementById('timerStart').classList.remove('active');
+  updateTimerDisplay();
+}
+function updateTimerDisplay() {
+  const m = String(Math.floor(timerSec / 60)).padStart(2,'0');
+  const s = String(timerSec % 60).padStart(2,'0');
+  document.getElementById('timerDisplay').textContent = m + ':' + s;
+}
 
-  function updateCarga(tab, idx, field, val) {}
+// ══ ROWS ══
+function delRow(btn) {
+  if (confirm('Remover este exercício?')) { btn.closest('tr').remove(); saveCargas(); }
+}
+function addVideoInline(tab, idx, btn) {
+  const url = prompt('Cole o link do vídeo:');
+  if (url && url.trim()) btn.outerHTML = '<a class="video-btn" href="' + url.trim() + '" target="_blank" rel="noopener">▶ Ver</a>';
+}
 
-  // ── MODAL ──
-  function openModal(tab) {
-    document.getElementById('modalTitle').textContent = 'Adicionar Exercício — Treino ' + tab;
-    document.getElementById('modalTab').value = tab;
-    ['fGrupo','fExercicio','fDesc','fSeries','fReps','fCargaInicial','fCargaNova','fVideo']
-      .forEach(id => document.getElementById(id).value = '');
-    document.getElementById('modalOverlay').classList.add('open');
+// ══ MODAL EXERCÍCIO ══
+function openModal(tab) {
+  document.getElementById('modalTitle').textContent = 'Adicionar Exercício — Treino ' + tab;
+  document.getElementById('modalTab').value = tab;
+  ['fGrupo','fExercicio','fDesc','fSeries','fReps','fCargaInicial','fCargaNova','fVideo'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+document.getElementById('modalOverlay').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
+
+function saveExercise() {
+  const tab = document.getElementById('modalTab').value;
+  const grupo = document.getElementById('fGrupo').value.trim();
+  const nome = document.getElementById('fExercicio').value.trim();
+  if (!grupo || !nome) { alert('Preencha grupo e exercício.'); return; }
+  const desc = document.getElementById('fDesc').value.trim();
+  const ser = document.getElementById('fSeries').value || '—';
+  const reps = document.getElementById('fReps').value || '—';
+  const ci = document.getElementById('fCargaInicial').value;
+  const cn = document.getElementById('fCargaNova').value;
+  const vid = document.getElementById('fVideo').value.trim();
+  const tbody = document.getElementById('tbody-' + tab);
+  tbody.querySelectorAll('.empty-row').forEach(r => r.remove());
+  const idx = tbody.querySelectorAll('tr[data-tab]').length;
+  const vc = vid ? '<a class="video-btn" href="' + vid + '" target="_blank" rel="noopener">▶ Ver</a>' : '<button class="video-btn" onclick="addVideoInline(\'' + tab + '\',' + idx + ',this)">+ Vídeo</button>';
+  const tr = document.createElement('tr');
+  tr.dataset.tab = tab; tr.dataset.idx = idx;
+  tr.innerHTML = '<td><span class="muscle-badge">' + grupo + '</span></td>' +
+    '<td><div class="ex-name">' + nome + '</div>' + (desc ? '<div class="ex-desc">' + desc + '</div>' : '') + '</td>' +
+    '<td class="sets-reps"><strong>' + ser + '</strong> × ' + reps + '</td>' +
+    '<td><input class="carga-input" type="number" value="' + ci + '" step="0.5" min="0"></td>' +
+    '<td><input class="carga-input carga-nova" type="number" value="' + cn + '" step="0.5" min="0" placeholder="—"></td>' +
+    '<td>' + vc + '</td><td><button class="del-btn" onclick="delRow(this)">✕</button></td>';
+  tbody.appendChild(tr);
+  saveCargas(); closeModal();
+}
+
+// ══ REGISTRAR SESSÃO ══
+function registrarTreino(tab) {
+  document.getElementById('regTitle').textContent = 'Registrar Sessão — Treino ' + tab;
+  document.getElementById('regTab').value = tab;
+  document.getElementById('regData').value = new Date().toISOString().slice(0,10);
+  const rows = document.querySelectorAll('#tbody-' + tab + ' tr[data-tab]');
+  let html = '';
+  rows.forEach(tr => {
+    const nome = tr.querySelector('.ex-name') ? tr.querySelector('.ex-name').textContent : '';
+    const ci = tr.querySelectorAll('.carga-input')[0] ? tr.querySelectorAll('.carga-input')[0].value : '';
+    const cn = tr.querySelectorAll('.carga-input')[1] ? tr.querySelectorAll('.carga-input')[1].value : '';
+    const val = cn || ci || '';
+    html += '<div class="reg-ex-item"><div class="rei-name">' + nome + '</div>' +
+      '<input type="number" step="0.5" min="0" value="' + val + '" placeholder="kg">' +
+      '<input type="text" placeholder="obs" style="font-size:.75rem">' + '</div>';
+  });
+  document.getElementById('regExList').innerHTML = html || '<p style="color:var(--muted);font-size:.85rem;padding:10px">Nenhum exercício encontrado.</p>';
+  document.getElementById('modalReg').classList.add('open');
+}
+function closeReg() { document.getElementById('modalReg').classList.remove('open'); }
+document.getElementById('modalReg').addEventListener('click', e => { if(e.target===e.currentTarget) closeReg(); });
+
+function salvarSessao() {
+  const tab = document.getElementById('regTab').value;
+  const data = document.getElementById('regData').value;
+  if (!data) { alert('Selecione a data.'); return; }
+  const items = document.querySelectorAll('#regExList .reg-ex-item');
+  const exercicios = [];
+  items.forEach(item => {
+    const nome = item.querySelector('.rei-name').textContent;
+    const carga = item.querySelectorAll('input')[0].value;
+    const obs = item.querySelectorAll('input')[1].value;
+    if (nome) exercicios.push({ nome, carga: parseFloat(carga) || 0, obs });
+  });
+  const d = getData();
+  d.historico = d.historico || [];
+  d.historico.unshift({ id: Date.now(), tab, data, exercicios });
+  setData(d);
+  closeReg();
+  showSaved();
+  alert('Sessão registrada com sucesso! ✅');
+}
+
+// ══ HISTÓRICO ══
+function renderHistorico() {
+  const d = getData();
+  const hist = d.historico || [];
+  const el = document.getElementById('hist-list');
+  if (!hist.length) {
+    el.innerHTML = '<div class="hist-empty"><span class="empty-icon">📋</span>Nenhuma sessão registrada ainda.<br>Clique em "✓ Registrar Sessão" em qualquer treino.</div>';
+    return;
   }
+  const colors = {A:'A',B:'B',C:'C',D:'D'};
+  el.innerHTML = hist.map((s,i) => {
+    const dt = s.data ? new Date(s.data + 'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short',year:'numeric'}) : '—';
+    const exHtml = s.exercicios.map(ex =>
+      '<div class="hist-entry"><div class="he-name">' + ex.nome + '</div>' +
+      '<div class="he-vals">' + (ex.carga ? '<span>' + ex.carga + ' kg</span>' : '') + (ex.obs ? '<span style="color:var(--muted)">' + ex.obs + '</span>' : '') + '</div></div>'
+    ).join('');
+    const cls = colors[s.tab] || 'A';
+    return '<div class="hist-card"><div class="hist-card-header">' +
+      '<div class="hist-badge ' + cls + '">'+s.tab+'</div>' +
+      '<div><div class="hist-title">Treino ' + s.tab + '</div><div class="hist-date">' + dt + '</div></div>' +
+      '<button class="hist-del" onclick="deletarSessao(' + i + ')" title="Remover">✕</button>' +
+      '</div><div class="hist-entries">' + exHtml + '</div></div>';
+  }).join('');
+}
 
-  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
-  document.getElementById('modalOverlay').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
+function deletarSessao(i) {
+  if (!confirm('Remover esta sessão?')) return;
+  const d = getData();
+  d.historico.splice(i, 1);
+  setData(d);
+  renderHistorico();
+}
 
-  function saveExercise() {
-    const tab   = document.getElementById('modalTab').value;
-    const grupo = document.getElementById('fGrupo').value.trim();
-    const nome  = document.getElementById('fExercicio').value.trim();
-    if (!grupo || !nome) { alert('Preencha pelo menos o grupo muscular e o exercício.'); return; }
-    const desc  = document.getElementById('fDesc').value.trim();
-    const ser   = document.getElementById('fSeries').value || '—';
-    const reps  = document.getElementById('fReps').value || '—';
-    const ci    = document.getElementById('fCargaInicial').value;
-    const cn    = document.getElementById('fCargaNova').value;
-    const vid   = document.getElementById('fVideo').value.trim();
-    const tbody = document.getElementById('tbody-' + tab);
-    tbody.querySelectorAll('.empty-row').forEach(r => r.remove());
-    const idx = tbody.querySelectorAll('tr[data-tab]').length;
-    const videoCel = vid
-      ? '<a class="video-btn" href="' + vid + '" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l6 4-6 4V4z"/><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ver vídeo</a>'
-      : '<button class="video-btn" onclick="addVideoInline(\'' + tab + '\',' + idx + ',this)">+ Add vídeo</button>';
-    const tr = document.createElement('tr');
-    tr.dataset.tab = tab; tr.dataset.idx = idx;
-    tr.innerHTML =
-      '<td><span class="muscle-badge">' + grupo + '</span></td>' +
-      '<td><div class="ex-name">' + nome + '</div>' + (desc ? '<div class="ex-desc">' + desc + '</div>' : '') + '</td>' +
-      '<td class="sets-reps"><strong>' + ser + '</strong> × ' + reps + '</td>' +
-      '<td><input class="carga-input" type="number" value="' + ci + '" step="0.5" min="0"></td>' +
-      '<td><input class="carga-input carga-nova" type="number" value="' + cn + '" step="0.5" min="0" placeholder="—"></td>' +
-      '<td>' + videoCel + '</td>' +
-      '<td><button class="del-btn" onclick="delRow(this)">✕</button></td>';
-    tbody.appendChild(tr);
-    saveCargas();
-    closeModal();
-  }
+function exportarHistorico() {
+  const d = getData();
+  const hist = d.historico || [];
+  if (!hist.length) { alert('Nenhum histórico para exportar.'); return; }
+  let csv = 'Data,Treino,Exercício,Carga (kg),Obs\n';
+  hist.forEach(s => {
+    s.exercicios.forEach(ex => {
+      csv += '"' + s.data + '","' + s.tab + '","' + ex.nome + '","' + ex.carga + '","' + (ex.obs||'') + '"\n';
+    });
+  });
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'gymtrack_historico.csv';
+  a.click();
+}
 
-  // ── INIT ──
-  window.addEventListener('DOMContentLoaded', loadCargas);
+// ══ GRÁFICO ══
+function updateChart() {
+  const tab = document.getElementById('chartTreino').value;
+  const selEx = document.getElementById('chartExercicio');
+  selEx.innerHTML = '<option value="">Selecione o exercício</option>';
+  if (!tab) { renderChart(); return; }
+  const d = getData();
+  const hist = (d.historico || []).filter(s => s.tab === tab);
+  const nomes = new Set();
+  hist.forEach(s => s.exercicios.forEach(ex => { if (ex.carga > 0) nomes.add(ex.nome); }));
+  nomes.forEach(n => {
+    const o = document.createElement('option'); o.value = n; o.textContent = n; selEx.appendChild(o);
+  });
+  renderChart();
+}
+
+function renderChart() {
+  const tab = document.getElementById('chartTreino').value;
+  const exNome = document.getElementById('chartExercicio').value;
+  const empty = document.getElementById('chartEmpty');
+  const canvas = document.getElementById('myChart');
+  if (!tab || !exNome) { empty.style.display='flex'; canvas.style.display='none'; return; }
+  const d = getData();
+  const hist = (d.historico || []).filter(s => s.tab === tab).reverse();
+  const pontos = [];
+  hist.forEach(s => {
+    const ex = s.exercicios.find(e => e.nome === exNome);
+    if (ex && ex.carga > 0) pontos.push({ x: s.data, y: ex.carga });
+  });
+  if (!pontos.length) { empty.style.display='flex'; canvas.style.display='none'; return; }
+  empty.style.display='none'; canvas.style.display='block';
+  if (chartInstance) chartInstance.destroy();
+  const tabColors = {A:'#f5a623',B:'#3b82f6',C:'#a855f7',D:'#e8593a'};
+  const color = tabColors[tab] || '#f5a623';
+  chartInstance = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: pontos.map(p => new Date(p.x + 'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})),
+      datasets: [{
+        label: exNome + ' (kg)',
+        data: pontos.map(p => p.y),
+        borderColor: color,
+        backgroundColor: color + '22',
+        borderWidth: 2.5,
+        pointBackgroundColor: color,
+        pointRadius: 5,
+        tension: 0.3,
+        fill: true,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#e8eaf0', font: { family: 'DM Sans' } } },
+        tooltip: { backgroundColor: '#1e2330', borderColor: '#2a2f3d', borderWidth: 1, titleColor: '#e8eaf0', bodyColor: '#e8eaf0' }
+      },
+      scales: {
+        x: { ticks: { color: '#6b7280' }, grid: { color: '#2a2f3d' } },
+        y: { ticks: { color: '#6b7280' }, grid: { color: '#2a2f3d' }, beginAtZero: false }
+      }
+    }
+  });
+}
+
+// ══ NOVO TREINO ══
+function initNovoForm() {
+  document.getElementById('novoId').value = '';
+  document.getElementById('novoFoco').value = '';
+  document.getElementById('exBuilder').innerHTML = '';
+  addExRow(); addExRow(); addExRow();
+}
+
+function addExRow() {
+  const div = document.createElement('div');
+  div.className = 'ex-row';
+  div.innerHTML = '<input type="text" placeholder="Nome do exercício">' +
+    '<input type="text" placeholder="Grupo">' +
+    '<input type="number" placeholder="3" min="1">' +
+    '<input type="text" placeholder="10-12">' +
+    '<button class="rm-ex" onclick="this.closest(\'.ex-row\').remove()">✕</button>';
+  document.getElementById('exBuilder').appendChild(div);
+}
+
+function criarTreino() {
+  const id = document.getElementById('novoId').value.trim().toUpperCase();
+  const foco = document.getElementById('novoFoco').value.trim();
+  if (!id || !foco) { alert('Preencha o código e o foco do treino.'); return; }
+  if (document.getElementById('panel-' + id)) { alert('Já existe um treino com esse código. Use outro nome.'); return; }
+  const rows = document.querySelectorAll('#exBuilder .ex-row');
+  const exercicios = [];
+  rows.forEach(row => {
+    const ins = row.querySelectorAll('input');
+    const nome = ins[0].value.trim();
+    if (nome) exercicios.push({ nome, grupo: ins[1].value.trim()||'Geral', series: ins[2].value||'3', reps: ins[3].value||'10' });
+  });
+  if (!exercicios.length) { alert('Adicione pelo menos um exercício.'); return; }
+
+  // Add tab button
+  const tabBar = document.getElementById('tabBar');
+  const newBtn = document.createElement('button');
+  newBtn.className = 'tab-btn extra';
+  newBtn.dataset.tab = id;
+  newBtn.textContent = 'TREINO ' + id;
+  newBtn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    newBtn.classList.add('active');
+    document.getElementById('panel-' + id).classList.add('active');
+  });
+  tabBar.insertBefore(newBtn, tabBar.querySelector('[data-tab="historico"]'));
+
+  // Build panel
+  const panel = document.createElement('div');
+  panel.className = 'tab-panel';
+  panel.dataset.panel = id;
+  panel.id = 'panel-' + id;
+  const color = '#' + Math.floor(Math.random()*0xffffff).toString(16).padStart(6,'0');
+  let exRows = exercicios.map((ex, i) =>
+    '<tr data-tab="' + id + '" data-idx="' + i + '">' +
+    '<td><span class="muscle-badge" style="background:' + color + '22;color:' + color + '">' + ex.grupo + '</span></td>' +
+    '<td><div class="ex-name">' + ex.nome + '</div></td>' +
+    '<td class="sets-reps"><strong>' + ex.series + '</strong> × ' + ex.reps + '</td>' +
+    '<td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td>' +
+    '<td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>' +
+    '<td><button class="video-btn" onclick="addVideoInline(\'' + id + '\',' + i + ',this)">+ Vídeo</button></td>' +
+    '<td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>'
+  ).join('');
+
+  panel.innerHTML = '<div class="panel-header">' +
+    '<div class="panel-tag" style="background:' + color + '22;color:' + color + '">' + id + '</div>' +
+    '<div class="panel-title"><h2>Treino ' + id + '</h2><p>' + foco + '</p></div>' +
+    '<div class="panel-actions">' +
+    '<button class="btn-action green" onclick="registrarTreino(\'' + id + '\')">✓ Registrar Sessão</button>' +
+    '<button class="btn-action" onclick="openModal(\'' + id + '\')">+ Exercício</button>' +
+    '</div></div>' +
+    '<div class="table-wrap"><table>' +
+    '<thead><tr><th>Grupo</th><th>Exercício</th><th>Séries/Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>' +
+    '<tbody id="tbody-' + id + '">' + exRows + '</tbody></table></div>' +
+    '<div class="panel-stats"><div class="stat-box"><div class="stat-val">' + exercicios.length + '</div><div class="stat-label">Exercícios</div></div></div>';
+
+  document.querySelector('main').appendChild(panel);
+
+  // Switch to new tab
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  newBtn.classList.add('active');
+  panel.classList.add('active');
+  document.getElementById('novoId').value = '';
+  document.getElementById('novoFoco').value = '';
+  document.getElementById('exBuilder').innerHTML = '';
+}
+
+// ══ INIT ══
+window.addEventListener('DOMContentLoaded', () => {
+  loadCargas();
+  initNovoForm();
+  // Set today's date default for reg
+  document.getElementById('regData').value = new Date().toISOString().slice(0,10);
+});
 </script>
 </body>
 </html>
