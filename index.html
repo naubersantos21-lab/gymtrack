@@ -176,6 +176,52 @@ td{padding:12px;vertical-align:middle;}
   .ex-row{grid-template-columns:1fr 70px 50px auto;}
   .reg-ex-item{grid-template-columns:1fr 80px 80px;}
 }
+
+/* ══ NOVA SEQUÊNCIA ══ */
+.seq-selector { display:flex; gap:10px; align-items:center; margin-bottom:20px; flex-wrap:wrap; }
+.seq-badge { font-family:'Bebas Neue',sans-serif; font-size:.85rem; letter-spacing:1px; padding:6px 14px; border-radius:20px; border:1px solid var(--border); cursor:pointer; transition:all .2s; color:var(--muted); background:var(--surface); }
+.seq-badge.active { border-color:var(--accent); color:var(--accent); background:rgba(245,166,35,.08); }
+.seq-badge:hover { border-color:var(--accent); color:var(--accent); }
+.seq-new-btn { font-family:'DM Sans',sans-serif; font-size:.8rem; padding:6px 14px; border-radius:20px; border:1px dashed var(--border); cursor:pointer; transition:all .2s; color:var(--muted); background:none; }
+.seq-new-btn:hover { border-color:var(--success); color:var(--success); }
+
+/* Wizard de nova sequência */
+.wizard { max-width:720px; }
+.wizard-steps { display:flex; gap:0; margin-bottom:28px; }
+.wizard-step { flex:1; text-align:center; position:relative; }
+.wizard-step::after { content:''; position:absolute; top:14px; left:50%; right:-50%; height:2px; background:var(--border); z-index:0; }
+.wizard-step:last-child::after { display:none; }
+.ws-num { width:28px; height:28px; border-radius:50%; border:2px solid var(--border); background:var(--surface); display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:600; color:var(--muted); margin:0 auto 6px; position:relative; z-index:1; transition:all .3s; }
+.ws-label { font-size:.65rem; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+.wizard-step.active .ws-num { border-color:var(--accent); color:var(--accent); background:rgba(245,166,35,.1); }
+.wizard-step.done .ws-num { border-color:var(--success); color:#0d0f14; background:var(--success); }
+.wizard-step.done::after { background:var(--success); }
+
+.wiz-page { display:none; }
+.wiz-page.active { display:block; animation:fadeIn .2s ease; }
+
+.treino-tabs-mini { display:flex; gap:6px; margin-bottom:16px; }
+.ttm-btn { font-family:'Bebas Neue',sans-serif; font-size:.9rem; letter-spacing:1px; padding:7px 18px; border:1px solid var(--border); border-bottom:none; background:var(--surface); color:var(--muted); border-radius:6px 6px 0 0; cursor:pointer; transition:all .2s; }
+.ttm-btn.active { background:var(--surface2); color:var(--accent); border-color:var(--accent); }
+.treino-tab-content { display:none; background:var(--surface2); border:1px solid var(--border); border-radius:0 8px 8px 8px; padding:16px; }
+.treino-tab-content.active { display:block; }
+
+.ex-seq-row { display:grid; grid-template-columns:1fr 90px 60px 60px 110px 32px; gap:8px; align-items:center; margin-bottom:8px; }
+.ex-seq-row input[type=text],.ex-seq-row input[type=number] { background:var(--surface); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:.8rem; padding:6px 9px; width:100%; }
+.ex-seq-row input:focus { outline:none; border-color:var(--accent); }
+.video-upload-btn { display:inline-flex; align-items:center; gap:5px; font-size:.72rem; color:var(--muted); border:1px dashed var(--border); background:none; padding:5px 9px; border-radius:6px; cursor:pointer; transition:all .2s; white-space:nowrap; overflow:hidden; max-width:110px; }
+.video-upload-btn:hover { border-color:var(--accent); color:var(--accent); }
+.video-upload-btn.has-video { border-color:var(--success); color:var(--success); border-style:solid; }
+.video-upload-btn.has-link { border-color:#3b82f6; color:#3b82f6; border-style:solid; }
+.ex-seq-header { display:grid; grid-template-columns:1fr 90px 60px 60px 110px 32px; gap:8px; margin-bottom:6px; }
+.ex-seq-header span { font-size:.62rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+
+.wiz-actions { display:flex; gap:10px; margin-top:24px; }
+.seq-summary { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin-bottom:16px; }
+.seq-summary h4 { font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:2px; color:var(--accent); margin-bottom:10px; }
+.seq-sum-row { display:flex; justify-content:space-between; font-size:.8rem; padding:4px 0; border-bottom:1px solid rgba(255,255,255,.04); color:var(--muted); }
+.seq-sum-row span { color:var(--text); }
+
 </style>
 </head>
 <body>
@@ -200,6 +246,7 @@ td{padding:12px;vertical-align:middle;}
   <button class="tab-btn" data-tab="B">TREINO B</button>
   <button class="tab-btn" data-tab="C">TREINO C</button>
   <button class="tab-btn" data-tab="D">TREINO D</button>
+  <button class="tab-btn extra" data-tab="sequencias">🔄 SEQUÊNCIAS</button>
   <button class="tab-btn extra" data-tab="historico">📋 HISTÓRICO</button>
   <button class="tab-btn extra" data-tab="graficos">📈 EVOLUÇÃO</button>
   <button class="tab-btn extra" data-tab="novo">＋ NOVO TREINO</button>
@@ -333,6 +380,79 @@ td{padding:12px;vertical-align:middle;}
     </tbody>
   </table></div>
   <div class="panel-stats"><div class="stat-box"><div class="stat-val">7</div><div class="stat-label">Exercícios</div></div></div>
+</div>
+
+
+<!-- ══ SEQUÊNCIAS ══ -->
+<div class="tab-panel" data-panel="sequencias" id="panel-sequencias">
+  <div class="panel-header">
+    <div class="panel-tag icon">🔄</div>
+    <div class="panel-title"><h2>Sequências de Treino</h2><p>Gerencie seus ciclos de treino</p></div>
+  </div>
+
+  <!-- Selector de sequência ativa -->
+  <div class="seq-selector" id="seqSelector">
+    <span style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Sequência ativa:</span>
+    <div id="seqBadges"></div>
+    <button class="seq-new-btn" onclick="abrirWizard()">＋ Nova Sequência</button>
+  </div>
+
+  <!-- Wizard de criação -->
+  <div class="wizard" id="seqWizard" style="display:none;">
+    <div class="wizard-steps">
+      <div class="wizard-step active" id="ws0"><div class="ws-num">1</div><div class="ws-label">Identificação</div></div>
+      <div class="wizard-step" id="ws1"><div class="ws-num">2</div><div class="ws-label">Exercícios</div></div>
+      <div class="wizard-step" id="ws2"><div class="ws-num">3</div><div class="ws-label">Revisar</div></div>
+    </div>
+
+    <!-- Página 1: Identificação -->
+    <div class="wiz-page active" id="wiz-page-0">
+      <div class="form-section">
+        <h3>Nova Sequência</h3>
+        <div class="form-grid">
+          <div class="form-group full"><label>Nome da Sequência</label><input type="text" id="seqNome" placeholder="Ex: Sequência 2 · Jul/2026"></div>
+          <div class="form-group full"><label>Descrição / Objetivo</label><textarea id="seqDesc" rows="2" placeholder="Ex: Foco em hipertrofia, carga progressiva…"></textarea></div>
+        </div>
+      </div>
+      <div class="wiz-actions">
+        <button class="btn-action" onclick="fecharWizard()">Cancelar</button>
+        <button class="btn-action primary" onclick="wizNext(0)">Próximo →</button>
+      </div>
+    </div>
+
+    <!-- Página 2: Exercícios por treino -->
+    <div class="wiz-page" id="wiz-page-1">
+      <div class="form-section">
+        <h3>Exercícios por Treino</h3>
+        <div class="treino-tabs-mini" id="treinoTabsMini">
+          <button class="ttm-btn active" onclick="switchTreinoTab('A',this)">TREINO A</button>
+          <button class="ttm-btn" onclick="switchTreinoTab('B',this)">TREINO B</button>
+          <button class="ttm-btn" onclick="switchTreinoTab('C',this)">TREINO C</button>
+          <button class="ttm-btn" onclick="switchTreinoTab('D',this)">TREINO D</button>
+        </div>
+        <div id="seqTreinoA" class="treino-tab-content active"><div class="form-group" style="margin-bottom:10px"><label>Foco do Treino A</label><input type="text" id="focoA" placeholder="Ex: Quadríceps · Ombros"></div><div class="ex-seq-header"><span>Exercício</span><span>Grupo</span><span>Séries</span><span>Reps</span><span>Vídeo</span><span></span></div><div id="exSeqA"></div><button class="btn-action" style="margin-top:6px" onclick="addSeqRow('A')">+ linha</button></div>
+        <div id="seqTreinoB" class="treino-tab-content"><div class="form-group" style="margin-bottom:10px"><label>Foco do Treino B</label><input type="text" id="focoB" placeholder="Ex: Bíceps · Tríceps"></div><div class="ex-seq-header"><span>Exercício</span><span>Grupo</span><span>Séries</span><span>Reps</span><span>Vídeo</span><span></span></div><div id="exSeqB"></div><button class="btn-action" style="margin-top:6px" onclick="addSeqRow('B')">+ linha</button></div>
+        <div id="seqTreinoC" class="treino-tab-content"><div class="form-group" style="margin-bottom:10px"><label>Foco do Treino C</label><input type="text" id="focoC" placeholder="Ex: Costas · Glúteos"></div><div class="ex-seq-header"><span>Exercício</span><span>Grupo</span><span>Séries</span><span>Reps</span><span>Vídeo</span><span></span></div><div id="exSeqC"></div><button class="btn-action" style="margin-top:6px" onclick="addSeqRow('C')">+ linha</button></div>
+        <div id="seqTreinoD" class="treino-tab-content"><div class="form-group" style="margin-bottom:10px"><label>Foco do Treino D</label><input type="text" id="focoD" placeholder="Ex: Peitoral · Abdômen"></div><div class="ex-seq-header"><span>Exercício</span><span>Grupo</span><span>Séries</span><span>Reps</span><span>Vídeo</span><span></span></div><div id="exSeqD"></div><button class="btn-action" style="margin-top:6px" onclick="addSeqRow('D')">+ linha</button></div>
+      </div>
+      <div class="wiz-actions">
+        <button class="btn-action" onclick="wizBack(1)">← Voltar</button>
+        <button class="btn-action primary" onclick="wizNext(1)">Revisar →</button>
+      </div>
+    </div>
+
+    <!-- Página 3: Revisar e criar -->
+    <div class="wiz-page" id="wiz-page-2">
+      <div id="wizSummary"></div>
+      <div class="wiz-actions">
+        <button class="btn-action" onclick="wizBack(2)">← Voltar</button>
+        <button class="btn-action primary" onclick="criarSequencia()">✓ Criar Sequência</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Painel da sequência ativa -->
+  <div id="seqActivePanel"></div>
 </div>
 
 <!-- ══ HISTÓRICO ══ -->
@@ -656,10 +776,15 @@ function exportarHistorico() {
       csv += '"' + s.data + '","' + s.tab + '","' + ex.nome + '","' + ex.carga + '","' + (ex.obs||'') + '"\n';
     });
   });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.href = url;
   a.download = 'gymtrack_historico.csv';
+  a.style.display = 'none';
+  document.body.appendChild(a);
   a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
 }
 
 // ══ GRÁFICO ══
@@ -814,12 +939,283 @@ function criarTreino() {
   document.getElementById('exBuilder').innerHTML = '';
 }
 
+
+// ══ SEQUÊNCIAS ══
+let seqVideoData = {}; // tab -> idx -> {name, dataUrl}
+
+function abrirWizard() {
+  document.getElementById('seqWizard').style.display = 'block';
+  document.getElementById('seqActivePanel').style.display = 'none';
+  document.getElementById('seqSelector').style.display = 'none';
+  wizGoTo(0);
+  // init rows
+  ['A','B','C','D'].forEach(t => {
+    document.getElementById('exSeq'+t).innerHTML = '';
+    document.getElementById('foco'+t).value = '';
+    addSeqRow(t); addSeqRow(t); addSeqRow(t);
+  });
+  document.getElementById('seqNome').value = '';
+  document.getElementById('seqDesc').value = '';
+  seqVideoData = {};
+  switchTreinoTab('A', document.querySelector('.ttm-btn'));
+}
+
+function fecharWizard() {
+  document.getElementById('seqWizard').style.display = 'none';
+  document.getElementById('seqSelector').style.display = 'flex';
+  document.getElementById('seqActivePanel').style.display = 'block';
+}
+
+function wizGoTo(page) {
+  [0,1,2].forEach(i => {
+    document.getElementById('wiz-page-'+i).classList.toggle('active', i===page);
+    const ws = document.getElementById('ws'+i);
+    ws.classList.remove('active','done');
+    if (i < page) ws.classList.add('done');
+    if (i === page) ws.classList.add('active');
+  });
+}
+
+function wizNext(from) {
+  if (from === 0) {
+    if (!document.getElementById('seqNome').value.trim()) { alert('Dê um nome à sequência.'); return; }
+  }
+  if (from === 1) {
+    buildSummary();
+  }
+  wizGoTo(from + 1);
+}
+
+function wizBack(from) { wizGoTo(from - 1); }
+
+function switchTreinoTab(t, btn) {
+  document.querySelectorAll('.ttm-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.treino-tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('seqTreino'+t).classList.add('active');
+}
+
+function addSeqRow(t) {
+  const idx = document.getElementById('exSeq'+t).children.length;
+  const div = document.createElement('div');
+  div.className = 'ex-seq-row';
+  div.dataset.idx = idx;
+  div.innerHTML =
+    '<input type="text" placeholder="Nome do exercício">' +
+    '<input type="text" placeholder="Grupo">' +
+    '<input type="number" placeholder="3" min="1" style="width:100%">' +
+    '<input type="text" placeholder="10-12">' +
+    '<button class="video-upload-btn" onclick="escolherVideo(this,\''+t+'\','+idx+')" title="Upload ou link de vídeo">📎 Vídeo</button>' +
+    '<button class="rm-ex" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;cursor:pointer;padding:4px 8px;font-size:.8rem;transition:all .2s" onmouseover="this.style.color=\'#e8593a\'" onmouseout="this.style.color=\'\'" onclick="this.closest(\'.ex-seq-row\').remove()">✕</button>';
+  document.getElementById('exSeq'+t).appendChild(div);
+}
+
+function escolherVideo(btn, tab, idx) {
+  const key = tab + '_' + idx;
+  const choice = confirm('Clique OK para fazer upload de arquivo de vídeo.\nClique Cancelar para colar um link (URL).');
+  if (choice) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'video/*';
+    input.onchange = () => {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        seqVideoData[key] = { name: file.name, dataUrl: e.target.result, type: 'file' };
+        btn.textContent = '✅ ' + file.name.substring(0,12) + (file.name.length>12?'…':'');
+        btn.classList.add('has-video');
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  } else {
+    const url = prompt('Cole o link do vídeo (OneDrive, YouTube, etc):');
+    if (url && url.trim()) {
+      seqVideoData[key] = { name: url.trim(), dataUrl: url.trim(), type: 'link' };
+      btn.textContent = '🔗 Link';
+      btn.classList.remove('has-video');
+      btn.classList.add('has-link');
+    }
+  }
+}
+
+function getSeqExercicios(t) {
+  const rows = document.querySelectorAll('#exSeq'+t+' .ex-seq-row');
+  const result = [];
+  rows.forEach((row, i) => {
+    const ins = row.querySelectorAll('input');
+    const nome = ins[0].value.trim();
+    if (!nome) return;
+    const key = t + '_' + i;
+    result.push({
+      nome,
+      grupo: ins[1].value.trim() || 'Geral',
+      series: ins[2].value || '3',
+      reps: ins[3].value || '10',
+      video: seqVideoData[key] || null
+    });
+  });
+  return result;
+}
+
+function buildSummary() {
+  const nome = document.getElementById('seqNome').value.trim();
+  const desc = document.getElementById('seqDesc').value.trim();
+  const treinos = ['A','B','C','D'].map(t => ({
+    tab: t,
+    foco: document.getElementById('foco'+t).value.trim(),
+    exercicios: getSeqExercicios(t)
+  }));
+  let html = '<div class="seq-summary"><h4>' + nome + '</h4>';
+  if (desc) html += '<div class="seq-sum-row">Objetivo <span>' + desc + '</span></div>';
+  treinos.forEach(tr => {
+    if (!tr.exercicios.length) return;
+    html += '<div class="seq-sum-row" style="margin-top:8px;font-weight:600;color:var(--text)">Treino ' + tr.tab + (tr.foco ? ' — ' + tr.foco : '') + ' <span>' + tr.exercicios.length + ' exercícios</span></div>';
+    tr.exercicios.forEach(ex => {
+      html += '<div class="seq-sum-row" style="padding-left:12px">' + ex.nome + ' <span>' + ex.series + '×' + ex.reps + (ex.video ? ' 🎬' : '') + '</span></div>';
+    });
+  });
+  html += '</div>';
+  document.getElementById('wizSummary').innerHTML = html;
+}
+
+function criarSequencia() {
+  const nome = document.getElementById('seqNome').value.trim();
+  const desc = document.getElementById('seqDesc').value.trim();
+  const treinos = ['A','B','C','D'].map(t => ({
+    tab: t,
+    foco: document.getElementById('foco'+t).value.trim(),
+    exercicios: getSeqExercicios(t)
+  }));
+  const totalEx = treinos.reduce((s,t) => s + t.exercicios.length, 0);
+  if (!totalEx) { alert('Adicione pelo menos um exercício.'); return; }
+
+  const d = getData();
+  d.sequencias = d.sequencias || [];
+  const seq = { id: Date.now(), nome, desc, criadaEm: new Date().toISOString().slice(0,10), treinos, ativa: true };
+  // deactivate others
+  d.sequencias.forEach(s => s.ativa = false);
+  d.sequencias.push(seq);
+  setData(d);
+
+  fecharWizard();
+  renderSequencias();
+  showSaved();
+  alert('Sequência "' + nome + '" criada com sucesso! ✅');
+}
+
+function renderSequencias() {
+  const d = getData();
+  const seqs = d.sequencias || [];
+  const badgesEl = document.getElementById('seqBadges');
+  badgesEl.innerHTML = '';
+
+  if (!seqs.length) {
+    badgesEl.innerHTML = '<span style="font-size:.8rem;color:var(--muted)">Nenhuma sequência ainda.</span>';
+    document.getElementById('seqActivePanel').innerHTML = '';
+    return;
+  }
+
+  seqs.forEach((seq, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'seq-badge' + (seq.ativa ? ' active' : '');
+    btn.textContent = seq.nome;
+    btn.onclick = () => {
+      d.sequencias.forEach(s => s.ativa = false);
+      d.sequencias[i].ativa = true;
+      setData(d);
+      renderSequencias();
+    };
+    badgesEl.appendChild(btn);
+  });
+
+  const ativa = seqs.find(s => s.ativa) || seqs[seqs.length-1];
+  renderSeqPanel(ativa);
+  document.getElementById('seqSelector').style.display = 'flex';
+  document.getElementById('seqActivePanel').style.display = 'block';
+}
+
+const TAB_COLORS = {A:'#f5a623',B:'#3b82f6',C:'#a855f7',D:'#e8593a'};
+
+function renderSeqPanel(seq) {
+  const el = document.getElementById('seqActivePanel');
+  if (!seq) { el.innerHTML = ''; return; }
+
+  // Build inner tabs for A/B/C/D
+  const tabs = seq.treinos.filter(t => t.exercicios.length > 0);
+  if (!tabs.length) { el.innerHTML = '<p style="color:var(--muted);padding:20px 0">Nenhum exercício nesta sequência.</p>'; return; }
+
+  let tabBtns = tabs.map((t,i) =>
+    '<button class="ttm-btn' + (i===0?' active':'') + '" style="' + (i===0?'color:'+TAB_COLORS[t.tab]+';border-color:'+TAB_COLORS[t.tab]:'') + '" ' +
+    'onclick="switchSeqTab(this,\'seq-tc-'+t.tab+seq.id+'\',\''+TAB_COLORS[t.tab]+'\')">' +
+    'TREINO ' + t.tab + '</button>'
+  ).join('');
+
+  let tabContents = tabs.map((t, i) => {
+    const color = TAB_COLORS[t.tab];
+    const rows = t.exercicios.map((ex, j) => {
+      let vidCell = '';
+      if (ex.video) {
+        if (ex.video.type === 'file') {
+          vidCell = '<a class="video-btn" href="' + ex.video.dataUrl + '" target="_blank" rel="noopener" style="border-color:' + color + ';color:' + color + '">▶ Ver</a>';
+        } else {
+          vidCell = '<a class="video-btn" href="' + ex.video.dataUrl + '" target="_blank" rel="noopener" style="border-color:#3b82f6;color:#3b82f6">🔗 Ver</a>';
+        }
+      } else {
+        vidCell = '<span style="font-size:.75rem;color:var(--muted)">—</span>';
+      }
+      return '<tr data-tab="seq'+seq.id+t.tab+'" data-idx="'+j+'">' +
+        '<td><span class="muscle-badge" style="background:'+color+'22;color:'+color+'">'+ex.grupo+'</span></td>' +
+        '<td><div class="ex-name">'+ex.nome+'</div></td>' +
+        '<td class="sets-reps"><strong>'+ex.series+'</strong> × '+ex.reps+'</td>' +
+        '<td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—" onchange="saveCargas()"></td>' +
+        '<td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—" onchange="saveCargas()"></td>' +
+        '<td>'+vidCell+'</td>' +
+        '<td></td>' +
+        '</tr>';
+    }).join('');
+
+    return '<div id="seq-tc-'+t.tab+seq.id+'" class="treino-tab-content' + (i===0?' active':'') + '">' +
+      (t.foco ? '<p style="font-size:.75rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">'+t.foco+'</p>' : '') +
+      '<div class="table-wrap"><table>' +
+      '<thead><tr><th>Grupo</th><th>Exercício</th><th>Séries/Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>' +
+      '<tbody id="seqtbody-'+t.tab+seq.id+'">' + rows + '</tbody></table></div>' +
+      '<div style="margin-top:12px"><button class="btn-action green" onclick="registrarTreino(\'seq'+seq.id+t.tab+'\')">✓ Registrar Sessão</button></div>' +
+      '</div>';
+  }).join('');
+
+  el.innerHTML =
+    '<div style="margin-bottom:8px">' +
+    '<div style="font-family:Bebas Neue,sans-serif;font-size:1.3rem;letter-spacing:2px;color:var(--text)">' + seq.nome + '</div>' +
+    (seq.desc ? '<div style="font-size:.78rem;color:var(--muted);margin-top:2px">'+seq.desc+'</div>' : '') +
+    '<div style="font-size:.7rem;color:var(--muted);margin-top:4px">Criada em ' + new Date(seq.criadaEm+'T12:00:00').toLocaleDateString('pt-BR') + '</div>' +
+    '</div>' +
+    '<div class="treino-tabs-mini">' + tabBtns + '</div>' +
+    tabContents;
+
+  loadCargas();
+}
+
+function switchSeqTab(btn, targetId, color) {
+  const allBtns = btn.closest('.treino-tabs-mini').querySelectorAll('.ttm-btn');
+  allBtns.forEach(b => { b.classList.remove('active'); b.style.color=''; b.style.borderColor=''; });
+  btn.classList.add('active');
+  btn.style.color = color;
+  btn.style.borderColor = color;
+  const parent = btn.closest('.tab-panel') || document.getElementById('seqActivePanel');
+  parent.querySelectorAll('.treino-tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById(targetId).classList.add('active');
+}
+
 // ══ INIT ══
 window.addEventListener('DOMContentLoaded', () => {
   loadCargas();
   initNovoForm();
-  // Set today's date default for reg
+  renderSequencias();
   document.getElementById('regData').value = new Date().toISOString().slice(0,10);
+  // Sequências tab click
+  document.querySelector('[data-tab="sequencias"]').addEventListener('click', renderSequencias);
 });
 </script>
 </body>
