@@ -263,6 +263,10 @@ td{padding:12px;vertical-align:middle;}
       </div>
     </div>
     <div id="save-indicator">✓ Salvo</div>
+    <div id="sync-indicator" style="display:flex;align-items:center;gap:6px;font-size:.72rem;letter-spacing:1px;color:var(--muted);">
+      <span id="sync-icon">☁</span><span id="sync-label">—</span>
+    </div>
+    <button onclick="abrirConfigSync()" title="Configurar sincronização" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:5px 10px;cursor:pointer;font-size:.75rem;transition:all .2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⚙ Sync</button>
   </div>
 </header>
 
@@ -645,6 +649,36 @@ td{padding:12px;vertical-align:middle;}
   </div>
 </div>
 
+<!-- MODAL SYNC CONFIG -->
+<div class="modal-overlay" id="modalSync">
+  <div class="modal" style="max-width:480px;">
+    <h3>⚙ Sincronização GitHub</h3>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:20px;line-height:1.6;">Os dados ficam salvos em <code style="background:var(--surface);padding:2px 6px;border-radius:4px;font-size:.78rem;">data.json</code> no seu repositório e sincronizam entre todos os dispositivos.</p>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Token do GitHub <span style="color:#e8593a;">*</span></label>
+        <input type="password" id="syncToken" placeholder="ghp_..." autocomplete="off">
+        <div style="font-size:.72rem;color:var(--muted);margin-top:4px;">Salvo apenas neste dispositivo (localStorage). Nunca enviado a terceiros.</div>
+      </div>
+      <div class="form-group">
+        <label>Usuário GitHub</label>
+        <input type="text" id="syncOwner" placeholder="naubersantos21-lab">
+      </div>
+      <div class="form-group">
+        <label>Repositório</label>
+        <input type="text" id="syncRepo" placeholder="gymtrack">
+      </div>
+    </div>
+    <div id="syncStatus" style="margin:12px 0;font-size:.8rem;display:none;padding:10px 14px;border-radius:8px;"></div>
+    <div class="modal-actions" style="flex-wrap:wrap;gap:8px;">
+      <button class="btn-cancel" onclick="document.getElementById('modalSync').classList.remove('open')">Fechar</button>
+      <button class="btn-action" onclick="testarSync()" style="border-color:var(--muted);">🔍 Testar conexão</button>
+      <button class="btn-action" onclick="importarDoGitHub()" style="border-color:#3b82f6;color:#3b82f6;">⬇ Importar do GitHub</button>
+      <button class="btn-action primary" onclick="salvarConfigSync()">✓ Salvar configuração</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL EXCLUIR TREINO -->
 <div class="modal-overlay" id="modalExcluir">
   <div class="modal" style="max-width:420px;">
@@ -693,11 +727,73 @@ td{padding:12px;vertical-align:middle;}
 
 <script>
 const SK = 'gymtrack_v3';
+const SK_SYNC = 'gymtrack_sync_cfg';
 let chartInstance = null;
+let syncDebounce = null;
+
+// ══ SYNC CONFIG ══
+function getSyncCfg() { try { return JSON.parse(localStorage.getItem(SK_SYNC) || '{}'); } catch(e) { return {}; } }
+function setSyncCfg(c) { localStorage.setItem(SK_SYNC, JSON.stringify(c)); }
+
+function syncStatus(msg, tipo) {
+  const icon = document.getElementById('sync-icon');
+  const label = document.getElementById('sync-label');
+  if (tipo === 'ok')      { icon.textContent='☁'; icon.style.color='var(--success)'; label.style.color='var(--success)'; }
+  else if (tipo === 'err'){ icon.textContent='⚠'; icon.style.color='#e8593a'; label.style.color='#e8593a'; }
+  else if (tipo === 'spin'){ icon.textContent='↻'; icon.style.color='var(--accent)'; label.style.color='var(--accent)'; }
+  else                    { icon.textContent='☁'; icon.style.color='var(--muted)'; label.style.color='var(--muted)'; }
+  label.textContent = msg;
+}
+
+async function githubRequest(method, path, body) {
+  const cfg = getSyncCfg();
+  if (!cfg.token) throw new Error('Token não configurado');
+  const url = 'https://api.github.com/repos/' + cfg.owner + '/' + cfg.repo + path;
+  const opts = { method, headers: { Authorization: 'token ' + cfg.token, 'Content-Type': 'application/json', Accept: 'application/vnd.github.v3+json' } };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(url, opts);
+  if (!res.ok) { const e = await res.json().catch(()=>{}); throw new Error((e && e.message) || res.status); }
+  return res.status === 204 ? {} : res.json();
+}
+
+async function pushDataGitHub(data) {
+  const cfg = getSyncCfg();
+  if (!cfg.token || !cfg.owner || !cfg.repo) return;
+  syncStatus('Salvando…', 'spin');
+  try {
+    let sha = null;
+    try { const f = await githubRequest('GET', '/contents/data.json'); sha = f.sha; } catch(e) {}
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    const body = { message: 'GymTrack sync ' + new Date().toISOString().slice(0,16), content, ...(sha ? {sha} : {}) };
+    await githubRequest('PUT', '/contents/data.json', body);
+    syncStatus('Sincronizado', 'ok');
+    setTimeout(() => syncStatus('GitHub', null), 3000);
+  } catch(e) {
+    syncStatus('Erro: ' + e.message, 'err');
+  }
+}
+
+async function pullDataGitHub() {
+  const cfg = getSyncCfg();
+  if (!cfg.token || !cfg.owner || !cfg.repo) return null;
+  try {
+    const f = await githubRequest('GET', '/contents/data.json');
+    const json = decodeURIComponent(escape(atob(f.content.replace(/\n/g,''))));
+    return JSON.parse(json);
+  } catch(e) {
+    if (e.message === '404') return null; // arquivo ainda não existe
+    throw e;
+  }
+}
 
 // ══ STORAGE ══
 function getData() { try { return JSON.parse(localStorage.getItem(SK) || '{}'); } catch(e) { return {}; } }
-function setData(d) { localStorage.setItem(SK, JSON.stringify(d)); }
+function setData(d) {
+  localStorage.setItem(SK, JSON.stringify(d));
+  // Debounce: envia para GitHub 1,5s após última alteração
+  clearTimeout(syncDebounce);
+  syncDebounce = setTimeout(() => pushDataGitHub(d), 1500);
+}
 
 function saveCargas() {
   const d = getData();
@@ -730,6 +826,104 @@ function showSaved() {
   clearTimeout(el._t);
   el._t = setTimeout(() => el.style.opacity = '0', 2000);
 }
+
+// ══ SYNC UI ══
+function abrirConfigSync() {
+  const cfg = getSyncCfg();
+  document.getElementById('syncToken').value = cfg.token || '';
+  document.getElementById('syncOwner').value = cfg.owner || 'naubersantos21-lab';
+  document.getElementById('syncRepo').value = cfg.repo || 'gymtrack';
+  document.getElementById('syncStatus').style.display = 'none';
+  document.getElementById('modalSync').classList.add('open');
+}
+
+function salvarConfigSync() {
+  const token = document.getElementById('syncToken').value.trim();
+  const owner = document.getElementById('syncOwner').value.trim();
+  const repo = document.getElementById('syncRepo').value.trim();
+  if (!token || !owner || !repo) { mostrarSyncMsg('Preencha todos os campos.', 'err'); return; }
+  setSyncCfg({ token, owner, repo });
+  mostrarSyncMsg('Configuração salva! Dados serão sincronizados automaticamente.', 'ok');
+  syncStatus('GitHub', null);
+  setTimeout(() => document.getElementById('modalSync').classList.remove('open'), 1500);
+}
+
+function mostrarSyncMsg(msg, tipo) {
+  const el = document.getElementById('syncStatus');
+  el.style.display = 'block';
+  el.style.background = tipo === 'ok' ? 'rgba(52,211,153,.1)' : tipo === 'err' ? 'rgba(232,89,58,.1)' : 'rgba(245,166,35,.1)';
+  el.style.border = '1px solid ' + (tipo === 'ok' ? 'rgba(52,211,153,.3)' : tipo === 'err' ? 'rgba(232,89,58,.3)' : 'rgba(245,166,35,.3)');
+  el.style.color = tipo === 'ok' ? 'var(--success)' : tipo === 'err' ? '#e8593a' : 'var(--accent)';
+  el.textContent = msg;
+}
+
+async function testarSync() {
+  const token = document.getElementById('syncToken').value.trim();
+  const owner = document.getElementById('syncOwner').value.trim();
+  const repo = document.getElementById('syncRepo').value.trim();
+  if (!token || !owner || !repo) { mostrarSyncMsg('Preencha todos os campos primeiro.', 'err'); return; }
+  mostrarSyncMsg('Testando conexão…', 'spin');
+  // Salva temporariamente para usar em githubRequest
+  const oldCfg = getSyncCfg();
+  setSyncCfg({ token, owner, repo });
+  try {
+    await githubRequest('GET', '');
+    mostrarSyncMsg('✓ Conexão OK! Repositório encontrado.', 'ok');
+  } catch(e) {
+    mostrarSyncMsg('✗ Erro: ' + e.message, 'err');
+    setSyncCfg(oldCfg); // reverte se falhou
+  }
+}
+
+async function importarDoGitHub() {
+  mostrarSyncMsg('Buscando dados do GitHub…', 'spin');
+  try {
+    const token = document.getElementById('syncToken').value.trim();
+    const owner = document.getElementById('syncOwner').value.trim();
+    const repo = document.getElementById('syncRepo').value.trim();
+    if (!token || !owner || !repo) { mostrarSyncMsg('Salve a configuração primeiro.', 'err'); return; }
+    setSyncCfg({ token, owner, repo });
+    const remoto = await pullDataGitHub();
+    if (!remoto) { mostrarSyncMsg('Nenhum dado encontrado no GitHub ainda.', 'spin'); return; }
+    // Mesclar: dados remotos têm prioridade, mas manter dados locais que não existam remotamente
+    const local = getData();
+    const merged = Object.assign({}, local, remoto);
+    localStorage.setItem(SK, JSON.stringify(merged));
+    mostrarSyncMsg('✓ Dados importados! Recarregando…', 'ok');
+    setTimeout(() => location.reload(), 1200);
+  } catch(e) {
+    mostrarSyncMsg('✗ Erro: ' + e.message, 'err');
+  }
+}
+
+async function initSync() {
+  const cfg = getSyncCfg();
+  if (!cfg.token) { syncStatus('Não configurado', null); return; }
+  syncStatus('Sincronizando…', 'spin');
+  try {
+    const remoto = await pullDataGitHub();
+    if (remoto) {
+      // Mesclar remoto com local (remoto tem prioridade para garantir consistência entre dispositivos)
+      const local = getData();
+      // Guardar dados atuais do localStorage como backup
+      const merged = Object.assign({}, local, remoto);
+      localStorage.setItem(SK, JSON.stringify(merged));
+      // Recarregar cargas e treinos extras do dado mesclado
+      loadCargas();
+      loadExtraTreinos();
+      updateGrupoBanner();
+      renderSequencias();
+      syncStatus('Sincronizado', 'ok');
+      setTimeout(() => syncStatus('GitHub', null), 3000);
+    } else {
+      // Primeiro uso neste dispositivo — subir dados locais
+      await pushDataGitHub(getData());
+    }
+  } catch(e) {
+    syncStatus('Erro sync', 'err');
+  }
+}
+
 
 // ══ TABS ══
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1861,6 +2055,12 @@ function switchSeqTab(btn, targetId, color) {
 
 // ══ INIT ══
 window.addEventListener('DOMContentLoaded', () => {
+  // Auto-configure sync on first load if no config exists
+  const existingCfg = getSyncCfg();
+  if (!existingCfg.token) {
+    setSyncCfg({ token: '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', owner: 'naubersantos21-lab', repo: 'gymtrack' });
+  }
+
   loadCargas();
   loadExtraTreinos();
   initNovoForm();
@@ -1873,6 +2073,9 @@ window.addEventListener('DOMContentLoaded', () => {
   document.querySelector('[data-tab="novo"]').addEventListener('click', () => {
     setTimeout(initNovoFormGrupo, 50);
   });
+
+  // Startup GitHub sync — pull remote data so this device is up-to-date
+  initSync();
 });
 </script>
 </body>
