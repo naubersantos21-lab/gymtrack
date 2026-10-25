@@ -141,12 +141,12 @@ td{padding:12px;vertical-align:middle;}
 .form-group input,.form-group textarea,.form-group select{background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;padding:9px 12px;transition:border-color .2s;resize:none;}
 .form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--accent);}
 .ex-builder{margin-top:8px;}
-.ex-row{display:grid;grid-template-columns:1fr 80px 60px 60px auto;gap:8px;align-items:end;margin-bottom:8px;}
+.ex-row{display:grid;grid-template-columns:1fr 80px 60px 60px 100px auto;gap:8px;align-items:end;margin-bottom:8px;}
 .ex-row input{background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82rem;padding:7px 10px;}
 .ex-row input:focus{outline:none;border-color:var(--accent);}
 .ex-row .rm-ex{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;cursor:pointer;padding:7px 10px;font-size:.8rem;transition:all .2s;}
 .ex-row .rm-ex:hover{border-color:#e8593a;color:#e8593a;}
-.ex-row-header{display:grid;grid-template-columns:1fr 80px 60px 60px auto;gap:8px;margin-bottom:6px;}
+.ex-row-header{display:grid;grid-template-columns:1fr 80px 60px 60px 100px auto;gap:8px;margin-bottom:6px;}
 .ex-row-header span{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
 
 /* MODAL OVERLAY */
@@ -173,10 +173,29 @@ td{padding:12px;vertical-align:middle;}
   header{padding:16px 16px 0;}
   .nav-bar,.tabs{padding:12px 16px 0;}
   main{margin:0 16px;padding:0 16px 24px;}
-  .ex-row{grid-template-columns:1fr 70px 50px auto;}
+  .ex-row{grid-template-columns:1fr 70px 50px 80px auto;}
   .reg-ex-item{grid-template-columns:1fr 80px 80px;}
 }
 
+/* ══ GRUPOS DE TREINO ══ */
+.grupo-banner{background:linear-gradient(135deg,rgba(245,166,35,.08) 0%,rgba(245,166,35,.02) 100%);border:1px solid rgba(245,166,35,.2);border-radius:10px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.grupo-banner-title{font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:2px;color:var(--muted);}
+.grupo-banner-nome{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--accent);}
+.grupo-banner-data{font-size:.7rem;color:var(--muted);}
+.grupo-banner-actions{margin-left:auto;display:flex;gap:8px;}
+.novo-grupo-form{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:24px;}
+.novo-grupo-form h3{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--accent);margin-bottom:14px;}
+.grupo-arquivo-info{background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);border-radius:8px;padding:10px 14px;font-size:.78rem;color:var(--success);margin-top:10px;display:flex;align-items:flex-start;gap:8px;}
+.grupos-hist-list{display:flex;flex-direction:column;gap:14px;margin-top:12px;}
+.grupo-hist-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.grupo-hist-header{padding:12px 18px;display:flex;align-items:center;gap:12px;background:rgba(245,166,35,.05);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
+.grupo-hist-header:hover{background:rgba(245,166,35,.08);}
+.grupo-hist-nome{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--accent);}
+.grupo-hist-datas{font-size:.72rem;color:var(--muted);}
+.grupo-hist-body{padding:14px 18px;display:none;}
+.grupo-hist-body.open{display:block;}
+.grupo-hist-treinos{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.grupo-hist-treino-tag{font-family:'Bebas Neue',sans-serif;font-size:.8rem;letter-spacing:1px;padding:4px 12px;border-radius:20px;border:1px solid var(--border);color:var(--muted);}
 /* ══ NOVA SEQUÊNCIA ══ */
 .seq-selector { display:flex; gap:10px; align-items:center; margin-bottom:20px; flex-wrap:wrap; }
 .seq-badge { font-family:'Bebas Neue',sans-serif; font-size:.85rem; letter-spacing:1px; padding:6px 14px; border-radius:20px; border:1px solid var(--border); cursor:pointer; transition:all .2s; color:var(--muted); background:var(--surface); }
@@ -229,6 +248,10 @@ td{padding:12px;vertical-align:middle;}
 <header>
   <div class="logo">GYM<span>TRACK</span></div>
   <div class="header-sub">Controle de Treinos</div>
+  <div id="grupoActiveBadge" style="display:none;align-items:center;gap:8px;padding-bottom:18px;flex-wrap:wrap;">
+    <span style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;">Grupo:</span>
+    <span id="grupoActiveNome" style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--accent);background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);padding:3px 12px;border-radius:20px;"></span>
+  </div>
   <div class="header-right">
     <div class="timer-widget">
       <div class="timer-display" id="timerDisplay">00:00</div>
@@ -464,7 +487,20 @@ td{padding:12px;vertical-align:middle;}
       <button class="btn-action" onclick="exportarHistorico()">↓ Exportar CSV</button>
     </div>
   </div>
-  <div id="hist-list" class="hist-list"><div class="hist-empty"><span class="empty-icon">📋</span>Nenhuma sessão registrada ainda.<br>Clique em "✓ Registrar Sessão" em qualquer treino.</div></div>
+
+  <!-- Sub-tabs histórico -->
+  <div style="display:flex;gap:6px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:0;">
+    <button class="tab-btn active extra" id="histTabSessoes" onclick="switchHistTab('sessoes')" style="border-radius:8px 8px 0 0;font-size:.85rem;">📋 Sessões</button>
+    <button class="tab-btn extra" id="histTabGrupos" onclick="switchHistTab('grupos')" style="border-radius:8px 8px 0 0;font-size:.85rem;">🗂 Grupos Arquivados</button>
+  </div>
+
+  <div id="hist-panel-sessoes">
+    <div id="hist-list" class="hist-list"><div class="hist-empty"><span class="empty-icon">📋</span>Nenhuma sessão registrada ainda.<br>Clique em "✓ Registrar Sessão" em qualquer treino.</div></div>
+  </div>
+
+  <div id="hist-panel-grupos" style="display:none;">
+    <div id="hist-grupos-list" class="grupos-hist-list"><div class="hist-empty"><span class="empty-icon">🗂</span>Nenhum grupo arquivado ainda.<br>Crie um novo grupo de treino para arquivar o atual.</div></div>
+  </div>
 </div>
 
 <!-- ══ GRÁFICOS ══ -->
@@ -497,9 +533,55 @@ td{padding:12px;vertical-align:middle;}
     <div class="panel-tag icon">＋</div>
     <div class="panel-title"><h2>Criar Novo Treino</h2><p>Monte uma nova ficha de treino</p></div>
   </div>
+
+  <!-- Banner do grupo ativo -->
+  <div id="novoGrupoBanner" class="grupo-banner" style="display:none;">
+    <div>
+      <div class="grupo-banner-title">Grupo de Treino Ativo</div>
+      <div class="grupo-banner-nome" id="novoGrupoNomeBanner">—</div>
+      <div class="grupo-banner-data" id="novoGrupoDataBanner"></div>
+    </div>
+    <div class="grupo-banner-actions">
+      <button class="btn-action" onclick="abrirNovoGrupo()">🗂 Novo Grupo de Treino</button>
+    </div>
+  </div>
+
+  <!-- Formulário de novo grupo (colapsável) -->
+  <div id="novoGrupoForm" class="novo-grupo-form" style="display:none;">
+    <h3>🗂 Criar Novo Grupo de Treino</h3>
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px;">Os treinos atuais serão arquivados no histórico de grupos. O novo grupo começará em branco.</p>
+    <div class="form-grid">
+      <div class="form-group"><label>Nome do Grupo</label><input type="text" id="novoGrupoNome" placeholder="Ex: Mesociclo 2 · Nov/2026"></div>
+      <div class="form-group"><label>Objetivo</label><input type="text" id="novoGrupoObjetivo" placeholder="Ex: Hipertrofia com foco em carga"></div>
+    </div>
+    <div class="grupo-arquivo-info">
+      <span>ℹ️</span>
+      <span>Os exercícios dos treinos A, B, C e D atuais serão salvos no histórico de grupos. As sessões registradas no histórico serão mantidas.</span>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn-cancel" onclick="fecharNovoGrupo()">Cancelar</button>
+      <button class="btn-save" onclick="criarNovoGrupo()">✓ Criar Novo Grupo</button>
+    </div>
+  </div>
+
+  <!-- Se não tem grupo, botão para criar o primeiro -->
+  <div id="novoGrupoInicio" style="margin-bottom:20px;">
+    <div class="novo-grupo-form">
+      <h3>🗂 Criar Grupo de Treino Inicial</h3>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px;">Dê um nome ao seu grupo de treino atual antes de criar fichas.</p>
+      <div class="form-grid">
+        <div class="form-group"><label>Nome do Grupo</label><input type="text" id="grupoInicialNome" placeholder="Ex: Mesociclo 1 · Ago/2026"></div>
+        <div class="form-group"><label>Objetivo</label><input type="text" id="grupoInicialObjetivo" placeholder="Ex: Base e adaptação"></div>
+      </div>
+      <div style="margin-top:14px;">
+        <button class="btn-save" onclick="criarGrupoInicial()">✓ Definir Grupo</button>
+      </div>
+    </div>
+  </div>
+
   <div class="novo-form">
     <div class="form-section">
-      <h3>Identificação</h3>
+      <h3>Identificação do Treino</h3>
       <div class="form-grid">
         <div class="form-group"><label>Código do Treino</label><input type="text" id="novoId" placeholder="Ex: E, F, Hiit..." maxlength="6"></div>
         <div class="form-group"><label>Nome / Foco</label><input type="text" id="novoFoco" placeholder="Ex: Glúteos e Posterior"></div>
@@ -507,8 +589,8 @@ td{padding:12px;vertical-align:middle;}
     </div>
     <div class="form-section">
       <h3>Exercícios</h3>
-      <div class="ex-row-header">
-        <span>Exercício</span><span>Grupo</span><span>Séries</span><span>Reps</span><span></span>
+      <div class="ex-row-header" id="exRowHeader">
+        <span>Exercício</span><span>Grupo</span><span>Séries</span><span>Reps</span><span>Vídeo</span><span></span>
       </div>
       <div id="exBuilder"></div>
       <button class="btn-action" style="margin-top:8px" onclick="addExRow()">+ Adicionar linha</button>
@@ -534,7 +616,16 @@ td{padding:12px;vertical-align:middle;}
       <div class="form-group"><label>Repetições</label><input type="text" id="fReps" placeholder="10-12"></div>
       <div class="form-group"><label>Carga Inicial (kg)</label><input type="number" id="fCargaInicial" placeholder="0" min="0" step="0.5"></div>
       <div class="form-group"><label>Nova Carga (kg)</label><input type="number" id="fCargaNova" placeholder="0" min="0" step="0.5"></div>
-      <div class="form-group full"><label>Link do Vídeo</label><input type="url" id="fVideo" placeholder="https://…"></div>
+      <div class="form-group full">
+        <label>Vídeo do Exercício</label>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <input type="url" id="fVideo" placeholder="Cole o link (OneDrive, YouTube…)" style="flex:1;min-width:200px;background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;padding:9px 12px;">
+          <button class="btn-action" id="fVideoUploadBtn" onclick="escolherVideoModal()" type="button" style="white-space:nowrap;">📎 Upload</button>
+        </div>
+        <div id="fVideoPreview" style="display:none;margin-top:6px;font-size:.75rem;color:var(--success);"></div>
+        <input type="hidden" id="fVideoDataUrl">
+        <input type="hidden" id="fVideoTipo">
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
@@ -654,14 +745,58 @@ function addVideoInline(tab, idx, btn) {
 }
 
 // ══ MODAL EXERCÍCIO ══
+let modalVideoData = null; // { name, dataUrl, type }
+
 function openModal(tab) {
   document.getElementById('modalTitle').textContent = 'Adicionar Exercício — Treino ' + tab;
   document.getElementById('modalTab').value = tab;
   ['fGrupo','fExercicio','fDesc','fSeries','fReps','fCargaInicial','fCargaNova','fVideo'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fVideoDataUrl').value = '';
+  document.getElementById('fVideoTipo').value = '';
+  document.getElementById('fVideoPreview').style.display = 'none';
+  document.getElementById('fVideoUploadBtn').textContent = '📎 Upload';
+  document.getElementById('fVideoUploadBtn').classList.remove('has-video','has-link');
+  modalVideoData = null;
   document.getElementById('modalOverlay').classList.add('open');
 }
 function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
 document.getElementById('modalOverlay').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
+
+function escolherVideoModal() {
+  const choice = confirm('Clique OK para fazer upload de arquivo de vídeo.\nClique Cancelar para colar um link (URL).');
+  if (choice) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'video/*';
+    input.onchange = () => {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        modalVideoData = { name: file.name, dataUrl: e.target.result, type: 'file' };
+        const btn = document.getElementById('fVideoUploadBtn');
+        btn.textContent = '✅ ' + file.name.substring(0,14) + (file.name.length>14?'…':'');
+        btn.classList.add('has-video');
+        const prev = document.getElementById('fVideoPreview');
+        prev.textContent = '📁 Arquivo: ' + file.name;
+        prev.style.display = 'block';
+        document.getElementById('fVideo').value = '';
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  } else {
+    const url = prompt('Cole o link do vídeo (OneDrive, YouTube, etc):');
+    if (url && url.trim()) {
+      modalVideoData = { name: url.trim(), dataUrl: url.trim(), type: 'link' };
+      document.getElementById('fVideo').value = url.trim();
+      const btn = document.getElementById('fVideoUploadBtn');
+      btn.textContent = '🔗 Link salvo';
+      btn.classList.remove('has-video'); btn.classList.add('has-link');
+      document.getElementById('fVideoPreview').style.display = 'none';
+    }
+  }
+}
 
 function saveExercise() {
   const tab = document.getElementById('modalTab').value;
@@ -673,11 +808,30 @@ function saveExercise() {
   const reps = document.getElementById('fReps').value || '—';
   const ci = document.getElementById('fCargaInicial').value;
   const cn = document.getElementById('fCargaNova').value;
-  const vid = document.getElementById('fVideo').value.trim();
+  // Prioridade: upload/link via botão; fallback: input URL
+  let vid = null;
+  if (modalVideoData) {
+    vid = modalVideoData;
+  } else {
+    const url = document.getElementById('fVideo').value.trim();
+    if (url) vid = { name: url, dataUrl: url, type: 'link' };
+  }
+
   const tbody = document.getElementById('tbody-' + tab);
   tbody.querySelectorAll('.empty-row').forEach(r => r.remove());
   const idx = tbody.querySelectorAll('tr[data-tab]').length;
-  const vc = vid ? '<a class="video-btn" href="' + vid + '" target="_blank" rel="noopener">▶ Ver</a>' : '<button class="video-btn" onclick="addVideoInline(\'' + tab + '\',' + idx + ',this)">+ Vídeo</button>';
+
+  let vc;
+  if (vid) {
+    if (vid.type === 'file') {
+      vc = '<a class="video-btn" href="' + vid.dataUrl + '" target="_blank" rel="noopener">▶ Ver</a>';
+    } else {
+      vc = '<a class="video-btn" href="' + vid.dataUrl + '" target="_blank" rel="noopener" style="border-color:#3b82f6;color:#3b82f6">🔗 Ver</a>';
+    }
+  } else {
+    vc = '<button class="video-btn" onclick="addVideoInline(\'' + tab + '\',' + idx + ',this)">+ Vídeo</button>';
+  }
+
   const tr = document.createElement('tr');
   tr.dataset.tab = tab; tr.dataset.idx = idx;
   tr.innerHTML = '<td><span class="muscle-badge">' + grupo + '</span></td>' +
@@ -726,7 +880,8 @@ function salvarSessao() {
   });
   const d = getData();
   d.historico = d.historico || [];
-  d.historico.unshift({ id: Date.now(), tab, data, exercicios });
+  const grupoId = d.grupoAtivo || null;
+  d.historico.unshift({ id: Date.now(), tab, data, exercicios, grupoId });
   setData(d);
   closeReg();
   showSaved();
@@ -851,23 +1006,243 @@ function renderChart() {
   });
 }
 
+// ══ GRUPOS DE TREINO ══
+let novoExVideoData = {}; // idx -> {name, dataUrl, type}
+
+function getGrupoAtivo() {
+  const d = getData();
+  const grupos = d.grupos || [];
+  const id = d.grupoAtivo;
+  return grupos.find(g => g.id === id) || null;
+}
+
+function updateGrupoBanner() {
+  const grupo = getGrupoAtivo();
+  const badge = document.getElementById('grupoActiveBadge');
+  const nomeEl = document.getElementById('grupoActiveNome');
+  if (grupo) {
+    badge.style.display = 'flex';
+    nomeEl.textContent = grupo.nome;
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function initNovoFormGrupo() {
+  const grupo = getGrupoAtivo();
+  const bannerEl = document.getElementById('novoGrupoBanner');
+  const inicioEl = document.getElementById('novoGrupoInicio');
+  if (grupo) {
+    bannerEl.style.display = 'flex';
+    document.getElementById('novoGrupoNomeBanner').textContent = grupo.nome;
+    document.getElementById('novoGrupoDataBanner').textContent = 'Criado em ' + new Date(grupo.criadoEm + 'T12:00:00').toLocaleDateString('pt-BR');
+    inicioEl.style.display = 'none';
+  } else {
+    bannerEl.style.display = 'none';
+    inicioEl.style.display = 'block';
+  }
+}
+
+function abrirNovoGrupo() {
+  document.getElementById('novoGrupoForm').style.display = 'block';
+  document.getElementById('novoGrupoNome').value = '';
+  document.getElementById('novoGrupoObjetivo').value = '';
+  document.getElementById('novoGrupoForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function fecharNovoGrupo() {
+  document.getElementById('novoGrupoForm').style.display = 'none';
+}
+
+function criarGrupoInicial() {
+  const nome = document.getElementById('grupoInicialNome').value.trim();
+  if (!nome) { alert('Dê um nome ao grupo de treino.'); return; }
+  const objetivo = document.getElementById('grupoInicialObjetivo').value.trim();
+  const d = getData();
+  d.grupos = d.grupos || [];
+  const grupo = {
+    id: Date.now(),
+    nome,
+    objetivo,
+    criadoEm: new Date().toISOString().slice(0, 10),
+    arquivadoEm: null,
+    treinos: null // treinos arquivados (null = atual)
+  };
+  d.grupos.push(grupo);
+  d.grupoAtivo = grupo.id;
+  setData(d);
+  initNovoFormGrupo();
+  updateGrupoBanner();
+  showSaved();
+  alert('Grupo "' + nome + '" definido! ✅');
+}
+
+function criarNovoGrupo() {
+  const nome = document.getElementById('novoGrupoNome').value.trim();
+  if (!nome) { alert('Dê um nome ao novo grupo.'); return; }
+  const objetivo = document.getElementById('novoGrupoObjetivo').value.trim();
+
+  const d = getData();
+  d.grupos = d.grupos || [];
+
+  // Arquivar grupo atual: capturar configuração dos treinos A,B,C,D
+  const grupoAtualId = d.grupoAtivo;
+  if (grupoAtualId) {
+    const grupoAtual = d.grupos.find(g => g.id === grupoAtualId);
+    if (grupoAtual) {
+      grupoAtual.arquivadoEm = new Date().toISOString().slice(0, 10);
+      // Capturar dados dos treinos estáticos (A,B,C,D) do DOM
+      grupoAtual.treinos = ['A','B','C','D'].map(tab => {
+        const rows = document.querySelectorAll('#tbody-' + tab + ' tr[data-tab]');
+        const exercicios = [];
+        rows.forEach(tr => {
+          const nome = tr.querySelector('.ex-name') ? tr.querySelector('.ex-name').textContent : '';
+          const grupo = tr.querySelector('.muscle-badge') ? tr.querySelector('.muscle-badge').textContent : '';
+          const setsReps = tr.querySelector('.sets-reps');
+          let series = '', reps = '';
+          if (setsReps) {
+            series = setsReps.querySelector('strong') ? setsReps.querySelector('strong').textContent : '';
+            reps = setsReps.textContent.replace(series + ' × ', '').trim();
+          }
+          const ci = tr.querySelectorAll('.carga-input')[0] ? tr.querySelectorAll('.carga-input')[0].value : '';
+          const videoEl = tr.querySelector('.video-btn');
+          const video = videoEl ? { type: 'link', dataUrl: videoEl.href || videoEl.getAttribute('href'), name: videoEl.textContent } : null;
+          if (nome) exercicios.push({ nome, grupo, series, reps, cargaInicial: ci, video });
+        });
+        return { tab, exercicios };
+      });
+    }
+  }
+
+  // Criar novo grupo
+  const novoGrupo = {
+    id: Date.now(),
+    nome,
+    objetivo,
+    criadoEm: new Date().toISOString().slice(0, 10),
+    arquivadoEm: null,
+    treinos: null
+  };
+  d.grupos.push(novoGrupo);
+  d.grupoAtivo = novoGrupo.id;
+  setData(d);
+
+  fecharNovoGrupo();
+  initNovoFormGrupo();
+  updateGrupoBanner();
+  showSaved();
+  alert('Novo grupo "' + nome + '" criado!\nOs treinos anteriores foram arquivados. ✅');
+}
+
+function switchHistTab(tab) {
+  document.getElementById('hist-panel-sessoes').style.display = tab === 'sessoes' ? 'block' : 'none';
+  document.getElementById('hist-panel-grupos').style.display = tab === 'grupos' ? 'block' : 'none';
+  document.getElementById('histTabSessoes').classList.toggle('active', tab === 'sessoes');
+  document.getElementById('histTabGrupos').classList.toggle('active', tab === 'grupos');
+  if (tab === 'grupos') renderGruposArquivados();
+}
+
+function renderGruposArquivados() {
+  const d = getData();
+  const grupos = (d.grupos || []).filter(g => g.arquivadoEm !== null);
+  const el = document.getElementById('hist-grupos-list');
+  if (!grupos.length) {
+    el.innerHTML = '<div class="hist-empty"><span class="empty-icon">🗂</span>Nenhum grupo arquivado ainda.<br>Crie um novo grupo de treino para arquivar o atual.</div>';
+    return;
+  }
+  el.innerHTML = grupos.slice().reverse().map((grupo, i) => {
+    const totalEx = (grupo.treinos || []).reduce((s, t) => s + t.exercicios.length, 0);
+    const treinoTags = (grupo.treinos || []).filter(t => t.exercicios.length > 0)
+      .map(t => '<span class="grupo-hist-treino-tag">TREINO ' + t.tab + ' · ' + t.exercicios.length + ' ex</span>')
+      .join('');
+    const exRows = (grupo.treinos || []).map(t => {
+      if (!t.exercicios.length) return '';
+      const exHtml = t.exercicios.map(ex =>
+        '<div class="hist-entry"><div class="he-name">' + ex.nome + '</div>' +
+        '<div class="he-vals"><span style="color:var(--muted)">' + ex.grupo + '</span>' +
+        (ex.cargaInicial ? ' · <span>' + ex.cargaInicial + ' kg</span>' : '') + '</div></div>'
+      ).join('');
+      return '<div style="margin-bottom:14px"><div style="font-family:Bebas Neue,sans-serif;font-size:.9rem;letter-spacing:2px;color:var(--muted);margin-bottom:8px">TREINO ' + t.tab + '</div>' +
+        '<div class="hist-entries">' + exHtml + '</div></div>';
+    }).join('');
+
+    const uid = 'ghb' + grupo.id;
+    return '<div class="grupo-hist-card">' +
+      '<div class="grupo-hist-header" onclick="toggleGrupoHist(\'' + uid + '\')">' +
+      '<div style="flex:1"><div class="grupo-hist-nome">' + grupo.nome + '</div>' +
+      '<div class="grupo-hist-datas">Criado: ' + new Date(grupo.criadoEm+'T12:00:00').toLocaleDateString('pt-BR') +
+      (grupo.arquivadoEm ? ' · Arquivado: ' + new Date(grupo.arquivadoEm+'T12:00:00').toLocaleDateString('pt-BR') : '') +
+      (grupo.objetivo ? ' · ' + grupo.objetivo : '') + '</div>' +
+      '</div>' +
+      '<span style="color:var(--muted);font-size:.8rem">' + totalEx + ' exercícios</span>' +
+      '<span style="color:var(--muted);margin-left:10px;font-size:.8rem">▸</span>' +
+      '</div>' +
+      '<div class="grupo-hist-body" id="' + uid + '">' +
+      '<div class="grupo-hist-treinos" style="margin-bottom:14px">' + treinoTags + '</div>' +
+      exRows +
+      '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function toggleGrupoHist(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+  const arrow = el.previousElementSibling.querySelector('span:last-child');
+  if (arrow) arrow.textContent = el.classList.contains('open') ? '▾' : '▸';
+}
+
 // ══ NOVO TREINO ══
 function initNovoForm() {
   document.getElementById('novoId').value = '';
   document.getElementById('novoFoco').value = '';
   document.getElementById('exBuilder').innerHTML = '';
+  novoExVideoData = {};
   addExRow(); addExRow(); addExRow();
+  initNovoFormGrupo();
 }
 
 function addExRow() {
+  const idx = document.getElementById('exBuilder').children.length;
   const div = document.createElement('div');
   div.className = 'ex-row';
+  div.style.gridTemplateColumns = '1fr 80px 60px 60px 100px auto';
   div.innerHTML = '<input type="text" placeholder="Nome do exercício">' +
     '<input type="text" placeholder="Grupo">' +
     '<input type="number" placeholder="3" min="1">' +
     '<input type="text" placeholder="10-12">' +
+    '<button class="video-upload-btn" type="button" onclick="escolherVideoExRow(this,' + idx + ')" title="Upload ou link de vídeo">📎 Vídeo</button>' +
     '<button class="rm-ex" onclick="this.closest(\'.ex-row\').remove()">✕</button>';
   document.getElementById('exBuilder').appendChild(div);
+}
+
+function escolherVideoExRow(btn, idx) {
+  const choice = confirm('Clique OK para fazer upload de arquivo de vídeo.\nClique Cancelar para colar um link (URL).');
+  if (choice) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'video/*';
+    input.onchange = () => {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        novoExVideoData[idx] = { name: file.name, dataUrl: e.target.result, type: 'file' };
+        btn.textContent = '✅ ' + file.name.substring(0,10) + (file.name.length>10?'…':'');
+        btn.classList.add('has-video');
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  } else {
+    const url = prompt('Cole o link do vídeo (OneDrive, YouTube, etc):');
+    if (url && url.trim()) {
+      novoExVideoData[idx] = { name: url.trim(), dataUrl: url.trim(), type: 'link' };
+      btn.textContent = '🔗 Link';
+      btn.classList.remove('has-video');
+      btn.classList.add('has-link');
+    }
+  }
 }
 
 function criarTreino() {
@@ -877,10 +1252,16 @@ function criarTreino() {
   if (document.getElementById('panel-' + id)) { alert('Já existe um treino com esse código. Use outro nome.'); return; }
   const rows = document.querySelectorAll('#exBuilder .ex-row');
   const exercicios = [];
-  rows.forEach(row => {
-    const ins = row.querySelectorAll('input');
+  rows.forEach((row, idx) => {
+    const ins = row.querySelectorAll('input[type=text],input[type=number]');
     const nome = ins[0].value.trim();
-    if (nome) exercicios.push({ nome, grupo: ins[1].value.trim()||'Geral', series: ins[2].value||'3', reps: ins[3].value||'10' });
+    if (nome) exercicios.push({
+      nome,
+      grupo: ins[1].value.trim()||'Geral',
+      series: ins[2].value||'3',
+      reps: ins[3].value||'10',
+      video: novoExVideoData[idx] || null
+    });
   });
   if (!exercicios.length) { alert('Adicione pelo menos um exercício.'); return; }
 
@@ -904,16 +1285,26 @@ function criarTreino() {
   panel.dataset.panel = id;
   panel.id = 'panel-' + id;
   const color = '#' + Math.floor(Math.random()*0xffffff).toString(16).padStart(6,'0');
-  let exRows = exercicios.map((ex, i) =>
-    '<tr data-tab="' + id + '" data-idx="' + i + '">' +
-    '<td><span class="muscle-badge" style="background:' + color + '22;color:' + color + '">' + ex.grupo + '</span></td>' +
-    '<td><div class="ex-name">' + ex.nome + '</div></td>' +
-    '<td class="sets-reps"><strong>' + ex.series + '</strong> × ' + ex.reps + '</td>' +
-    '<td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td>' +
-    '<td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>' +
-    '<td><button class="video-btn" onclick="addVideoInline(\'' + id + '\',' + i + ',this)">+ Vídeo</button></td>' +
-    '<td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>'
-  ).join('');
+  let exRows = exercicios.map((ex, i) => {
+    let vidCell;
+    if (ex.video) {
+      if (ex.video.type === 'file') {
+        vidCell = '<a class="video-btn" href="' + ex.video.dataUrl + '" target="_blank" rel="noopener">▶ Ver</a>';
+      } else {
+        vidCell = '<a class="video-btn" href="' + ex.video.dataUrl + '" target="_blank" rel="noopener" style="border-color:#3b82f6;color:#3b82f6">🔗 Ver</a>';
+      }
+    } else {
+      vidCell = '<button class="video-btn" onclick="addVideoInline(\'' + id + '\',' + i + ',this)">+ Vídeo</button>';
+    }
+    return '<tr data-tab="' + id + '" data-idx="' + i + '">' +
+      '<td><span class="muscle-badge" style="background:' + color + '22;color:' + color + '">' + ex.grupo + '</span></td>' +
+      '<td><div class="ex-name">' + ex.nome + '</div></td>' +
+      '<td class="sets-reps"><strong>' + ex.series + '</strong> × ' + ex.reps + '</td>' +
+      '<td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td>' +
+      '<td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>' +
+      '<td>' + vidCell + '</td>' +
+      '<td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>';
+  }).join('');
 
   panel.innerHTML = '<div class="panel-header">' +
     '<div class="panel-tag" style="background:' + color + '22;color:' + color + '">' + id + '</div>' +
@@ -1213,9 +1604,14 @@ window.addEventListener('DOMContentLoaded', () => {
   loadCargas();
   initNovoForm();
   renderSequencias();
+  updateGrupoBanner();
   document.getElementById('regData').value = new Date().toISOString().slice(0,10);
   // Sequências tab click
   document.querySelector('[data-tab="sequencias"]').addEventListener('click', renderSequencias);
+  // Novo tab click
+  document.querySelector('[data-tab="novo"]').addEventListener('click', () => {
+    setTimeout(initNovoFormGrupo, 50);
+  });
 });
 </script>
 </body>
