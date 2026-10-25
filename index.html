@@ -287,6 +287,7 @@ td{padding:12px;vertical-align:middle;}
     <div class="panel-actions">
       <button class="btn-action green" onclick="registrarTreino('A')">✓ Registrar Sessão</button>
       <button class="btn-action" onclick="openModal('A')">+ Exercício</button>
+      <button class="btn-action btn-danger" onclick="excluirTreino('A')">🗑 Excluir</button>
     </div>
   </div>
   <div class="table-wrap"><table>
@@ -322,6 +323,7 @@ td{padding:12px;vertical-align:middle;}
     <div class="panel-actions">
       <button class="btn-action green" onclick="registrarTreino('B')">✓ Registrar Sessão</button>
       <button class="btn-action" onclick="openModal('B')">+ Exercício</button>
+      <button class="btn-action btn-danger" onclick="excluirTreino('B')">🗑 Excluir</button>
     </div>
   </div>
   <div class="table-wrap"><table>
@@ -352,6 +354,7 @@ td{padding:12px;vertical-align:middle;}
     <div class="panel-actions">
       <button class="btn-action green" onclick="registrarTreino('C')">✓ Registrar Sessão</button>
       <button class="btn-action" onclick="openModal('C')">+ Exercício</button>
+      <button class="btn-action btn-danger" onclick="excluirTreino('C')">🗑 Excluir</button>
     </div>
   </div>
   <div class="table-wrap"><table>
@@ -384,6 +387,7 @@ td{padding:12px;vertical-align:middle;}
     <div class="panel-actions">
       <button class="btn-action green" onclick="registrarTreino('D')">✓ Registrar Sessão</button>
       <button class="btn-action" onclick="openModal('D')">+ Exercício</button>
+      <button class="btn-action btn-danger" onclick="excluirTreino('D')">🗑 Excluir</button>
     </div>
   </div>
   <div class="table-wrap"><table>
@@ -494,6 +498,7 @@ td{padding:12px;vertical-align:middle;}
   <div style="display:flex;gap:6px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:0;">
     <button class="tab-btn active extra" id="histTabSessoes" onclick="switchHistTab('sessoes')" style="border-radius:8px 8px 0 0;font-size:.85rem;">📋 Sessões</button>
     <button class="tab-btn extra" id="histTabGrupos" onclick="switchHistTab('grupos')" style="border-radius:8px 8px 0 0;font-size:.85rem;">🗂 Grupos Arquivados</button>
+    <button class="tab-btn extra" id="histTabFichas" onclick="switchHistTab('fichas')" style="border-radius:8px 8px 0 0;font-size:.85rem;">📁 Fichas Arquivadas</button>
   </div>
 
   <div id="hist-panel-sessoes">
@@ -502,6 +507,10 @@ td{padding:12px;vertical-align:middle;}
 
   <div id="hist-panel-grupos" style="display:none;">
     <div id="hist-grupos-list" class="grupos-hist-list"><div class="hist-empty"><span class="empty-icon">🗂</span>Nenhum grupo arquivado ainda.<br>Crie um novo grupo de treino para arquivar o atual.</div></div>
+  </div>
+
+  <div id="hist-panel-fichas" style="display:none;">
+    <div id="hist-fichas-list" class="grupos-hist-list"><div class="hist-empty"><span class="empty-icon">📁</span>Nenhuma ficha arquivada ainda.<br>Ao excluir um treino, escolha "Arquivar" para guardar a ficha aqui.</div></div>
   </div>
 </div>
 
@@ -632,6 +641,34 @@ td{padding:12px;vertical-align:middle;}
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
       <button class="btn-save" onclick="saveExercise()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EXCLUIR TREINO -->
+<div class="modal-overlay" id="modalExcluir">
+  <div class="modal" style="max-width:420px;">
+    <h3>Excluir Treino</h3>
+    <input type="hidden" id="excluirTreinoId">
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:20px;">O que deseja fazer com o <strong id="excluirTreinoNome" style="color:var(--text)"></strong>?</p>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+      <button class="btn-action" style="justify-content:flex-start;padding:14px 18px;border-color:var(--success);color:var(--success);" onclick="confirmarExcluirTreino('arquivar')">
+        <span style="font-size:1.1rem;">📁</span>
+        <div style="text-align:left;">
+          <div style="font-weight:600;font-size:.88rem;">Arquivar em Histórico de Fichas</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:2px;">Guarda a ficha com todos os exercícios no Histórico</div>
+        </div>
+      </button>
+      <button class="btn-action btn-danger" style="justify-content:flex-start;padding:14px 18px;" onclick="confirmarExcluirTreino('deletar')">
+        <span style="font-size:1.1rem;">🗑</span>
+        <div style="text-align:left;">
+          <div style="font-weight:600;font-size:.88rem;">Excluir definitivamente</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:2px;">Remove o treino permanentemente, sem recuperação</div>
+        </div>
+      </button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="document.getElementById('modalExcluir').classList.remove('open')">Cancelar</button>
     </div>
   </div>
 </div>
@@ -1139,8 +1176,11 @@ function criarNovoGrupo() {
 function switchHistTab(tab) {
   document.getElementById('hist-panel-sessoes').style.display = tab === 'sessoes' ? 'block' : 'none';
   document.getElementById('hist-panel-grupos').style.display = tab === 'grupos' ? 'block' : 'none';
+  document.getElementById('hist-panel-fichas').style.display = tab === 'fichas' ? 'block' : 'none';
   document.getElementById('histTabSessoes').classList.toggle('active', tab === 'sessoes');
   document.getElementById('histTabGrupos').classList.toggle('active', tab === 'grupos');
+  document.getElementById('histTabFichas').classList.toggle('active', tab === 'fichas');
+  if (tab === 'fichas') renderFichasArquivadas();
   if (tab === 'grupos') renderGruposArquivados();
 }
 
@@ -1325,6 +1365,14 @@ function criarTreino() {
 
   document.querySelector('main').appendChild(panel);
 
+  // Persistir treino no localStorage
+  const d2 = getData();
+  d2.extraTreinos = d2.extraTreinos || [];
+  // Remove se já existia (update)
+  d2.extraTreinos = d2.extraTreinos.filter(t => t.id !== id);
+  d2.extraTreinos.push({ id, foco, exercicios, color });
+  setData(d2);
+
   // Switch to new tab
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -1336,34 +1384,211 @@ function criarTreino() {
 }
 
 
+// ══ CARREGAR TREINOS EXTRAS SALVOS ══
+function loadExtraTreinos() {
+  const d = getData();
+  (d.extraTreinos || []).forEach(t => {
+    if (document.getElementById('panel-' + t.id)) return; // já existe
+    const color = t.color || '#888888';
+    let exRows = (t.exercicios || []).map((ex, i) => {
+      let vidCell;
+      if (ex.video) {
+        if (ex.video.type === 'file') {
+          vidCell = '<a class="video-btn" href="' + ex.video.dataUrl + '" target="_blank" rel="noopener">▶ Ver</a>';
+        } else {
+          vidCell = '<a class="video-btn" href="' + ex.video.dataUrl + '" target="_blank" rel="noopener" style="border-color:#3b82f6;color:#3b82f6">🔗 Ver</a>';
+        }
+      } else {
+        vidCell = '<button class="video-btn" onclick="addVideoInline(\'' + t.id + '\',' + i + ',this)">+ Vídeo</button>';
+      }
+      return '<tr data-tab="' + t.id + '" data-idx="' + i + '">' +
+        '<td><span class="muscle-badge" style="background:' + color + '22;color:' + color + '">' + ex.grupo + '</span></td>' +
+        '<td><div class="ex-name">' + ex.nome + '</div></td>' +
+        '<td class="sets-reps"><strong>' + ex.series + '</strong> × ' + ex.reps + '</td>' +
+        '<td><input class="carga-input" type="number" value="' + (ex.cargaInicial||'') + '" step="0.5" min="0" placeholder="—"></td>' +
+        '<td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>' +
+        '<td>' + vidCell + '</td>' +
+        '<td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>';
+    }).join('');
+
+    const tabBar = document.getElementById('tabBar');
+    const newBtn = document.createElement('button');
+    newBtn.className = 'tab-btn extra';
+    newBtn.dataset.tab = t.id;
+    newBtn.textContent = 'TREINO ' + t.id;
+    newBtn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      newBtn.classList.add('active');
+      panel.classList.add('active');
+    });
+    tabBar.insertBefore(newBtn, tabBar.querySelector('[data-tab="historico"]'));
+
+    const panel = document.createElement('div');
+    panel.className = 'tab-panel';
+    panel.dataset.panel = t.id;
+    panel.id = 'panel-' + t.id;
+    panel.innerHTML = '<div class="panel-header">' +
+      '<div class="panel-tag" style="background:' + color + '22;color:' + color + '">' + t.id + '</div>' +
+      '<div class="panel-title"><h2>Treino ' + t.id + '</h2><p>' + t.foco + '</p></div>' +
+      '<div class="panel-actions">' +
+      '<button class="btn-action green" onclick="registrarTreino(\'' + t.id + '\')">✓ Registrar Sessão</button>' +
+      '<button class="btn-action" onclick="openModal(\'' + t.id + '\')">+ Exercício</button>' +
+      '<button class="btn-action btn-danger" onclick="excluirTreino(\'' + t.id + '\')">🗑 Excluir</button>' +
+      '</div></div>' +
+      '<div class="table-wrap"><table>' +
+      '<thead><tr><th>Grupo</th><th>Exercício</th><th>Séries/Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>' +
+      '<tbody id="tbody-' + t.id + '">' + exRows + '</tbody></table></div>' +
+      '<div class="panel-stats"><div class="stat-box"><div class="stat-val">' + (t.exercicios||[]).length + '</div><div class="stat-label">Exercícios</div></div></div>';
+    document.querySelector('main').appendChild(panel);
+  });
+}
+
 // ══ EXCLUIR TREINO ══
 function excluirTreino(id) {
-  if (!confirm('Tem certeza que deseja excluir o Treino ' + id + '?\nEssa ação não pode ser desfeita.')) return;
-  // Remove tab button
+  // Pegar nome do treino
+  const panel = document.getElementById('panel-' + id);
+  let nome = 'Treino ' + id;
+  if (panel) {
+    const h2 = panel.querySelector('.panel-title h2');
+    const sub = panel.querySelector('.panel-title p');
+    if (h2) nome = h2.textContent + (sub ? ' — ' + sub.textContent : '');
+  }
+  document.getElementById('excluirTreinoId').value = id;
+  document.getElementById('excluirTreinoNome').textContent = nome;
+  document.getElementById('modalExcluir').classList.add('open');
+}
+
+function confirmarExcluirTreino(acao) {
+  const id = document.getElementById('excluirTreinoId').value;
+  document.getElementById('modalExcluir').classList.remove('open');
+
+  if (acao === 'arquivar') {
+    // Capturar ficha completa do DOM
+    const panel = document.getElementById('panel-' + id);
+    const exercicios = [];
+    if (panel) {
+      panel.querySelectorAll('tbody tr[data-tab]').forEach(tr => {
+        const nome = tr.querySelector('.ex-name')?.textContent || '';
+        const grupo = tr.querySelector('.muscle-badge')?.textContent || '';
+        const setsReps = tr.querySelector('.sets-reps')?.textContent?.trim() || '';
+        const inputs = tr.querySelectorAll('.carga-input');
+        const cargaInicial = inputs[0]?.value || '';
+        const cargaNova = inputs[1]?.value || '';
+        const videoEl = tr.querySelector('.video-btn');
+        const video = videoEl ? { href: videoEl.getAttribute('href') || '', label: videoEl.textContent.trim() } : null;
+        if (nome) exercicios.push({ nome, grupo, setsReps, cargaInicial, cargaNova, video });
+      });
+    }
+    const h2 = panel?.querySelector('.panel-title h2')?.textContent || ('Treino ' + id);
+    const sub = panel?.querySelector('.panel-title p')?.textContent || '';
+    const ficha = {
+      id: Date.now(),
+      treinoId: id,
+      nome: h2,
+      foco: sub,
+      arquivadoEm: new Date().toISOString().slice(0, 10),
+      exercicios
+    };
+    const d = getData();
+    d.fichasArquivadas = d.fichasArquivadas || [];
+    d.fichasArquivadas.unshift(ficha);
+    // Remover cargas e extra
+    const prefix = id + '_';
+    Object.keys(d.cargas || {}).forEach(k => { if (k.startsWith(prefix)) delete d.cargas[k]; });
+    d.extraTreinos = (d.extraTreinos || []).filter(t => t.id !== id);
+    setData(d);
+    _removerPainelTreino(id);
+    showSaved();
+    // Feedback
+    const feedback = document.createElement('div');
+    feedback.textContent = '📁 Ficha arquivada no Histórico de Fichas';
+    feedback.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--success);color:var(--success);padding:10px 24px;border-radius:8px;font-size:.82rem;z-index:999;animation:fadeIn .3s ease';
+    document.body.appendChild(feedback);
+    setTimeout(() => feedback.remove(), 2800);
+  } else {
+    // Excluir definitivo
+    const d = getData();
+    const prefix = id + '_';
+    Object.keys(d.cargas || {}).forEach(k => { if (k.startsWith(prefix)) delete d.cargas[k]; });
+    d.extraTreinos = (d.extraTreinos || []).filter(t => t.id !== id);
+    setData(d);
+    _removerPainelTreino(id);
+    showSaved();
+  }
+}
+
+function _removerPainelTreino(id) {
   const tabBtn = document.querySelector('.tab-btn[data-tab="' + id + '"]');
   if (tabBtn) {
     const wasActive = tabBtn.classList.contains('active');
     tabBtn.remove();
-    // Remove panel
     const panel = document.getElementById('panel-' + id);
     if (panel) panel.remove();
-    // If this tab was active, switch to first available
     if (wasActive) {
       const firstTab = document.querySelector('.tab-btn');
       if (firstTab) {
         firstTab.classList.add('active');
-        const firstPanel = document.querySelector('.tab-panel[data-panel="' + firstTab.dataset.tab + '"]') ||
-                           document.getElementById('panel-' + firstTab.dataset.tab);
-        if (firstPanel) firstPanel.classList.add('active');
+        const fp = document.querySelector('.tab-panel[data-panel="' + firstTab.dataset.tab + '"]') ||
+                   document.getElementById('panel-' + firstTab.dataset.tab);
+        if (fp) fp.classList.add('active');
       }
     }
   }
-  // Remove cargas from storage
+}
+
+function renderFichasArquivadas() {
   const d = getData();
-  const prefix = id + '_';
-  Object.keys(d.cargas || {}).forEach(k => { if (k.startsWith(prefix)) delete d.cargas[k]; });
+  const fichas = d.fichasArquivadas || [];
+  const container = document.getElementById('hist-fichas-list');
+  if (!fichas.length) {
+    container.innerHTML = '<div class="hist-empty"><span class="empty-icon">📁</span>Nenhuma ficha arquivada ainda.<br>Ao excluir um treino, escolha "Arquivar" para guardar a ficha aqui.</div>';
+    return;
+  }
+  container.innerHTML = fichas.map((f, fi) => {
+    const exRows = f.exercicios.map(ex => {
+      const vid = ex.video && ex.video.href
+        ? '<a class="video-btn" href="' + ex.video.href + '" target="_blank" rel="noopener" style="font-size:.7rem;">' + ex.video.label + '</a>'
+        : '<span style="color:var(--muted);font-size:.72rem;">—</span>';
+      const carga = ex.cargaInicial ? ex.cargaInicial + ' kg' : (ex.cargaNova ? ex.cargaNova + ' kg' : '—');
+      return '<tr style="border-bottom:1px solid rgba(255,255,255,.04);">' +
+        '<td style="padding:8px 10px;font-size:.78rem;"><span style="background:rgba(245,166,35,.1);color:var(--accent);font-size:.68rem;padding:2px 8px;border-radius:12px;">' + ex.grupo + '</span></td>' +
+        '<td style="padding:8px 10px;font-size:.82rem;font-weight:500;">' + ex.nome + '</td>' +
+        '<td style="padding:8px 10px;font-size:.78rem;color:var(--muted);">' + ex.setsReps + '</td>' +
+        '<td style="padding:8px 10px;font-size:.78rem;color:var(--success);">' + carga + '</td>' +
+        '<td style="padding:8px 10px;">' + vid + '</td></tr>';
+    }).join('');
+    return '<div class="grupo-hist-card">' +
+      '<div class="grupo-hist-header" onclick="this.nextElementSibling.classList.toggle(\'open\')">' +
+      '<span style="font-size:1.1rem;">📁</span>' +
+      '<div>' +
+        '<div class="grupo-hist-nome">' + f.nome + (f.foco ? ' <span style="font-family:\'DM Sans\';font-size:.75rem;font-weight:400;color:var(--muted);letter-spacing:0;">— ' + f.foco + '</span>' : '') + '</div>' +
+        '<div class="grupo-hist-datas">Arquivado em ' + f.arquivadoEm + ' · ' + f.exercicios.length + ' exercícios</div>' +
+      '</div>' +
+      '<button class="hist-del" style="margin-left:auto;" onclick="event.stopPropagation();deletarFichaArquivada(' + fi + ')" title="Remover ficha">✕</button>' +
+      '</div>' +
+      '<div class="grupo-hist-body">' +
+        '<div class="table-wrap"><table style="width:100%;">' +
+        '<thead><tr>' +
+          '<th style="font-size:.65rem;color:var(--muted);padding:6px 10px;">Grupo</th>' +
+          '<th style="font-size:.65rem;color:var(--muted);padding:6px 10px;">Exercício</th>' +
+          '<th style="font-size:.65rem;color:var(--muted);padding:6px 10px;">Séries/Reps</th>' +
+          '<th style="font-size:.65rem;color:var(--muted);padding:6px 10px;">Carga</th>' +
+          '<th style="font-size:.65rem;color:var(--muted);padding:6px 10px;">Vídeo</th>' +
+        '</tr></thead>' +
+        '<tbody>' + exRows + '</tbody></table></div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function deletarFichaArquivada(idx) {
+  if (!confirm('Remover esta ficha do histórico?')) return;
+  const d = getData();
+  d.fichasArquivadas = d.fichasArquivadas || [];
+  d.fichasArquivadas.splice(idx, 1);
   setData(d);
-  showSaved();
+  renderFichasArquivadas();
 }
 
 // ══ SEQUÊNCIAS ══
@@ -1637,6 +1862,7 @@ function switchSeqTab(btn, targetId, color) {
 // ══ INIT ══
 window.addEventListener('DOMContentLoaded', () => {
   loadCargas();
+  loadExtraTreinos();
   initNovoForm();
   renderSequencias();
   updateGrupoBanner();
