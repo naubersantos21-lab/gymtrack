@@ -653,12 +653,17 @@ td{padding:12px;vertical-align:middle;}
 <div class="modal-overlay" id="modalSync">
   <div class="modal" style="max-width:480px;">
     <h3>⚙ Sincronização GitHub</h3>
-    <p style="font-size:.82rem;color:var(--muted);margin-bottom:20px;line-height:1.6;">Os dados ficam salvos em <code style="background:var(--surface);padding:2px 6px;border-radius:4px;font-size:.78rem;">data.json</code> no seu repositório e sincronizam entre todos os dispositivos.</p>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:8px;line-height:1.6;">Os dados ficam salvos em <code style="background:var(--surface);padding:2px 6px;border-radius:4px;font-size:.78rem;">data.json</code> no repositório.</p>
+    <div style="font-size:.78rem;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);border-radius:8px;padding:10px 14px;margin-bottom:16px;line-height:1.7;color:var(--text);">
+      <strong style="color:var(--accent);">Como usar:</strong><br>
+      • Alterações salvas aqui sobem ao GitHub automaticamente (1,5s)<br>
+      • Em outro dispositivo: abra o link → clique <strong>⬇ Buscar do GitHub</strong> para carregar os dados mais recentes
+    </div>
     <div class="form-grid">
       <div class="form-group full">
         <label>Token do GitHub <span style="color:#e8593a;">*</span></label>
         <input type="password" id="syncToken" placeholder="ghp_..." autocomplete="off">
-        <div style="font-size:.72rem;color:var(--muted);margin-top:4px;">Salvo apenas neste dispositivo (localStorage). Nunca enviado a terceiros.</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:4px;">Salvo apenas neste dispositivo. Nunca enviado a terceiros.</div>
       </div>
       <div class="form-group">
         <label>Usuário GitHub</label>
@@ -673,7 +678,8 @@ td{padding:12px;vertical-align:middle;}
     <div class="modal-actions" style="flex-wrap:wrap;gap:8px;">
       <button class="btn-cancel" onclick="document.getElementById('modalSync').classList.remove('open')">Fechar</button>
       <button class="btn-action" onclick="testarSync()" style="border-color:var(--muted);">🔍 Testar conexão</button>
-      <button class="btn-action" onclick="importarDoGitHub()" style="border-color:#3b82f6;color:#3b82f6;">⬇ Importar do GitHub</button>
+      <button class="btn-action" onclick="enviarParaGitHub()" style="border-color:var(--success);color:var(--success);">⬆ Enviar para GitHub</button>
+      <button class="btn-action" onclick="importarDoGitHub()" style="border-color:#3b82f6;color:#3b82f6;">⬇ Buscar do GitHub</button>
       <button class="btn-action primary" onclick="salvarConfigSync()">✓ Salvar configuração</button>
     </div>
   </div>
@@ -878,6 +884,21 @@ async function testarSync() {
   }
 }
 
+async function enviarParaGitHub() {
+  mostrarSyncMsg('Enviando dados para o GitHub…', 'spin');
+  try {
+    const token = document.getElementById('syncToken').value.trim();
+    const owner = document.getElementById('syncOwner').value.trim();
+    const repo = document.getElementById('syncRepo').value.trim();
+    if (!token || !owner || !repo) { mostrarSyncMsg('Salve a configuração primeiro.', 'err'); return; }
+    setSyncCfg({ token, owner, repo });
+    await pushDataGitHub(getData());
+    mostrarSyncMsg('✓ Dados enviados ao GitHub com sucesso!', 'ok');
+  } catch(e) {
+    mostrarSyncMsg('✗ Erro: ' + e.message, 'err');
+  }
+}
+
 async function importarDoGitHub() {
   mostrarSyncMsg('Buscando dados do GitHub…', 'spin');
   try {
@@ -906,40 +927,10 @@ async function importarDoGitHub() {
 async function initSync() {
   const cfg = getSyncCfg();
   if (!cfg.token) { syncStatus('Não configurado', null); return; }
-
-  // Evitar loop: se recarregou há menos de 5 segundos, não sincroniza de novo
-  const ultimoReload = parseInt(localStorage.getItem('gymtrack_last_reload') || '0');
-  if (Date.now() - ultimoReload < 5000) {
-    syncStatus('GitHub', null);
-    return;
-  }
-
-  syncStatus('Sincronizando…', 'spin');
-  try {
-    const remoto = await pullDataGitHub();
-    const local = getData();
-    const temDadosLocais = local.cargas && Object.keys(local.cargas).length > 0;
-    const temDadosRemoto = remoto && remoto.cargas && Object.keys(remoto.cargas).length > 0;
-
-    if (temDadosRemoto && !temDadosLocais) {
-      // Dispositivo novo sem dados → baixar do GitHub
-      localStorage.setItem('gymtrack_last_reload', String(Date.now()));
-      localStorage.setItem(SK, JSON.stringify(remoto));
-      syncStatus('Dados carregados!', 'ok');
-      setTimeout(() => location.reload(), 600);
-      return;
-    }
-
-    if (temDadosLocais) {
-      // Tem dados locais → subir para o GitHub
-      await pushDataGitHub(local);
-    }
-
-    syncStatus('Sincronizado', 'ok');
-    setTimeout(() => syncStatus('GitHub', null), 3000);
-  } catch(e) {
-    syncStatus('Erro sync', 'err');
-  }
+  // Na inicialização apenas exibe o status — não sobe nem baixa automaticamente
+  // O upload acontece via setData() (debounce 1,5s) a cada alteração
+  // O download é manual via botão "Importar do GitHub"
+  syncStatus('GitHub', null);
 }
 
 
