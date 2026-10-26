@@ -1,6 +1,125 @@
 {
   "fichasArquivadas": [
     {
+      "id": 1792980618666,
+      "treinoId": "B",
+      "nome": "Treino B",
+      "foco": "Bíceps · Tríceps",
+      "arquivadoEm": "2026-10-26",
+      "exercicios": [
+        {
+          "nome": "Francês Unilateral no Cross",
+          "grupo": "Tríceps",
+          "setsReps": "5 × 10",
+          "cargaInicial": "15",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBclYbRMHw1Tb7p4PRfs7h5Adx3_iH-YLgbzjJY-qwcPvw?e=xOD5hs",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Tríceps na Máquina",
+          "grupo": "Tríceps",
+          "setsReps": "4 × 12",
+          "cargaInicial": "",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQDoPMfLt67BRbqo-AcYfVO0AbP68Uf17ayf2SdtsvlxKrA?e=3aZZro",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Francês Deitado",
+          "grupo": "Tríceps",
+          "setsReps": "3 × 10",
+          "cargaInicial": "8",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQByPjW2-y_8S5rmsRl6_ZucAdhSAEcLxGY3T4XYaZ7uI78?e=O1ClGL",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Tríceps com Barra no Cross",
+          "grupo": "Tríceps",
+          "setsReps": "2 × 20",
+          "cargaInicial": "40",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQC5-tpe8Ua7Sr8Z-YYwoN-SAe8hA81aeQc_TWpcJ9heelk?e=oLPIxi",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Flexão no Chão",
+          "grupo": "Tríceps",
+          "setsReps": "1 × exaustão",
+          "cargaInicial": "",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQCUQatFHVuER4S6a1YsK7UWAZAuhU-4n3Y_H4KtqILGWLk?e=kna2Wd",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Bíceps na Máquina",
+          "grupo": "Bíceps",
+          "setsReps": "5 × 10",
+          "cargaInicial": "",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQB1Qiya_7GUTqij6N1Gya4sAaSY3vgg8PgsC6P3zTXXt9A?e=hma9Pa",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Rosca Alternada",
+          "grupo": "Bíceps",
+          "setsReps": "4 × 10",
+          "cargaInicial": "12",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBPCrXiDX78Qono_p8e8ibQAemKXyB90Yo5GiDOyY3AzVE?e=fZPlDd",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Rosca Concentrada no Cross",
+          "grupo": "Bíceps",
+          "setsReps": "3 × 8 a 10",
+          "cargaInicial": "10",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQDf2jA9yEDpTabB-bQwEuvtAW-it_cVaNq_dBgbGiAGIOk?e=x3XiJY",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Rosca Direta",
+          "grupo": "Bíceps",
+          "setsReps": "2 × 20",
+          "cargaInicial": "30",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQD70oeYyJiUSo17C1XXCMbdAf4D3ya53FoKbLBMrKCB-Ec?e=KySrqS",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Barra W",
+          "grupo": "Bíceps",
+          "setsReps": "1 × exaustão",
+          "cargaInicial": "2.5",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQCwRwqG4u7GS62z73JTCEYDAcq6zCxM3kVDONgchm3mwDw?e=ewGE5M",
+            "label": "▶ Ver"
+          }
+        }
+      ]
+    },
+    {
       "id": 1792980615795,
       "treinoId": "A",
       "nome": "Treino A",
@@ -1776,5 +1895,5 @@
     }
   ],
   "grupoAtivo": 1792967358600,
-  "_updatedAt": 1792980615795
+  "_updatedAt": 1792980618667
 }
