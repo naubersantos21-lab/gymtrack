@@ -906,28 +906,35 @@ async function importarDoGitHub() {
 async function initSync() {
   const cfg = getSyncCfg();
   if (!cfg.token) { syncStatus('Não configurado', null); return; }
+
+  // Evitar loop: se já sincronizou nesta sessão, não faz nada
+  if (sessionStorage.getItem('gymtrack_synced')) {
+    syncStatus('GitHub', null);
+    return;
+  }
+
   syncStatus('Sincronizando…', 'spin');
   try {
+    const remoto = await pullDataGitHub();
     const local = getData();
     const temDadosLocais = local.cargas && Object.keys(local.cargas).length > 0;
+    const temDadosRemoto = remoto && remoto.cargas && Object.keys(remoto.cargas).length > 0;
 
-    if (!temDadosLocais) {
-      // Dispositivo novo / sem dados locais → baixar do GitHub
-      const remoto = await pullDataGitHub();
-      if (remoto) {
-        localStorage.setItem(SK, JSON.stringify(remoto));
-        syncStatus('Dados carregados — recarregando…', 'ok');
-        setTimeout(() => location.reload(), 800);
-        return;
-      } else {
-        // GitHub também vazio — subir o que tiver local (mesmo vazio)
-        await pushDataGitHub(local);
-      }
-    } else {
-      // Tem dados locais → subir para o GitHub (local sempre tem prioridade na inicialização)
+    if (temDadosRemoto && !temDadosLocais) {
+      // Dispositivo novo sem dados → baixar do GitHub uma única vez
+      sessionStorage.setItem('gymtrack_synced', '1');
+      localStorage.setItem(SK, JSON.stringify(remoto));
+      syncStatus('Dados carregados!', 'ok');
+      setTimeout(() => location.reload(), 600);
+      return;
+    }
+
+    if (temDadosLocais) {
+      // Tem dados locais → subir para o GitHub
       await pushDataGitHub(local);
     }
 
+    sessionStorage.setItem('gymtrack_synced', '1');
     syncStatus('Sincronizado', 'ok');
     setTimeout(() => syncStatus('GitHub', null), 3000);
   } catch(e) {
