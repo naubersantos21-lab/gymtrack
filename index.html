@@ -888,16 +888,14 @@ async function importarDoGitHub() {
     setSyncCfg({ token, owner, repo });
     const remoto = await pullDataGitHub();
     if (!remoto) {
-      // Primeira vez: data.json não existe ainda — envia os dados locais para o GitHub
-      mostrarSyncMsg('Primeiro uso: enviando dados locais para o GitHub…', 'spin');
+      // data.json ainda não existe — envia os dados locais para o GitHub
+      mostrarSyncMsg('Enviando dados locais para o GitHub…', 'spin');
       await pushDataGitHub(getData());
       mostrarSyncMsg('✓ Dados enviados ao GitHub! Sincronização ativa.', 'ok');
       return;
     }
-    // Mesclar: dados remotos têm prioridade, mas manter dados locais que não existam remotamente
-    const local = getData();
-    const merged = Object.assign({}, local, remoto);
-    localStorage.setItem(SK, JSON.stringify(merged));
+    // Substituir local pelo remoto e recarregar
+    localStorage.setItem(SK, JSON.stringify(remoto));
     mostrarSyncMsg('✓ Dados importados! Recarregando…', 'ok');
     setTimeout(() => location.reload(), 1200);
   } catch(e) {
@@ -910,29 +908,28 @@ async function initSync() {
   if (!cfg.token) { syncStatus('Não configurado', null); return; }
   syncStatus('Sincronizando…', 'spin');
   try {
-    const remoto = await pullDataGitHub();
-    if (remoto) {
-      const local = getData();
-      const tsLocal  = local._updatedAt  || 0;
-      const tsRemoto = remoto._updatedAt || 0;
+    const local = getData();
+    const temDadosLocais = local.cargas && Object.keys(local.cargas).length > 0;
 
-      if (tsRemoto > tsLocal) {
-        // Remoto é mais novo → atualizar local e recarregar
+    if (!temDadosLocais) {
+      // Dispositivo novo / sem dados locais → baixar do GitHub
+      const remoto = await pullDataGitHub();
+      if (remoto) {
         localStorage.setItem(SK, JSON.stringify(remoto));
-        syncStatus('Dados atualizados — recarregando…', 'ok');
+        syncStatus('Dados carregados — recarregando…', 'ok');
         setTimeout(() => location.reload(), 800);
         return;
-      } else if (tsLocal > tsRemoto) {
-        // Local é mais novo → subir para o GitHub
+      } else {
+        // GitHub também vazio — subir o que tiver local (mesmo vazio)
         await pushDataGitHub(local);
       }
-      // Se iguais, não faz nada
-      syncStatus('Sincronizado', 'ok');
-      setTimeout(() => syncStatus('GitHub', null), 3000);
     } else {
-      // Primeiro uso neste dispositivo — subir dados locais
-      await pushDataGitHub(getData());
+      // Tem dados locais → subir para o GitHub (local sempre tem prioridade na inicialização)
+      await pushDataGitHub(local);
     }
+
+    syncStatus('Sincronizado', 'ok');
+    setTimeout(() => syncStatus('GitHub', null), 3000);
   } catch(e) {
     syncStatus('Erro sync', 'err');
   }
