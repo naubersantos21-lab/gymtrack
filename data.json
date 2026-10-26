@@ -1,6 +1,136 @@
 {
   "fichasArquivadas": [
     {
+      "id": 1792980615795,
+      "treinoId": "A",
+      "nome": "Treino A",
+      "foco": "Quadríceps · Adutores · Ombros",
+      "arquivadoEm": "2026-10-26",
+      "exercicios": [
+        {
+          "nome": "Leg Press 45°",
+          "grupo": "Quadríceps",
+          "setsReps": "4 × 12 a 15",
+          "cargaInicial": "50",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQCPoWqU2zScSZcEwk6pzBaFAZG9XIrMtV66FkMQX6s_3OI?e=2WMlrx",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Agachamento Livre",
+          "grupo": "Quadríceps",
+          "setsReps": "4 × 12 a 15",
+          "cargaInicial": "14",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBULaqWsmeCS63GMZZLQunPAesAOPPFVEE1FXs6HFc4o8Q?e=8ZJ70z",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Adutores",
+          "grupo": "Adutores",
+          "setsReps": "4 × 15",
+          "cargaInicial": "55",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQDJzD2k7LCdTY4x2wwu_wU4ASOub7X1-1xfJZKAlvyocVg?e=Mh3KjL",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Extensora",
+          "grupo": "Quadríceps",
+          "setsReps": "3 × 8",
+          "cargaInicial": "60",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQABk4uTCY4dQpV_OzuzUnU5ATcTn2EI4eL9TJtM8sNPYHQ?e=xjO46T",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Afundo com Pé no Step",
+          "grupo": "Quadríceps",
+          "setsReps": "3 × 10",
+          "cargaInicial": "12",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQABk4uTCY4dQpV_OzuzUnU5ATcTn2EI4eL9TJtM8sNPYHQ?e=xjO46T",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Ombros Alternado + Direto",
+          "grupo": "Ombros",
+          "setsReps": "3 × 6 + 6",
+          "cargaInicial": "7",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBWn3bHGq_0T5gqAIQD-WQTARQ-E5IGkBkumg72tAHo_bE?e=lrwMoi",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Agachamento com Triângulo no Cross",
+          "grupo": "Quadríceps",
+          "setsReps": "3 × 10",
+          "cargaInicial": "40",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQCoMkcbpNT5RJaEC1Ua1HpjAe_LSJZyajDPeAAnznFssgQ?e=87OBC5",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Agachamento Triângulo Cross + Desenvolvimento",
+          "grupo": "Ombros",
+          "setsReps": "3 × 10",
+          "cargaInicial": "25",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQCoMkcbpNT5RJaEC1Ua1HpjAe_LSJZyajDPeAAnznFssgQ?e=87OBC5",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Elevação Lateral no Cross",
+          "grupo": "Ombros",
+          "setsReps": "3 × 5, 6, 7",
+          "cargaInicial": "5",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQCuxb2tAA4LQo7oUjbDiU1cAQvBXbPu2YE2Jn6FhT1Z4lE?e=nUeKBJ",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Crucifixo Invertido Unilateral",
+          "grupo": "Ombros",
+          "setsReps": "3 × 8 a 10",
+          "cargaInicial": "8",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQDaa2hpqPaZTaNVbSbmCHRvAWS_CrwAfJusYkfnXmCuso4?e=Jlhg7W",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Abdominal Rodinha",
+          "grupo": "Abdômen",
+          "setsReps": "3 × 15",
+          "cargaInicial": "",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQC29SLUpMw8QqSNFkEnkpZtASp0nfD2M3aHRpkhH8JqEAM?e=2YYfTD",
+            "label": "▶ Ver"
+          }
+        }
+      ]
+    },
+    {
       "id": 1792980601878,
       "treinoId": "B",
       "nome": "Treino B",
@@ -1646,5 +1776,5 @@
     }
   ],
   "grupoAtivo": 1792967358600,
-  "_updatedAt": 1792980601878
+  "_updatedAt": 1792980615795
 }
