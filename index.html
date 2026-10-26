@@ -1590,6 +1590,15 @@ function criarTreino() {
 // ══ CARREGAR TREINOS EXTRAS SALVOS ══
 function loadExtraTreinos() {
   const d = getData();
+
+  // Suprimir treinos estáticos (A/B/C/D) que foram excluídos
+  (d.treinosRemovidos || []).forEach(id => {
+    const tabBtn = document.querySelector('.tab-btn[data-tab="' + id + '"]');
+    const panel = document.getElementById('panel-' + id);
+    if (tabBtn) tabBtn.remove();
+    if (panel) panel.remove();
+  });
+
   (d.extraTreinos || []).forEach(t => {
     if (document.getElementById('panel-' + t.id)) return; // já existe
     const color = t.color || '#888888';
@@ -1736,6 +1745,16 @@ function _removerPainelTreino(id) {
                    document.getElementById('panel-' + firstTab.dataset.tab);
         if (fp) fp.classList.add('active');
       }
+    }
+  }
+  // Se for treino estático (A/B/C/D), persistir a remoção para outros dispositivos
+  const estaticos = ['A','B','C','D'];
+  if (estaticos.includes(id)) {
+    const d = getData();
+    d.treinosRemovidos = d.treinosRemovidos || [];
+    if (!d.treinosRemovidos.includes(id)) {
+      d.treinosRemovidos.push(id);
+      setData(d); // sobe pro GitHub via debounce
     }
   }
 }
