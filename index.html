@@ -791,6 +791,7 @@ async function pullDataGitHub() {
 // ══ STORAGE ══
 function getData() { try { return JSON.parse(localStorage.getItem(SK) || '{}'); } catch(e) { return {}; } }
 function setData(d) {
+  d._updatedAt = Date.now(); // timestamp de quando este dispositivo salvou
   localStorage.setItem(SK, JSON.stringify(d));
   // Debounce: envia para GitHub 1,5s após última alteração
   clearTimeout(syncDebounce);
@@ -912,16 +913,20 @@ async function initSync() {
     const remoto = await pullDataGitHub();
     if (remoto) {
       const local = getData();
-      const localStr = JSON.stringify(local);
-      const remotoStr = JSON.stringify(remoto);
-      if (localStr !== remotoStr) {
-        // Dados remotos são diferentes — mesclar e recarregar para garantir que tudo renderize
-        const merged = Object.assign({}, local, remoto);
-        localStorage.setItem(SK, JSON.stringify(merged));
-        syncStatus('Sincronizado — recarregando…', 'ok');
+      const tsLocal  = local._updatedAt  || 0;
+      const tsRemoto = remoto._updatedAt || 0;
+
+      if (tsRemoto > tsLocal) {
+        // Remoto é mais novo → atualizar local e recarregar
+        localStorage.setItem(SK, JSON.stringify(remoto));
+        syncStatus('Dados atualizados — recarregando…', 'ok');
         setTimeout(() => location.reload(), 800);
         return;
+      } else if (tsLocal > tsRemoto) {
+        // Local é mais novo → subir para o GitHub
+        await pushDataGitHub(local);
       }
+      // Se iguais, não faz nada
       syncStatus('Sincronizado', 'ok');
       setTimeout(() => syncStatus('GitHub', null), 3000);
     } else {
