@@ -1,6 +1,114 @@
 {
   "fichasArquivadas": [
     {
+      "id": 1792980999319,
+      "treinoId": "C",
+      "nome": "Treino C",
+      "foco": "Costas · Posterior · Glúteos · Gêmeos",
+      "arquivadoEm": "2026-10-26",
+      "exercicios": [
+        {
+          "nome": "Remada Sentada",
+          "grupo": "Costas",
+          "setsReps": "5 × 10",
+          "cargaInicial": "30",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQDCHGQjT2R_TqizATRA4tyPAWJxqNQD5nqZoBW-kzAfKZQ?e=H1Vrgl",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Pulley Costas",
+          "grupo": "Costas",
+          "setsReps": "5 × 10",
+          "cargaInicial": "30",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQDCHGQjT2R_TqizATRA4tyPAWJxqNQD5nqZoBW-kzAfKZQ?e=H1Vrgl",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Gêmeos Solear",
+          "grupo": "Gêmeos",
+          "setsReps": "5 × 20+10",
+          "cargaInicial": "50",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQD-f72v35LLSZyI5We1jJa6AZ8FipZob_x-VrBj5V4z7QA?e=omHw1h",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Pull Down",
+          "grupo": "Costas",
+          "setsReps": "4 × 10",
+          "cargaInicial": "45",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQCQGVqUrDbYTqm5QQarM25tATu9hKxudCBixLdeTmIRlIk?e=Zcr0xf",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Lombar com Remada",
+          "grupo": "Costas",
+          "setsReps": "4 × 10",
+          "cargaInicial": "8",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQCjbzIZEi5nR6MTuS1-gx_9ATLhdIx3lSF2jm3K5fs6D2k?e=Zcj8dL",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Gêmeos",
+          "grupo": "Gêmeos",
+          "setsReps": "4 × 20",
+          "cargaInicial": "18",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQAhuS-N_3p7QZXWJADlf8gDAc5e26P6Fi8NmpMhjH88hxE?e=AFSpWq",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Abdutores",
+          "grupo": "Glúteos",
+          "setsReps": "4 × 15+10",
+          "cargaInicial": "65",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQDiB1Af2lwBRpaFmJBOyiSpAcJrMJbuIS2k_v0lL7WS7EU?e=CDd1kr",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Elevação de Ombros com Stiff",
+          "grupo": "Posterior",
+          "setsReps": "4 × 10",
+          "cargaInicial": "18",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQC6NXQHS711Q4YK2YD62gO2AWqfOTvOXymQrUarM9HKu8g?e=prR6KU",
+            "label": "▶ Ver"
+          }
+        },
+        {
+          "nome": "Abdominal Oblíquo",
+          "grupo": "Abdômen",
+          "setsReps": "4 × 10 a 15",
+          "cargaInicial": "",
+          "cargaNova": "",
+          "video": {
+            "href": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBu5E2AtqUTTZlvrNh9Y2K0AQmX2TkLKrpbjzoTUe7x-MU?e=TUtiaH",
+            "label": "▶ Ver"
+          }
+        }
+      ]
+    },
+    {
       "id": 1792980934479,
       "treinoId": "B",
       "nome": "Treino B",
@@ -2144,9 +2252,10 @@
     }
   ],
   "grupoAtivo": 1792967358600,
-  "_updatedAt": 1792980934481,
+  "_updatedAt": 1792980999322,
   "treinosRemovidos": [
     "A",
-    "B"
+    "B",
+    "C"
   ]
 }
