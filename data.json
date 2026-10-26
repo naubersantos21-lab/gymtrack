@@ -887,23 +887,7 @@
       ]
     }
   ],
-  "extraTreinos": [
-    {
-      "id": "A",
-      "foco": "Peitoral e Tríceps",
-      "exercicios": [
-        {
-          "nome": "Peitoral",
-          "grupo": "Peitoral",
-          "series": "3",
-          "reps": "10",
-          "cargaInicial": "50",
-          "video": null
-        }
-      ],
-      "color": "#4cbc7d"
-    }
-  ],
+  "extraTreinos": [],
   "grupos": [
     {
       "id": 1792967358600,
