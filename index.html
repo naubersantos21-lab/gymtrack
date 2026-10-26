@@ -911,16 +911,17 @@ async function initSync() {
   try {
     const remoto = await pullDataGitHub();
     if (remoto) {
-      // Mesclar remoto com local (remoto tem prioridade para garantir consistência entre dispositivos)
       const local = getData();
-      // Guardar dados atuais do localStorage como backup
-      const merged = Object.assign({}, local, remoto);
-      localStorage.setItem(SK, JSON.stringify(merged));
-      // Recarregar cargas e treinos extras do dado mesclado
-      loadCargas();
-      loadExtraTreinos();
-      updateGrupoBanner();
-      renderSequencias();
+      const localStr = JSON.stringify(local);
+      const remotoStr = JSON.stringify(remoto);
+      if (localStr !== remotoStr) {
+        // Dados remotos são diferentes — mesclar e recarregar para garantir que tudo renderize
+        const merged = Object.assign({}, local, remoto);
+        localStorage.setItem(SK, JSON.stringify(merged));
+        syncStatus('Sincronizado — recarregando…', 'ok');
+        setTimeout(() => location.reload(), 800);
+        return;
+      }
       syncStatus('Sincronizado', 'ok');
       setTimeout(() => syncStatus('GitHub', null), 3000);
     } else {
