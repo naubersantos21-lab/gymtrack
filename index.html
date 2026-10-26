@@ -907,8 +907,9 @@ async function initSync() {
   const cfg = getSyncCfg();
   if (!cfg.token) { syncStatus('Não configurado', null); return; }
 
-  // Evitar loop: se já sincronizou nesta sessão, não faz nada
-  if (sessionStorage.getItem('gymtrack_synced')) {
+  // Evitar loop: se recarregou há menos de 5 segundos, não sincroniza de novo
+  const ultimoReload = parseInt(localStorage.getItem('gymtrack_last_reload') || '0');
+  if (Date.now() - ultimoReload < 5000) {
     syncStatus('GitHub', null);
     return;
   }
@@ -921,8 +922,8 @@ async function initSync() {
     const temDadosRemoto = remoto && remoto.cargas && Object.keys(remoto.cargas).length > 0;
 
     if (temDadosRemoto && !temDadosLocais) {
-      // Dispositivo novo sem dados → baixar do GitHub uma única vez
-      sessionStorage.setItem('gymtrack_synced', '1');
+      // Dispositivo novo sem dados → baixar do GitHub
+      localStorage.setItem('gymtrack_last_reload', String(Date.now()));
       localStorage.setItem(SK, JSON.stringify(remoto));
       syncStatus('Dados carregados!', 'ok');
       setTimeout(() => location.reload(), 600);
@@ -934,7 +935,6 @@ async function initSync() {
       await pushDataGitHub(local);
     }
 
-    sessionStorage.setItem('gymtrack_synced', '1');
     syncStatus('Sincronizado', 'ok');
     setTimeout(() => syncStatus('GitHub', null), 3000);
   } catch(e) {
