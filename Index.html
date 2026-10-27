@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GymTrack</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0d0f14;--surface:#161922;--surface2:#1e2330;--border:#2a2f3d;
+  --accent:#f5a623;--text:#e8eaf0;--muted:#6b7280;--success:#34d399;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+/* ── HEADER ── */
+header{padding:16px 32px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--border);background:var(--surface);flex-wrap:wrap;position:sticky;top:0;z-index:100;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px;color:var(--accent);line-height:1;}
+.logo span{color:var(--text);}
+.header-breadcrumb{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--muted);}
+.breadcrumb-sep{color:var(--border);}
+.breadcrumb-link{color:var(--accent);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;font-size:.8rem;transition:opacity .2s;}
+.breadcrumb-link:hover{opacity:.7;}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+#save-indicator{font-size:.72rem;color:var(--success);letter-spacing:1px;opacity:0;transition:opacity .4s;}
+#sync-indicator{display:flex;align-items:center;gap:6px;font-size:.72rem;letter-spacing:1px;color:var(--muted);}
+.btn-sync-cfg{background:none;border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:5px 10px;cursor:pointer;font-size:.75rem;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.btn-sync-cfg:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── PAGES ── */
+.page{display:none;padding:32px;min-height:calc(100vh - 70px);}
+.page.active{display:block;animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── HOME PAGE ── */
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;margin-bottom:6px;}
+.page-subtitle{font-size:.82rem;color:var(--muted);margin-bottom:32px;}
+.grupos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:32px;}
+.grupo-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.grupo-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0;}
+.grupo-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.grupo-card-name{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;margin-bottom:4px;}
+.grupo-card-meta{font-size:.75rem;color:var(--muted);}
+.grupo-card-treinos{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap;}
+.grupo-treino-badge{font-size:.7rem;padding:3px 10px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);}
+.btn-new-grupo{background:none;border:2px dashed var(--border);color:var(--muted);border-radius:14px;padding:24px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.9rem;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;}
+.btn-new-grupo:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── CADASTO PAGE ── */
+.cadastro-steps{display:flex;gap:8px;margin-bottom:28px;align-items:center;}
+.step-dot{width:28px;height:28px;border-radius:50%;background:var(--surface);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;color:var(--muted);transition:all .3s;}
+.step-dot.active{background:var(--accent);border-color:var(--accent);color:#0d0f14;}
+.step-dot.done{background:var(--success);border-color:var(--success);color:#0d0f14;}
+.step-line{flex:1;height:2px;background:var(--border);border-radius:2px;}
+.step-label{font-size:.7rem;color:var(--muted);text-align:center;margin-top:4px;}
+.step-block{display:none;}
+.step-block.active{display:block;}
+.form-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px;}
+.form-section-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1.5px;margin-bottom:18px;color:var(--accent);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-row.full{grid-template-columns:1fr;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group label{font-size:.72rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:600;}
+.form-group input,.form-group textarea,.form-group select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;padding:9px 12px;transition:border-color .2s;outline:none;}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--accent);}
+.form-group textarea{resize:vertical;min-height:60px;}
+.exercicio-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;position:relative;}
+.exercicio-card-title{font-weight:600;font-size:.88rem;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.btn-remove-ex{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;padding:2px 6px;border-radius:4px;transition:color .2s;}
+.btn-remove-ex:hover{color:#e8593a;}
+.btn-add-ex{background:none;border:1px dashed var(--border);color:var(--muted);border-radius:8px;padding:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.82rem;transition:all .2s;width:100%;margin-top:4px;}
+.btn-add-ex:hover{border-color:var(--accent);color:var(--accent);}
+.treino-secao{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.treino-secao-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.treino-secao-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:1.5px;}
+.btn-remove-treino{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;transition:color .2s;}
+.btn-remove-treino:hover{color:#e8593a;}
+.btn-add-treino{background:none;border:1px dashed var(--border);color:var(--muted);border-radius:10px;padding:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.85rem;transition:all .2s;width:100%;}
+.btn-add-treino:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── TREINO PAGE ── */
+.treino-nav{display:flex;gap:4px;padding:0 0 0;overflow-x:auto;flex-wrap:nowrap;margin-bottom:0;}
+.treino-tab-btn{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:2px;padding:8px 20px;border:1px solid var(--border);border-bottom:none;background:var(--surface);color:var(--muted);border-radius:8px 8px 0 0;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.treino-tab-btn.active{background:var(--surface2);color:var(--accent);}
+.treino-tab-content{display:none;background:var(--surface2);border:1px solid var(--border);border-top:none;border-radius:0 0 12px 12px;padding:28px;min-height:400px;}
+.treino-tab-content.active{display:block;animation:fadeIn .2s ease;}
+.panel-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;flex-wrap:wrap;}
+.panel-tag{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;line-height:1;width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:10px;flex-shrink:0;background:rgba(245,166,35,.12);color:var(--accent);}
+.panel-title h2{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;}
+.panel-title p{font-size:.75rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.panel-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;}
+.btn-action{background:none;border:1px solid var(--border);color:var(--muted);padding:7px 14px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.8rem;transition:all .2s;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.btn-action:hover{border-color:var(--accent);color:var(--accent);}
+.btn-action.primary{background:var(--accent);border-color:var(--accent);color:#0d0f14;font-weight:600;}
+.btn-action.primary:hover{opacity:.85;}
+.btn-action.green{border-color:var(--success);color:var(--success);}
+.btn-action.green:hover{background:var(--success);color:#0d0f14;}
+.btn-action.danger{border-color:#e8593a;color:#e8593a;}
+.btn-action.danger:hover{background:#e8593a;color:#fff;}
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.875rem;}
+thead tr{border-bottom:1px solid var(--border);}
+th{text-align:left;font-size:.68rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:10px 12px;}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s;}
+tbody tr:hover{background:rgba(255,255,255,.03);}
+td{padding:12px;vertical-align:middle;}
+.muscle-badge{font-size:.7rem;padding:3px 8px;border-radius:20px;font-weight:600;white-space:nowrap;background:rgba(245,166,35,.1);color:var(--accent);}
+.ex-name{font-weight:500;}
+.ex-desc{font-size:.75rem;color:var(--muted);margin-top:2px;}
+.sets-reps{font-size:.8rem;color:var(--muted);}
+.carga-input{background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;padding:6px 10px;width:80px;text-align:center;outline:none;transition:border-color .2s;}
+.carga-input:focus{border-color:var(--accent);}
+.video-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:.75rem;text-decoration:none;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.video-btn:hover{border-color:var(--accent);color:var(--accent);}
+.panel-stats{display:flex;gap:16px;margin-top:24px;flex-wrap:wrap;}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 20px;min-width:100px;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:1px;color:var(--accent);}
+.stat-label{font-size:.68rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+
+/* ── HISTÓRICO ── */
+.hist-tabs{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:0;}
+.hist-tab-btn{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.85rem;padding:8px 16px;cursor:pointer;transition:all .2s;margin-bottom:-1px;}
+.hist-tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.hist-panel{display:none;}
+.hist-panel.active{display:block;}
+.hist-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;}
+.hist-item-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.hist-item-date{font-size:.75rem;color:var(--muted);}
+.hist-item-treino{font-weight:600;font-size:.88rem;}
+.hist-ex-list{font-size:.78rem;color:var(--muted);line-height:1.8;}
+.hist-empty{text-align:center;padding:48px 20px;color:var(--muted);}
+.empty-icon{font-size:2rem;display:block;margin-bottom:12px;}
+
+/* ── GRÁFICO ── */
+.chart-wrap{position:relative;height:260px;margin-bottom:24px;}
+.chart-select{background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;padding:8px 12px;outline:none;}
+
+/* ── TIMER ── */
+.timer-widget{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 14px;display:flex;align-items:center;gap:10px;}
+.timer-display{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--accent);min-width:56px;}
+.timer-btns button{background:none;border:1px solid var(--border);color:var(--muted);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:.75rem;transition:all .15s;}
+.timer-btns button:hover{border-color:var(--accent);color:var(--accent);}
+.timer-btns button.active{background:var(--accent);border-color:var(--accent);color:#0d0f14;}
+.timer-btns{display:flex;gap:4px;}
+
+/* ── MODALS ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:500;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;}
+.modal h3{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;margin-bottom:20px;}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;flex-wrap:wrap;}
+.btn-cancel{background:none;border:1px solid var(--border);color:var(--muted);padding:8px 18px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.85rem;transition:all .2s;}
+.btn-cancel:hover{border-color:var(--text);color:var(--text);}
+.btn-save{background:var(--accent);border:none;color:#0d0f14;padding:8px 20px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;transition:opacity .2s;}
+.btn-save:hover{opacity:.85;}
+.reg-header{display:grid;grid-template-columns:1fr 100px 1fr;gap:8px;padding:0 4px 8px;border-bottom:1px solid var(--border);font-size:.68rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.reg-row{display:grid;grid-template-columns:1fr 100px 1fr;gap:8px;align-items:center;padding:6px 4px;border-bottom:1px solid rgba(255,255,255,.04);}
+.reg-row input{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;padding:6px 10px;outline:none;transition:border-color .2s;width:100%;}
+.reg-row input:focus{border-color:var(--accent);}
+
+/* ── FICHAS ARQUIVADAS ── */
+.ficha-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden;}
+.ficha-card-header{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.ficha-card-header:hover{background:rgba(255,255,255,.02);}
+.ficha-card-body{display:none;padding:0 18px 14px;border-top:1px solid var(--border);}
+.ficha-card-body.open{display:block;}
+
+/* ── GRUPO EDIT/DELETE ── */
+.grupo-actions{position:absolute;top:14px;right:14px;display:flex;gap:6px;opacity:0;transition:opacity .2s;}
+.grupo-card:hover .grupo-actions{opacity:1;}
+.grupo-action-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:.75rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.grupo-action-btn:hover{border-color:#e8593a;color:#e8593a;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .page{padding:16px;}
+  header{padding:12px 16px;}
+  .form-row{grid-template-columns:1fr;}
+  .grupos-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">GYM<span>TRACK</span></div>
+  <div class="header-breadcrumb" id="breadcrumb"></div>
+  <div class="header-right">
+    <div class="timer-widget" id="timerWidget" style="display:none;">
+      <div class="timer-display" id="timerDisplay">00:00</div>
+      <div class="timer-btns">
+        <button id="timerStart" onclick="timerToggle()" title="Iniciar/Pausar">▶</button>
+        <button onclick="timerReset()" title="Resetar">↺</button>
+      </div>
+    </div>
+    <div id="save-indicator">✓ Salvo</div>
+    <div id="sync-indicator"><span id="sync-icon">☁</span><span id="sync-label">—</span></div>
+    <button class="btn-sync-cfg" onclick="abrirConfigSync()">⚙ Sync</button>
+  </div>
+</header>
+
+<!-- ══ PAGE: HOME ══ -->
+<div class="page active" id="page-home">
+  <div style="max-width:960px;margin:0 auto;">
+    <div class="page-title">Meus Grupos de Treino</div>
+    <div class="page-subtitle">Selecione um grupo para ver os treinos ou crie um novo</div>
+    <div class="grupos-grid" id="grupos-grid">
+      <!-- cards gerados dinamicamente -->
+    </div>
+    <button class="btn-new-grupo" onclick="irParaCadastro()">
+      <span style="font-size:1.4rem;">＋</span> Novo Grupo de Treino
+    </button>
+  </div>
+</div>
+
+<!-- ══ PAGE: CADASTRO ══ -->
+<div class="page" id="page-cadastro">
+  <div style="max-width:760px;margin:0 auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+      <div>
+        <div class="page-title" id="cad-page-title">Novo Grupo de Treino</div>
+        <div class="page-subtitle">Defina os treinos e exercícios do grupo</div>
+      </div>
+      <button class="btn-action" onclick="irHome()">← Voltar</button>
+    </div>
+
+    <!-- DADOS DO GRUPO -->
+    <div class="form-section">
+      <div class="form-section-title">📋 Dados do Grupo</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nome do Grupo *</label>
+          <input type="text" id="cad-grupo-nome" placeholder="ex: Outubro 2026, Hipertrofia…">
+        </div>
+        <div class="form-group">
+          <label>Descrição (opcional)</label>
+          <input type="text" id="cad-grupo-desc" placeholder="ex: Foco em força e volume">
+        </div>
+      </div>
+    </div>
+
+    <!-- TREINOS -->
+    <div class="form-section">
+      <div class="form-section-title">🏋️ Treinos</div>
+      <div id="cad-treinos-list"></div>
+      <button class="btn-add-treino" onclick="cadAddTreino()">＋ Adicionar Treino</button>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px;">
+      <button class="btn-cancel" onclick="irHome()">Cancelar</button>
+      <button class="btn-save" onclick="salvarGrupo()">✓ Salvar Grupo de Treino</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: TREINO (grupo selecionado) ══ -->
+<div class="page" id="page-treino">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <!-- ABAS DE TREINO + HISTÓRICO + EVOLUÇÃO -->
+    <div class="treino-nav" id="treino-nav"></div>
+    <div id="treino-panels"></div>
+
+    <!-- HISTÓRICO -->
+    <div class="treino-tab-content" id="panel-historico" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:0 0 12px 12px;padding:28px;">
+      <div class="hist-tabs">
+        <button class="hist-tab-btn active" onclick="switchHistTab('sessoes')">📅 Sessões</button>
+        <button class="hist-tab-btn" id="histTabFichas" onclick="switchHistTab('fichas')">📁 Fichas Arquivadas</button>
+      </div>
+      <div class="hist-panel active" id="hist-panel-sessoes">
+        <div id="hist-sessoes-list"></div>
+      </div>
+      <div class="hist-panel" id="hist-panel-fichas">
+        <div id="hist-fichas-list"></div>
+      </div>
+    </div>
+
+    <!-- EVOLUÇÃO -->
+    <div class="treino-tab-content" id="panel-evolucao" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:0 0 12px 12px;padding:28px;">
+      <div class="panel-header">
+        <div class="panel-tag icon">📈</div>
+        <div class="panel-title"><h2>Evolução de Cargas</h2><p>Acompanhe seu progresso</p></div>
+      </div>
+      <div style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <select class="chart-select" id="chartExSelect" onchange="updateChart()">
+          <option value="">Selecione um exercício</option>
+        </select>
+      </div>
+      <div class="chart-wrap"><canvas id="evoChart"></canvas></div>
+      <div id="chart-empty" style="text-align:center;color:var(--muted);font-size:.85rem;display:none;">Registre sessões para ver a evolução.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ MODAL SYNC ══ -->
+<div class="modal-overlay" id="modalSync">
+  <div class="modal" style="max-width:480px;">
+    <h3>⚙ Sincronização GitHub</h3>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:10px;line-height:1.6;">Dados salvos em <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;">data.json</code> no repositório, acessíveis em qualquer dispositivo.</p>
+    <div style="font-size:.78rem;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);border-radius:8px;padding:10px 14px;margin-bottom:16px;line-height:1.7;">
+      <strong style="color:var(--accent);">Como usar:</strong><br>
+      • Alterações sobem automaticamente em 1,5s<br>
+      • Em outro dispositivo: clique <strong>⬇ Buscar do GitHub</strong> para carregar
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="form-group">
+        <label>Token do GitHub *</label>
+        <input type="password" id="syncToken" placeholder="ghp_..." autocomplete="off">
+        <div style="font-size:.72rem;color:var(--muted);margin-top:3px;">Salvo apenas neste dispositivo.</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group">
+          <label>Usuário GitHub</label>
+          <input type="text" id="syncOwner" placeholder="naubersantos21-lab">
+        </div>
+        <div class="form-group">
+          <label>Repositório</label>
+          <input type="text" id="syncRepo" placeholder="gymtrack">
+        </div>
+      </div>
+    </div>
+    <div id="syncStatus" style="margin:12px 0;font-size:.8rem;display:none;padding:10px 14px;border-radius:8px;"></div>
+    <div class="modal-actions" style="flex-wrap:wrap;gap:8px;">
+      <button class="btn-cancel" onclick="fecharModal('modalSync')">Fechar</button>
+      <button class="btn-action" onclick="testarSync()">🔍 Testar</button>
+      <button class="btn-action" onclick="enviarParaGitHub()" style="border-color:var(--success);color:var(--success);">⬆ Enviar</button>
+      <button class="btn-action" onclick="importarDoGitHub()" style="border-color:#3b82f6;color:#3b82f6;">⬇ Buscar do GitHub</button>
+      <button class="btn-save" onclick="salvarConfigSync()">✓ Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL REGISTRAR SESSÃO ══ -->
+<div class="modal-overlay" id="modalReg">
+  <div class="modal">
+    <h3 id="regTitle">Registrar Sessão</h3>
+    <input type="hidden" id="regGrupoId">
+    <input type="hidden" id="regTreinoId">
+    <div class="form-group" style="margin-bottom:14px;">
+      <label>Data</label>
+      <input type="date" id="regData">
+    </div>
+    <div class="reg-header"><span>Exercício</span><span>Carga (kg)</span><span>Obs</span></div>
+    <div id="regExList"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="fecharModal('modalReg')">Cancelar</button>
+      <button class="btn-save" onclick="salvarSessao()">Salvar Sessão</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL EXCLUIR TREINO ══ -->
+<div class="modal-overlay" id="modalExcluirTreino">
+  <div class="modal" style="max-width:420px;">
+    <h3>Excluir Treino</h3>
+    <input type="hidden" id="exclTreinoGrupoId">
+    <input type="hidden" id="exclTreinoId">
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:20px;">O que deseja fazer com <strong id="exclTreinoNome" style="color:var(--text)"></strong>?</p>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+      <button class="btn-action green" style="justify-content:flex-start;padding:14px 18px;" onclick="confirmarExcluirTreino('arquivar')">
+        <span style="font-size:1.1rem;">📁</span>
+        <div style="text-align:left;">
+          <div style="font-weight:600;font-size:.88rem;">Arquivar em Histórico de Fichas</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:2px;">Guarda a ficha no Histórico</div>
+        </div>
+      </button>
+      <button class="btn-action danger" style="justify-content:flex-start;padding:14px 18px;" onclick="confirmarExcluirTreino('deletar')">
+        <span style="font-size:1.1rem;">🗑</span>
+        <div style="text-align:left;">
+          <div style="font-weight:600;font-size:.88rem;">Excluir definitivamente</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:2px;">Remove sem recuperação</div>
+        </div>
+      </button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="fecharModal('modalExcluirTreino')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL EXCLUIR GRUPO ══ -->
+<div class="modal-overlay" id="modalExcluirGrupo">
+  <div class="modal" style="max-width:400px;">
+    <h3>Excluir Grupo</h3>
+    <input type="hidden" id="exclGrupoId">
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:20px;">Deseja excluir o grupo <strong id="exclGrupoNome" style="color:var(--text)"></strong>? Todo o histórico associado será perdido.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="fecharModal('modalExcluirGrupo')">Cancelar</button>
+      <button class="btn-action danger" onclick="confirmarExcluirGrupo()">🗑 Excluir</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ STORAGE ══
+const SK = 'gymtrack_v4';
+const SK_SYNC = 'gymtrack_sync_cfg';
+let syncDebounce = null;
+let chartInstance = null;
+let grupoAtivo = null; // id do grupo aberto
+
+function getData() {
+  try { return JSON.parse(localStorage.getItem(SK) || '{"grupos":[]}'); }
+  catch(e) { return {grupos:[]}; }
+}
+function setData(d) {
+  d._updatedAt = Date.now();
+  localStorage.setItem(SK, JSON.stringify(d));
+  showSaved();
+  clearTimeout(syncDebounce);
+  syncDebounce = setTimeout(() => pushDataGitHub(d), 1500);
+}
+function showSaved() {
+  const el = document.getElementById('save-indicator');
+  el.style.opacity = '1';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.style.opacity='0', 2000);
+}
+
+// ══ SYNC ══
+function getSyncCfg() { try { return JSON.parse(localStorage.getItem(SK_SYNC)||'{}'); } catch(e){ return {}; } }
+function setSyncCfg(c) { localStorage.setItem(SK_SYNC, JSON.stringify(c)); }
+function syncStatus(msg, tipo) {
+  const icon = document.getElementById('sync-icon');
+  const lbl  = document.getElementById('sync-label');
+  const colors = {ok:'var(--success)', err:'#e8593a', spin:'var(--accent)'};
+  const c = colors[tipo] || 'var(--muted)';
+  icon.style.color = lbl.style.color = c;
+  icon.textContent = tipo==='spin' ? '↻' : tipo==='err' ? '⚠' : '☁';
+  lbl.textContent = msg;
+}
+async function githubRequest(method, path, body) {
+  const cfg = getSyncCfg();
+  if (!cfg.token) throw new Error('Token não configurado');
+  const url = 'https://api.github.com/repos/' + cfg.owner + '/' + cfg.repo + path;
+  const opts = { method, headers: { Authorization:'token '+cfg.token, 'Content-Type':'application/json', Accept:'application/vnd.github.v3+json' } };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(url, opts);
+  if (!res.ok) { const e = await res.json().catch(()=>{}); throw new Error((e&&e.message)||res.status); }
+  return res.status===204 ? {} : res.json();
+}
+async function pushDataGitHub(data) {
+  const cfg = getSyncCfg();
+  if (!cfg.token||!cfg.owner||!cfg.repo) return;
+  syncStatus('Salvando…','spin');
+  try {
+    let sha = null;
+    try { const f = await githubRequest('GET','/contents/data.json'); sha = f.sha; } catch(e){}
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
+    await githubRequest('PUT','/contents/data.json',{ message:'GymTrack sync '+new Date().toISOString().slice(0,16), content, ...(sha?{sha}:{}) });
+    syncStatus('Sincronizado','ok');
+    setTimeout(()=>syncStatus('GitHub',null),3000);
+  } catch(e) { syncStatus('Erro: '+e.message,'err'); }
+}
+async function pullDataGitHub() {
+  const cfg = getSyncCfg();
+  if (!cfg.token||!cfg.owner||!cfg.repo) return null;
+  try {
+    const f = await githubRequest('GET','/contents/data.json');
+    return JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g,'')))));
+  } catch(e) {
+    const m = (e.message||'').toLowerCase();
+    if (m.includes('404')||m.includes('not found')) return null;
+    throw e;
+  }
+}
+function abrirConfigSync() {
+  const cfg = getSyncCfg();
+  document.getElementById('syncToken').value = cfg.token||'';
+  document.getElementById('syncOwner').value = cfg.owner||'naubersantos21-lab';
+  document.getElementById('syncRepo').value  = cfg.repo||'gymtrack';
+  document.getElementById('syncStatus').style.display='none';
+  document.getElementById('modalSync').classList.add('open');
+}
+function salvarConfigSync() {
+  const token = document.getElementById('syncToken').value.trim();
+  const owner = document.getElementById('syncOwner').value.trim();
+  const repo  = document.getElementById('syncRepo').value.trim();
+  if (!token||!owner||!repo) { mostrarSyncMsg('Preencha todos os campos.','err'); return; }
+  setSyncCfg({token,owner,repo});
+  mostrarSyncMsg('✓ Configuração salva!','ok');
+  setTimeout(()=>fecharModal('modalSync'),1200);
+}
+function mostrarSyncMsg(msg,tipo) {
+  const el = document.getElementById('syncStatus');
+  el.style.display='block';
+  el.style.background = tipo==='ok'?'rgba(52,211,153,.1)':tipo==='err'?'rgba(232,89,58,.1)':'rgba(245,166,35,.1)';
+  el.style.border = '1px solid '+(tipo==='ok'?'rgba(52,211,153,.3)':tipo==='err'?'rgba(232,89,58,.3)':'rgba(245,166,35,.3)');
+  el.style.color = tipo==='ok'?'var(--success)':tipo==='err'?'#e8593a':'var(--accent)';
+  el.textContent = msg;
+}
+async function testarSync() {
+  const token=document.getElementById('syncToken').value.trim();
+  const owner=document.getElementById('syncOwner').value.trim();
+  const repo=document.getElementById('syncRepo').value.trim();
+  if(!token||!owner||!repo){mostrarSyncMsg('Preencha todos os campos.','err');return;}
+  mostrarSyncMsg('Testando…','spin');
+  const old=getSyncCfg(); setSyncCfg({token,owner,repo});
+  try { await githubRequest('GET',''); mostrarSyncMsg('✓ Conexão OK!','ok'); }
+  catch(e) { mostrarSyncMsg('✗ '+e.message,'err'); setSyncCfg(old); }
+}
+async function enviarParaGitHub() {
+  const token=document.getElementById('syncToken').value.trim();
+  const owner=document.getElementById('syncOwner').value.trim();
+  const repo=document.getElementById('syncRepo').value.trim();
+  if(!token||!owner||!repo){mostrarSyncMsg('Salve a configuração primeiro.','err');return;}
+  setSyncCfg({token,owner,repo});
+  mostrarSyncMsg('Enviando…','spin');
+  try { await pushDataGitHub(getData()); mostrarSyncMsg('✓ Dados enviados!','ok'); }
+  catch(e){mostrarSyncMsg('✗ '+e.message,'err');}
+}
+async function importarDoGitHub() {
+  const token=document.getElementById('syncToken').value.trim();
+  const owner=document.getElementById('syncOwner').value.trim();
+  const repo=document.getElementById('syncRepo').value.trim();
+  if(!token||!owner||!repo){mostrarSyncMsg('Salve a configuração primeiro.','err');return;}
+  setSyncCfg({token,owner,repo});
+  mostrarSyncMsg('Buscando dados…','spin');
+  try {
+    const remoto = await pullDataGitHub();
+    if (!remoto) { mostrarSyncMsg('Nenhum dado no GitHub ainda. Use ⬆ Enviar primeiro.','spin'); return; }
+    localStorage.setItem(SK, JSON.stringify(remoto));
+    mostrarSyncMsg('✓ Dados carregados! Recarregando…','ok');
+    setTimeout(()=>location.reload(),1000);
+  } catch(e){mostrarSyncMsg('✗ '+e.message,'err');}
+}
+function initSync() {
+  const cfg = getSyncCfg();
+  if (!cfg.token) { syncStatus('Não configurado',null); return; }
+  syncStatus('GitHub',null);
+}
+
+// ══ NAVEGAÇÃO ══
+function irHome() {
+  grupoAtivo = null;
+  showPage('page-home');
+  setBreadcrumb([]);
+  document.getElementById('timerWidget').style.display='none';
+  renderHome();
+}
+function irParaCadastro(grupoId=null) {
+  cadEditGrupoId = grupoId;
+  if (grupoId) {
+    const d = getData();
+    const g = d.grupos.find(g=>g.id===grupoId);
+    if (g) cadCarregarGrupo(g);
+    document.getElementById('cad-page-title').textContent = 'Editar Grupo de Treino';
+  } else {
+    cadReset();
+    document.getElementById('cad-page-title').textContent = 'Novo Grupo de Treino';
+  }
+  showPage('page-cadastro');
+  setBreadcrumb([{label:'Home', fn:'irHome()'},'Novo Grupo']);
+}
+function irParaTreino(grupoId) {
+  grupoAtivo = grupoId;
+  const d = getData();
+  const g = d.grupos.find(g=>g.id===grupoId);
+  if (!g) return;
+  showPage('page-treino');
+  setBreadcrumb([{label:'Home', fn:'irHome()'},g.nome]);
+  document.getElementById('timerWidget').style.display='flex';
+  renderTreinoPage(g, d);
+}
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function setBreadcrumb(items) {
+  const el = document.getElementById('breadcrumb');
+  el.innerHTML = items.map((it,i) => {
+    if (typeof it === 'string') return '<span>'+it+'</span>';
+    return (i>0?'<span class="breadcrumb-sep">›</span>':'')+'<button class="breadcrumb-link" onclick="'+it.fn+'">'+it.label+'</button>';
+  }).join('<span class="breadcrumb-sep">›</span>');
+}
+function fecharModal(id){ document.getElementById(id).classList.remove('open'); }
+
+// ══ HOME ══
+function renderHome() {
+  const d = getData();
+  const grid = document.getElementById('grupos-grid');
+  if (!d.grupos||!d.grupos.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);font-size:.9rem;">Nenhum grupo cadastrado ainda. Crie seu primeiro grupo!</div>';
+    return;
+  }
+  const colors = ['#f5a623','#3b82f6','#a855f7','#e8593a','#34d399','#ec4899','#14b8a6'];
+  grid.innerHTML = d.grupos.map((g,i) => {
+    const cor = colors[i%colors.length];
+    const badges = (g.treinos||[]).map(t=>`<span class="grupo-treino-badge" style="border-color:${cor}44;color:${cor};">${t.nome}</span>`).join('');
+    return `<div class="grupo-card" onclick="irParaTreino('${g.id}')" style="--card-color:${cor};">
+      <div class="grupo-actions" onclick="event.stopPropagation()">
+        <button class="grupo-action-btn" onclick="irParaCadastro('${g.id}')" title="Editar">✏</button>
+        <button class="grupo-action-btn" onclick="pedirExcluirGrupo('${g.id}')" title="Excluir">✕</button>
+      </div>
+      <div style="width:36px;height:4px;border-radius:4px;background:${cor};margin-bottom:14px;"></div>
+      <div class="grupo-card-name" style="color:${cor}">${g.nome}</div>
+      <div class="grupo-card-meta">${g.descricao||''}</div>
+      <div class="grupo-treinos">${badges}</div>
+    </div>`;
+  }).join('');
+  // fix: after setting innerHTML, the ::before color needs inline style
+  grid.querySelectorAll('.grupo-card').forEach((card,i)=>{
+    card.style.setProperty('--card-color', colors[i%colors.length]);
+  });
+}
+
+// ══ CADASTRO ══
+let cadEditGrupoId = null;
+let cadTreinoCount = 0;
+
+function cadReset() {
+  cadEditGrupoId = null;
+  cadTreinoCount = 0;
+  document.getElementById('cad-grupo-nome').value = '';
+  document.getElementById('cad-grupo-desc').value = '';
+  document.getElementById('cad-treinos-list').innerHTML = '';
+}
+
+function cadCarregarGrupo(g) {
+  cadTreinoCount = 0;
+  document.getElementById('cad-grupo-nome').value = g.nome;
+  document.getElementById('cad-grupo-desc').value = g.descricao||'';
+  const list = document.getElementById('cad-treinos-list');
+  list.innerHTML = '';
+  (g.treinos||[]).forEach(t => cadAddTreino(t));
+}
+
+function cadAddTreino(dados=null) {
+  const tid = 'treino_' + (++cadTreinoCount);
+  const div = document.createElement('div');
+  div.className = 'treino-secao';
+  div.id = 'cad-' + tid;
+  div.innerHTML = `
+    <div class="treino-secao-header">
+      <div class="treino-secao-title">Treino ${cadTreinoCount}</div>
+      <button class="btn-remove-treino" onclick="document.getElementById('cad-${tid}').remove()">✕ Remover treino</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nome do Treino *</label>
+        <input type="text" id="${tid}-nome" placeholder="ex: Treino A, Peito+Tríceps…" value="${dados?dados.nome:''}">
+      </div>
+      <div class="form-group">
+        <label>Foco Muscular</label>
+        <input type="text" id="${tid}-foco" placeholder="ex: Quadríceps · Ombros" value="${dados?dados.foco||'':''}">
+      </div>
+    </div>
+    <div id="${tid}-exercicios"></div>
+    <button class="btn-add-ex" onclick="cadAddExercicio('${tid}')">＋ Adicionar Exercício</button>
+  `;
+  document.getElementById('cad-treinos-list').appendChild(div);
+  if (dados && dados.exercicios) dados.exercicios.forEach(ex => cadAddExercicio(tid, ex));
+  else cadAddExercicio(tid);
+}
+
+let cadExCount = 0;
+function cadAddExercicio(tid, dados=null) {
+  const eid = 'ex_' + (++cadExCount);
+  const div = document.createElement('div');
+  div.className = 'exercicio-card';
+  div.id = eid;
+  div.innerHTML = `
+    <div class="exercicio-card-title">
+      <span>Exercício</span>
+      <button class="btn-remove-ex" onclick="document.getElementById('${eid}').remove()" title="Remover">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Exercício *</label>
+        <input type="text" id="${eid}-nome" placeholder="ex: Leg Press 45°" value="${dados?dados.nome:''}">
+      </div>
+      <div class="form-group">
+        <label>Grupo Muscular</label>
+        <input type="text" id="${eid}-grupo" placeholder="ex: Quadríceps" value="${dados?dados.grupo||'':''}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Séries</label>
+        <input type="number" id="${eid}-series" placeholder="4" min="1" value="${dados?dados.series||'':''}">
+      </div>
+      <div class="form-group">
+        <label>Repetições</label>
+        <input type="text" id="${eid}-reps" placeholder="12 a 15" value="${dados?dados.reps||'':''}">
+      </div>
+      <div class="form-group">
+        <label>Carga Inicial (kg)</label>
+        <input type="number" id="${eid}-carga" placeholder="0" min="0" step="0.5" value="${dados?dados.cargaInicial||'':''}">
+      </div>
+    </div>
+    <div class="form-row full">
+      <div class="form-group">
+        <label>Observações</label>
+        <textarea id="${eid}-obs" rows="2" placeholder="Dicas de execução…">${dados?dados.obs||'':''}</textarea>
+      </div>
+    </div>
+    <div class="form-row full">
+      <div class="form-group">
+        <label>Link de Vídeo (opcional)</label>
+        <input type="url" id="${eid}-video" placeholder="https://youtube.com/…" value="${dados?dados.video||'':''}">
+      </div>
+    </div>
+  `;
+  document.getElementById(tid + '-exercicios').appendChild(div);
+}
+
+function salvarGrupo() {
+  const nome = document.getElementById('cad-grupo-nome').value.trim();
+  if (!nome) { alert('Informe o nome do grupo.'); return; }
+
+  const treinos = [];
+  document.querySelectorAll('#cad-treinos-list .treino-secao').forEach(sec => {
+    const tid = sec.id.replace('cad-','');
+    const tnome = document.getElementById(tid+'-nome')?.value?.trim()||'';
+    if (!tnome) return;
+    const exercicios = [];
+    sec.querySelectorAll('.exercicio-card').forEach(ec => {
+      const eid = ec.id;
+      const enome = document.getElementById(eid+'-nome')?.value?.trim()||'';
+      if (!enome) return;
+      exercicios.push({
+        nome: enome,
+        grupo: document.getElementById(eid+'-grupo')?.value?.trim()||'',
+        series: document.getElementById(eid+'-series')?.value||'',
+        reps: document.getElementById(eid+'-reps')?.value?.trim()||'',
+        cargaInicial: document.getElementById(eid+'-carga')?.value||'',
+        obs: document.getElementById(eid+'-obs')?.value?.trim()||'',
+        video: document.getElementById(eid+'-video')?.value?.trim()||''
+      });
+    });
+    treinos.push({ id: tid, nome: tnome, foco: document.getElementById(tid+'-foco')?.value?.trim()||'', exercicios });
+  });
+
+  const d = getData();
+  if (cadEditGrupoId) {
+    const idx = d.grupos.findIndex(g=>g.id===cadEditGrupoId);
+    if (idx>=0) { d.grupos[idx].nome=nome; d.grupos[idx].descricao=document.getElementById('cad-grupo-desc').value.trim(); d.grupos[idx].treinos=treinos; }
+  } else {
+    d.grupos.push({ id:'g_'+Date.now(), nome, descricao:document.getElementById('cad-grupo-desc').value.trim(), treinos, criadoEm:new Date().toISOString().slice(0,10) });
+  }
+  setData(d);
+  irHome();
+}
+
+// ══ PÁGINA DE TREINO ══
+function renderTreinoPage(g, d) {
+  const nav = document.getElementById('treino-nav');
+  const panels = document.getElementById('treino-panels');
+
+  // Limpar
+  nav.innerHTML = '';
+  panels.innerHTML = '';
+  document.getElementById('panel-historico').style.display='none';
+  document.getElementById('panel-evolucao').style.display='none';
+
+  const colors = ['#f5a623','#3b82f6','#a855f7','#e8593a','#34d399','#ec4899','#14b8a6'];
+
+  // Abas dos treinos
+  (g.treinos||[]).forEach((t,i) => {
+    const cor = colors[i%colors.length];
+    const btn = document.createElement('button');
+    btn.className = 'treino-tab-btn' + (i===0?' active':'');
+    btn.dataset.treinoId = t.id;
+    btn.textContent = t.nome;
+    btn.style.cssText = i===0?`border-bottom-color:${cor};color:${cor};`:'';
+    btn.onclick = () => switchTreinoTab(t.id, cor, btn);
+    nav.appendChild(btn);
+  });
+
+  // Aba Histórico
+  const btnH = document.createElement('button');
+  btnH.className = 'treino-tab-btn';
+  btnH.dataset.treinoId = '__historico';
+  btnH.innerHTML = '📅 Histórico';
+  btnH.onclick = () => switchTreinoTab('__historico','var(--muted)',btnH);
+  nav.appendChild(btnH);
+
+  // Aba Evolução
+  const btnE = document.createElement('button');
+  btnE.className = 'treino-tab-btn';
+  btnE.dataset.treinoId = '__evolucao';
+  btnE.innerHTML = '📈 Evolução';
+  btnE.onclick = () => switchTreinoTab('__evolucao','var(--muted)',btnE);
+  nav.appendChild(btnE);
+
+  // Painéis de treino
+  (g.treinos||[]).forEach((t,i) => {
+    const cor = colors[i%colors.length];
+    const panel = document.createElement('div');
+    panel.className = 'treino-tab-content' + (i===0?' active':'');
+    panel.id = 'panel-treino-'+t.id;
+    panel.style.cssText='background:var(--surface2);border:1px solid var(--border);border-radius:0 0 12px 12px;';
+
+    const exRows = (t.exercicios||[]).map((ex,ei) => {
+      const vidCell = ex.video
+        ? `<a class="video-btn" href="${ex.video}" target="_blank" rel="noopener" style="border-color:#3b82f6;color:#3b82f6;">▶ Ver</a>`
+        : `<span style="color:var(--muted);font-size:.75rem;">—</span>`;
+      const setsReps = (ex.series?(ex.series+'×'):'') + (ex.reps||'');
+      return `<tr data-grupo-id="${g.id}" data-treino-id="${t.id}" data-ex-idx="${ei}">
+        <td><span class="muscle-badge" style="background:${cor}18;color:${cor}">${ex.grupo||'—'}</span></td>
+        <td><div class="ex-name">${ex.nome}</div>${ex.obs?`<div class="ex-desc">${ex.obs}</div>`:''}</td>
+        <td><span class="sets-reps">${setsReps}</span></td>
+        <td><input class="carga-input" type="number" min="0" step="0.5" placeholder="—" data-tipo="ci" value="${ex.cargaInicial||''}"></td>
+        <td><input class="carga-input" type="number" min="0" step="0.5" placeholder="—" data-tipo="cn"></td>
+        <td>${vidCell}</td>
+      </tr>`;
+    }).join('');
+
+    panel.innerHTML = `
+      <div class="panel-header" style="padding:28px 28px 0;">
+        <div class="panel-tag" style="background:${cor}18;color:${cor}">${t.nome.charAt(0)}</div>
+        <div class="panel-title"><h2>${t.nome}</h2><p>${t.foco||''}</p></div>
+        <div class="panel-actions">
+          <button class="btn-action green" onclick="abrirRegistro('${g.id}','${t.id}')">✓ Registrar Sessão</button>
+          <button class="btn-action danger" onclick="pedirExcluirTreino('${g.id}','${t.id}','${t.nome}')">🗑 Excluir</button>
+        </div>
+      </div>
+      <div class="table-wrap" style="padding:0 28px 28px;">
+        <table>
+          <thead><tr>
+            <th>Grupo</th><th>Exercício</th><th>Séries/Reps</th>
+            <th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th>
+          </tr></thead>
+          <tbody>${exRows}</tbody>
+        </table>
+      </div>
+      <div class="panel-stats" style="padding:0 28px 28px;">
+        <div class="stat-box"><div class="stat-val">${(t.exercicios||[]).length}</div><div class="stat-label">Exercícios</div></div>
+      </div>`;
+    panels.appendChild(panel);
+  });
+
+  // Carregar nova carga salva
+  loadNovasCargas(g.id);
+
+  // Preencher select de exercícios na evolução
+  const sel = document.getElementById('chartExSelect');
+  sel.innerHTML = '<option value="">Selecione um exercício</option>';
+  (g.treinos||[]).forEach(t => (t.exercicios||[]).forEach((ex,ei) => {
+    const opt = document.createElement('option');
+    opt.value = g.id+'__'+t.id+'__'+ei;
+    opt.textContent = (t.nome?t.nome+' — ':'') + ex.nome;
+    sel.appendChild(opt);
+  }));
+}
+
+function switchTreinoTab(id, cor, btnClicked) {
+  // Desativar todas as abas
+  document.querySelectorAll('.treino-tab-btn').forEach(b=>{ b.classList.remove('active'); b.style.cssText=''; });
+  document.querySelectorAll('.treino-tab-content').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-historico').style.display='none';
+  document.getElementById('panel-evolucao').style.display='none';
+
+  btnClicked.classList.add('active');
+  btnClicked.style.cssText = `border-bottom-color:${cor};color:${cor};`;
+
+  if (id==='__historico') {
+    document.getElementById('panel-historico').style.display='block';
+    document.getElementById('panel-historico').classList.add('active');
+    renderHistorico();
+  } else if (id==='__evolucao') {
+    document.getElementById('panel-evolucao').style.display='block';
+    document.getElementById('panel-evolucao').classList.add('active');
+    updateChart();
+  } else {
+    const p = document.getElementById('panel-treino-'+id);
+    if (p) p.classList.add('active');
+  }
+}
+
+// ══ NOVA CARGA (salva no data) ══
+function loadNovasCargas(grupoId) {
+  const d = getData();
+  const nc = (d.novasCargas||{})[grupoId]||{};
+  document.querySelectorAll(`tr[data-grupo-id="${grupoId}"]`).forEach(tr => {
+    const tid = tr.dataset.treinoId;
+    const ei  = tr.dataset.exIdx;
+    const key = tid+'_'+ei;
+    const cn  = tr.querySelector('.carga-input[data-tipo="cn"]');
+    if (cn && nc[key] !== undefined) cn.value = nc[key];
+  });
+}
+
+document.addEventListener('change', e => {
+  if (!e.target.classList.contains('carga-input') || e.target.dataset.tipo!=='cn') return;
+  const tr = e.target.closest('tr');
+  if (!tr) return;
+  const grupoId = tr.dataset.grupoId;
+  const treinoId = tr.dataset.treinoId;
+  const ei = tr.dataset.exIdx;
+  const d = getData();
+  d.novasCargas = d.novasCargas||{};
+  d.novasCargas[grupoId] = d.novasCargas[grupoId]||{};
+  d.novasCargas[grupoId][treinoId+'_'+ei] = e.target.value;
+  setData(d);
+});
+
+// ══ REGISTRAR SESSÃO ══
+function abrirRegistro(grupoId, treinoId) {
+  const d = getData();
+  const g = d.grupos.find(g=>g.id===grupoId);
+  const t = g?.treinos?.find(t=>t.id===treinoId);
+  if (!t) return;
+  document.getElementById('regGrupoId').value = grupoId;
+  document.getElementById('regTreinoId').value = treinoId;
+  document.getElementById('regTitle').textContent = 'Registrar Sessão — ' + t.nome;
+  document.getElementById('regData').value = new Date().toISOString().slice(0,10);
+  const nc = (d.novasCargas||{})[grupoId]||{};
+  document.getElementById('regExList').innerHTML = (t.exercicios||[]).map((ex,ei) => {
+    const cargaAtual = nc[treinoId+'_'+ei] || ex.cargaInicial || '';
+    return `<div class="reg-row">
+      <span style="font-size:.85rem;">${ex.nome}</span>
+      <input type="number" min="0" step="0.5" placeholder="kg" value="${cargaAtual}" id="reg-carga-${ei}">
+      <input type="text" placeholder="Obs…" id="reg-obs-${ei}">
+    </div>`;
+  }).join('');
+  document.getElementById('modalReg').classList.add('open');
+}
+
+function salvarSessao() {
+  const grupoId  = document.getElementById('regGrupoId').value;
+  const treinoId = document.getElementById('regTreinoId').value;
+  const data     = document.getElementById('regData').value;
+  const d = getData();
+  const g = d.grupos.find(g=>g.id===grupoId);
+  const t = g?.treinos?.find(t=>t.id===treinoId);
+  if (!t) return;
+  const exercicios = (t.exercicios||[]).map((ex,ei) => ({
+    nome: ex.nome,
+    carga: document.getElementById('reg-carga-'+ei)?.value||'',
+    obs:   document.getElementById('reg-obs-'+ei)?.value||''
+  }));
+  d.historico = d.historico||[];
+  d.historico.unshift({ id:'s_'+Date.now(), grupoId, treinoId, treinoNome:t.nome, grupoNome:g.nome, data, exercicios });
+  setData(d);
+  fecharModal('modalReg');
+  if (document.getElementById('panel-historico').classList.contains('active')) renderHistorico();
+}
+
+// ══ HISTÓRICO ══
+function switchHistTab(tab) {
+  document.querySelectorAll('.hist-tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.hist-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector(`.hist-tab-btn[onclick*="${tab}"]`).classList.add('active');
+  document.getElementById('hist-panel-'+tab).classList.add('active');
+  if (tab==='fichas') renderFichasArquivadas();
+}
+function renderHistorico() {
+  const d = getData();
+  const sessoes = (d.historico||[]).filter(s => !grupoAtivo || s.grupoId===grupoAtivo);
+  const cont = document.getElementById('hist-sessoes-list');
+  if (!sessoes.length) { cont.innerHTML='<div class="hist-empty"><span class="empty-icon">📅</span>Nenhuma sessão registrada ainda.</div>'; return; }
+  cont.innerHTML = sessoes.map(s => `
+    <div class="hist-item">
+      <div class="hist-item-header">
+        <span class="hist-item-treino">${s.treinoNome} — ${s.grupoNome||''}</span>
+        <span class="hist-item-date">${s.data}</span>
+      </div>
+      <div class="hist-ex-list">${s.exercicios.map(e=>`${e.nome}${e.carga?' · '+e.carga+'kg':''}${e.obs?' · '+e.obs:''}`).join('<br>')}</div>
+    </div>`).join('');
+}
+function renderFichasArquivadas() {
+  const d = getData();
+  const fichas = (d.fichasArquivadas||[]).filter(f=>!grupoAtivo||f.grupoId===grupoAtivo);
+  const cont = document.getElementById('hist-fichas-list');
+  if (!fichas.length) { cont.innerHTML='<div class="hist-empty"><span class="empty-icon">📁</span>Nenhuma ficha arquivada.</div>'; return; }
+  cont.innerHTML = fichas.map((f,fi) => `
+    <div class="ficha-card">
+      <div class="ficha-card-header" onclick="toggleFicha(${fi})">
+        <div><strong>${f.nome}</strong> <span style="font-size:.75rem;color:var(--muted);">${f.foco||''}</span></div>
+        <span style="font-size:.75rem;color:var(--muted);">Arquivado em ${f.arquivadoEm} ▾</span>
+      </div>
+      <div class="ficha-card-body" id="ficha-body-${fi}">
+        <table style="margin-top:10px;font-size:.8rem;"><thead><tr><th>Grupo</th><th>Exercício</th><th>Séries/Reps</th><th>Carga</th></tr></thead>
+        <tbody>${(f.exercicios||[]).map(ex=>`<tr><td>${ex.grupo||''}</td><td>${ex.nome}</td><td>${ex.setsReps||''}</td><td>${ex.cargaInicial||''}${ex.cargaNova?' → '+ex.cargaNova:''}</td></tr>`).join('')}</tbody></table>
+      </div>
+    </div>`).join('');
+}
+function toggleFicha(i) {
+  const b = document.getElementById('ficha-body-'+i);
+  if (b) b.classList.toggle('open');
+}
+
+// ══ EXCLUIR TREINO ══
+function pedirExcluirTreino(grupoId, treinoId, nome) {
+  document.getElementById('exclTreinoGrupoId').value = grupoId;
+  document.getElementById('exclTreinoId').value = treinoId;
+  document.getElementById('exclTreinoNome').textContent = nome;
+  document.getElementById('modalExcluirTreino').classList.add('open');
+}
+function confirmarExcluirTreino(acao) {
+  const grupoId  = document.getElementById('exclTreinoGrupoId').value;
+  const treinoId = document.getElementById('exclTreinoId').value;
+  fecharModal('modalExcluirTreino');
+  const d = getData();
+  const g = d.grupos.find(g=>g.id===grupoId);
+  if (!g) return;
+  const t = g.treinos.find(t=>t.id===treinoId);
+
+  if (acao==='arquivar' && t) {
+    d.fichasArquivadas = d.fichasArquivadas||[];
+    d.fichasArquivadas.unshift({
+      id:'f_'+Date.now(), grupoId, treinoId, nome:t.nome, foco:t.foco||'',
+      grupoNome: g.nome, arquivadoEm:new Date().toISOString().slice(0,10),
+      exercicios:(t.exercicios||[]).map(ex=>({
+        nome:ex.nome, grupo:ex.grupo||'', setsReps:(ex.series?ex.series+'×':'')+(ex.reps||''),
+        cargaInicial:ex.cargaInicial||'',
+        cargaNova:((d.novasCargas||{})[grupoId]||{})[treinoId+'_'+((t.exercicios||[]).indexOf(ex))]||''
+      }))
+    });
+  }
+  g.treinos = g.treinos.filter(t=>t.id!==treinoId);
+  setData(d);
+  irParaTreino(grupoId);
+  toast('📁 Treino '+(acao==='arquivar'?'arquivado':'excluído')+'.');
+}
+
+// ══ EXCLUIR GRUPO ══
+function pedirExcluirGrupo(grupoId) {
+  const d = getData();
+  const g = d.grupos.find(g=>g.id===grupoId);
+  if (!g) return;
+  document.getElementById('exclGrupoId').value = grupoId;
+  document.getElementById('exclGrupoNome').textContent = g.nome;
+  document.getElementById('modalExcluirGrupo').classList.add('open');
+}
+function confirmarExcluirGrupo() {
+  const grupoId = document.getElementById('exclGrupoId').value;
+  fecharModal('modalExcluirGrupo');
+  const d = getData();
+  d.grupos = d.grupos.filter(g=>g.id!==grupoId);
+  setData(d);
+  irHome();
+  toast('Grupo excluído.');
+}
+
+// ══ GRÁFICO ══
+function updateChart() {
+  const val = document.getElementById('chartExSelect').value;
+  const empty = document.getElementById('chart-empty');
+  if (!val||!grupoAtivo) { if(chartInstance){chartInstance.destroy();chartInstance=null;} empty.style.display='block'; return; }
+  const [gid,tid,ei] = val.split('__');
+  const d = getData();
+  const sessoes = (d.historico||[]).filter(s=>s.grupoId===gid&&s.treinoId===tid).reverse();
+  const labels=[], cargas=[];
+  sessoes.forEach(s=>{ const ex=s.exercicios[parseInt(ei)]; if(ex&&ex.carga){labels.push(s.data);cargas.push(parseFloat(ex.carga)||0);} });
+  empty.style.display = labels.length?'none':'block';
+  if (!labels.length) { if(chartInstance){chartInstance.destroy();chartInstance=null;} return; }
+  if (chartInstance) chartInstance.destroy();
+  const ctx = document.getElementById('evoChart').getContext('2d');
+  chartInstance = new Chart(ctx,{
+    type:'line',
+    data:{ labels, datasets:[{label:'Carga (kg)',data:cargas,borderColor:'#f5a623',backgroundColor:'rgba(245,166,35,.1)',tension:.3,fill:true,pointBackgroundColor:'#f5a623',pointRadius:5}] },
+    options:{ responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#6b7280'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#6b7280'},grid:{color:'rgba(255,255,255,.04)'}}}}
+  });
+}
+
+// ══ TIMER ══
+let timerSec=0,timerRunning=false,timerInt=null;
+function timerToggle(){
+  timerRunning=!timerRunning;
+  const btn=document.getElementById('timerStart');
+  if(timerRunning){btn.textContent='⏸';btn.classList.add('active');timerInt=setInterval(()=>{timerSec++;updateTimerDisplay();},1000);}
+  else{btn.textContent='▶';btn.classList.remove('active');clearInterval(timerInt);}
+}
+function timerReset(){clearInterval(timerInt);timerRunning=false;timerSec=0;document.getElementById('timerStart').textContent='▶';document.getElementById('timerStart').classList.remove('active');updateTimerDisplay();}
+function updateTimerDisplay(){const m=String(Math.floor(timerSec/60)).padStart(2,'0');const s=String(timerSec%60).padStart(2,'0');document.getElementById('timerDisplay').textContent=m+':'+s;}
+
+// ══ TOAST ══
+function toast(msg){
+  const el=document.createElement('div');
+  el.textContent=msg;
+  el.style.cssText='position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px 24px;border-radius:8px;font-size:.82rem;z-index:999;animation:fadeIn .3s ease;white-space:nowrap;';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),2800);
+}
+
+// ══ INIT ══
+window.addEventListener('DOMContentLoaded', async () => {
+  // Pré-configura owner/repo se ainda não configurado (token o usuário preenche uma vez)
+  const _cfg = getSyncCfg();
+  if (!_cfg.owner) setSyncCfg({ token: _cfg.token||'', owner:'naubersantos21-lab', repo:'gymtrack' });
+
+  // Se token ainda não configurado, abre modal automaticamente
+  if (!getSyncCfg().token) {
+    setTimeout(() => {
+      abrirConfigSync();
+      mostrarSyncMsg('Cole seu token do GitHub para ativar a sincronização.','spin');
+    }, 600);
+  }
+  initSync();
+
+  // Sync automático: compara timestamps e aplica remoto se for mais recente
+  syncStatus('Verificando…','spin');
+  try {
+    const remoto = await pullDataGitHub();
+    if (remoto) {
+      const local = getData();
+      const tsRemoto = remoto._updatedAt || 0;
+      const tsLocal  = local._updatedAt  || 0;
+      if (tsRemoto > tsLocal) {
+        // Remoto é mais recente — aplica sem reload
+        localStorage.setItem(SK, JSON.stringify(remoto));
+        syncStatus('Atualizado ✓','ok');
+        setTimeout(()=>syncStatus('GitHub',null), 2500);
+      } else {
+        syncStatus('GitHub',null);
+      }
+    } else {
+      // Nenhum dado no GitHub ainda — envia o local
+      syncStatus('GitHub',null);
+      const local = getData();
+      if (local.grupos && local.grupos.length) pushDataGitHub(local);
+    }
+  } catch(e) {
+    syncStatus('Erro sync','err');
+  }
+
+  irHome();
+});
+</script>
+</body>
+</html>
