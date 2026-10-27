@@ -3,73 +3,101 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GymTrack — Dashboard de Treinos</title>
+<title>GymTrack</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-:root {
+:root{
   --bg:#0d0f14;--surface:#161922;--surface2:#1e2330;--border:#2a2f3d;
   --accent:#f5a623;--text:#e8eaf0;--muted:#6b7280;--success:#34d399;
-  --tab-a:#f5a623;--tab-b:#3b82f6;--tab-c:#a855f7;--tab-d:#e8593a;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
 
-header{padding:20px 40px 0;display:flex;align-items:flex-end;gap:16px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#12151f 0%,var(--bg) 100%);flex-wrap:wrap;}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:3px;color:var(--accent);line-height:1;padding-bottom:16px;}
+/* ── HEADER ── */
+header{padding:16px 32px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--border);background:var(--surface);flex-wrap:wrap;position:sticky;top:0;z-index:100;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px;color:var(--accent);line-height:1;}
 .logo span{color:var(--text);}
-.header-sub{font-size:.75rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;padding-bottom:20px;}
-.header-right{margin-left:auto;display:flex;align-items:flex-end;gap:14px;padding-bottom:16px;}
-#save-indicator{font-size:.75rem;color:var(--success);letter-spacing:1px;opacity:0;transition:opacity .4s;}
+.header-breadcrumb{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--muted);}
+.breadcrumb-sep{color:var(--border);}
+.breadcrumb-link{color:var(--accent);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;font-size:.8rem;transition:opacity .2s;}
+.breadcrumb-link:hover{opacity:.7;}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+#save-indicator{font-size:.72rem;color:var(--success);letter-spacing:1px;opacity:0;transition:opacity .4s;}
+#sync-indicator{display:flex;align-items:center;gap:6px;font-size:.72rem;letter-spacing:1px;color:var(--muted);}
+.btn-sync-cfg{background:none;border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:5px 10px;cursor:pointer;font-size:.75rem;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.btn-sync-cfg:hover{border-color:var(--accent);color:var(--accent);}
 
-/* TIMER WIDGET */
-.timer-widget{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 16px;display:flex;align-items:center;gap:12px;}
-.timer-display{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;color:var(--accent);min-width:60px;}
-.timer-btns{display:flex;gap:6px;}
-.timer-btns button{background:none;border:1px solid var(--border);color:var(--muted);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:.8rem;transition:all .15s;display:flex;align-items:center;justify-content:center;}
-.timer-btns button:hover{border-color:var(--accent);color:var(--accent);}
-.timer-btns button.active{background:var(--accent);border-color:var(--accent);color:#0d0f14;}
-
-/* NAV TABS */
-.nav-bar{display:flex;gap:4px;padding:20px 40px 0;overflow-x:auto;background:var(--bg);}
-.tab-btn{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;padding:9px 22px;border:1px solid var(--border);border-bottom:none;background:var(--surface);color:var(--muted);border-radius:8px 8px 0 0;cursor:pointer;transition:all .2s;position:relative;white-space:nowrap;}
-.tab-btn::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0;opacity:0;transition:opacity .2s;}
-.tab-btn[data-tab="A"]::after{background:var(--tab-a);}
-.tab-btn[data-tab="B"]::after{background:var(--tab-b);}
-.tab-btn[data-tab="C"]::after{background:var(--tab-c);}
-.tab-btn[data-tab="D"]::after{background:var(--tab-d);}
-.tab-btn.extra::after{background:var(--muted);}
-.tab-btn.active{background:var(--surface2);color:var(--text);}
-.tab-btn.active::after{opacity:1;}
-.tab-btn[data-tab="A"].active{color:var(--tab-a);}
-.tab-btn[data-tab="B"].active{color:var(--tab-b);}
-.tab-btn[data-tab="C"].active{color:var(--tab-c);}
-.tab-btn[data-tab="D"].active{color:var(--tab-d);}
-.tab-btn.extra.active{color:var(--text);}
-
-main{padding:0 40px 40px;background:var(--surface2);border:1px solid var(--border);border-top:none;margin:0 40px;border-radius:0 0 12px 12px;min-height:500px;}
-.tab-panel{display:none;padding-top:28px;}
-.tab-panel.active{display:block;animation:fadeIn .25s ease;}
+/* ── PAGES ── */
+.page{display:none;padding:32px;min-height:calc(100vh - 70px);}
+.page.active{display:block;animation:fadeIn .25s ease;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-.panel-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;flex-wrap:wrap;}
-.panel-tag{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;line-height:1;width:56px;height:56px;display:flex;align-items:center;justify-content:center;border-radius:10px;flex-shrink:0;}
-[data-panel="A"] .panel-tag{background:rgba(245,166,35,.12);color:var(--tab-a);}
-[data-panel="B"] .panel-tag{background:rgba(59,130,246,.12);color:var(--tab-b);}
-[data-panel="C"] .panel-tag{background:rgba(168,85,247,.12);color:var(--tab-c);}
-[data-panel="D"] .panel-tag{background:rgba(232,89,58,.12);color:var(--tab-d);}
-.panel-tag.icon{font-size:1.6rem;}
-.panel-title h2{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;}
-.panel-title p{font-size:.78rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
-.panel-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;}
+/* ── HOME PAGE ── */
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;margin-bottom:6px;}
+.page-subtitle{font-size:.82rem;color:var(--muted);margin-bottom:32px;}
+.grupos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:32px;}
+.grupo-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.grupo-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0;}
+.grupo-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.grupo-card-name{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;margin-bottom:4px;}
+.grupo-card-meta{font-size:.75rem;color:var(--muted);}
+.grupo-card-treinos{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap;}
+.grupo-treino-badge{font-size:.7rem;padding:3px 10px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);}
+.btn-new-grupo{background:none;border:2px dashed var(--border);color:var(--muted);border-radius:14px;padding:24px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.9rem;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;}
+.btn-new-grupo:hover{border-color:var(--accent);color:var(--accent);}
 
-.btn-action{background:none;border:1px solid var(--border);color:var(--muted);padding:7px 16px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.8rem;transition:all .2s;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+/* ── CADASTO PAGE ── */
+.cadastro-steps{display:flex;gap:8px;margin-bottom:28px;align-items:center;}
+.step-dot{width:28px;height:28px;border-radius:50%;background:var(--surface);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;color:var(--muted);transition:all .3s;}
+.step-dot.active{background:var(--accent);border-color:var(--accent);color:#0d0f14;}
+.step-dot.done{background:var(--success);border-color:var(--success);color:#0d0f14;}
+.step-line{flex:1;height:2px;background:var(--border);border-radius:2px;}
+.step-label{font-size:.7rem;color:var(--muted);text-align:center;margin-top:4px;}
+.step-block{display:none;}
+.step-block.active{display:block;}
+.form-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px;}
+.form-section-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1.5px;margin-bottom:18px;color:var(--accent);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-row.full{grid-template-columns:1fr;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group label{font-size:.72rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:600;}
+.form-group input,.form-group textarea,.form-group select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;padding:9px 12px;transition:border-color .2s;outline:none;}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--accent);}
+.form-group textarea{resize:vertical;min-height:60px;}
+.exercicio-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;position:relative;}
+.exercicio-card-title{font-weight:600;font-size:.88rem;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.btn-remove-ex{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;padding:2px 6px;border-radius:4px;transition:color .2s;}
+.btn-remove-ex:hover{color:#e8593a;}
+.btn-add-ex{background:none;border:1px dashed var(--border);color:var(--muted);border-radius:8px;padding:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.82rem;transition:all .2s;width:100%;margin-top:4px;}
+.btn-add-ex:hover{border-color:var(--accent);color:var(--accent);}
+.treino-secao{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.treino-secao-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.treino-secao-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:1.5px;}
+.btn-remove-treino{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;transition:color .2s;}
+.btn-remove-treino:hover{color:#e8593a;}
+.btn-add-treino{background:none;border:1px dashed var(--border);color:var(--muted);border-radius:10px;padding:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.85rem;transition:all .2s;width:100%;}
+.btn-add-treino:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── TREINO PAGE ── */
+.treino-nav{display:flex;gap:4px;padding:0 0 0;overflow-x:auto;flex-wrap:nowrap;margin-bottom:0;}
+.treino-tab-btn{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:2px;padding:8px 20px;border:1px solid var(--border);border-bottom:none;background:var(--surface);color:var(--muted);border-radius:8px 8px 0 0;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.treino-tab-btn.active{background:var(--surface2);color:var(--accent);}
+.treino-tab-content{display:none;background:var(--surface2);border:1px solid var(--border);border-top:none;border-radius:0 0 12px 12px;padding:28px;min-height:400px;}
+.treino-tab-content.active{display:block;animation:fadeIn .2s ease;}
+.panel-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;flex-wrap:wrap;}
+.panel-tag{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;line-height:1;width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:10px;flex-shrink:0;background:rgba(245,166,35,.12);color:var(--accent);}
+.panel-title h2{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;}
+.panel-title p{font-size:.75rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.panel-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;}
+.btn-action{background:none;border:1px solid var(--border);color:var(--muted);padding:7px 14px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.8rem;transition:all .2s;display:flex;align-items:center;gap:6px;white-space:nowrap;}
 .btn-action:hover{border-color:var(--accent);color:var(--accent);}
 .btn-action.primary{background:var(--accent);border-color:var(--accent);color:#0d0f14;font-weight:600;}
 .btn-action.primary:hover{opacity:.85;}
 .btn-action.green{border-color:var(--success);color:var(--success);}
 .btn-action.green:hover{background:var(--success);color:#0d0f14;}
-
+.btn-action.danger{border-color:#e8593a;color:#e8593a;}
+.btn-action.danger:hover{background:#e8593a;color:#fff;}
 .table-wrap{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:.875rem;}
 thead tr{border-bottom:1px solid var(--border);}
@@ -77,185 +105,89 @@ th{text-align:left;font-size:.68rem;font-weight:600;letter-spacing:1.5px;text-tr
 tbody tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s;}
 tbody tr:hover{background:rgba(255,255,255,.03);}
 td{padding:12px;vertical-align:middle;}
-.bloco-header td{background:rgba(255,255,255,.03);color:var(--muted);font-size:.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:6px 12px;}
-.muscle-badge{display:inline-block;font-size:.68rem;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap;letter-spacing:.5px;}
-[data-panel="A"] .muscle-badge{background:rgba(245,166,35,.12);color:var(--tab-a);}
-[data-panel="B"] .muscle-badge{background:rgba(59,130,246,.12);color:var(--tab-b);}
-[data-panel="C"] .muscle-badge{background:rgba(168,85,247,.12);color:var(--tab-c);}
-[data-panel="D"] .muscle-badge{background:rgba(232,89,58,.12);color:var(--tab-d);}
-.ex-name{font-weight:500;color:var(--text);}
+.muscle-badge{font-size:.7rem;padding:3px 8px;border-radius:20px;font-weight:600;white-space:nowrap;background:rgba(245,166,35,.1);color:var(--accent);}
+.ex-name{font-weight:500;}
 .ex-desc{font-size:.75rem;color:var(--muted);margin-top:2px;}
 .sets-reps{font-size:.8rem;color:var(--muted);}
-.sets-reps strong{color:var(--text);}
-.carga-input{width:76px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;padding:5px 8px;text-align:center;transition:border-color .2s;}
-.carga-input:focus{outline:none;border-color:var(--accent);}
-.carga-nova{border-color:var(--success)!important;color:var(--success)!important;}
-.video-btn{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;color:var(--muted);border:1px solid var(--border);background:none;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all .2s;text-decoration:none;white-space:nowrap;}
-.video-btn:hover{color:var(--text);border-color:var(--text);}
-.del-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:.9rem;padding:4px 8px;transition:color .2s;}
-.del-btn:hover{color:#e8593a;}
-.empty-row td{text-align:center;padding:50px 20px;color:var(--muted);font-size:.85rem;}
-.empty-icon{font-size:2rem;display:block;margin-bottom:8px;opacity:.3;}
-
-.panel-stats{display:flex;gap:12px;margin-top:20px;padding-top:18px;border-top:1px solid var(--border);flex-wrap:wrap;}
-.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;min-width:100px;}
-.stat-box .stat-val{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;line-height:1;color:var(--text);}
-.stat-box .stat-label{font-size:.65rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
+.carga-input{background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;padding:6px 10px;width:80px;text-align:center;outline:none;transition:border-color .2s;}
+.carga-input:focus{border-color:var(--accent);}
+.video-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:.75rem;text-decoration:none;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.video-btn:hover{border-color:var(--accent);color:var(--accent);}
+.panel-stats{display:flex;gap:16px;margin-top:24px;flex-wrap:wrap;}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 20px;min-width:100px;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:1px;color:var(--accent);}
+.stat-label{font-size:.68rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
 
 /* ── HISTÓRICO ── */
-#panel-historico .hist-list{display:flex;flex-direction:column;gap:12px;margin-top:8px;}
-.hist-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;}
-.hist-card-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
-.hist-badge{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:7px;flex-shrink:0;}
-.hist-badge.A{background:rgba(245,166,35,.12);color:var(--tab-a);}
-.hist-badge.B{background:rgba(59,130,246,.12);color:var(--tab-b);}
-.hist-badge.C{background:rgba(168,85,247,.12);color:var(--tab-c);}
-.hist-badge.D{background:rgba(232,89,58,.12);color:var(--tab-d);}
-.hist-date{font-size:.78rem;color:var(--muted);}
-.hist-title{font-weight:600;font-size:.9rem;}
-.hist-entries{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;}
-.hist-entry{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 12px;}
-.hist-entry .he-name{font-size:.78rem;font-weight:500;margin-bottom:3px;}
-.hist-entry .he-vals{font-size:.72rem;color:var(--muted);display:flex;gap:8px;}
-.hist-entry .he-vals span{color:var(--success);}
-.hist-del{margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem;padding:2px 6px;transition:color .2s;}
-.hist-del:hover{color:#e8593a;}
-.hist-empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:.85rem;}
+.hist-tabs{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:0;}
+.hist-tab-btn{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.85rem;padding:8px 16px;cursor:pointer;transition:all .2s;margin-bottom:-1px;}
+.hist-tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.hist-panel{display:none;}
+.hist-panel.active{display:block;}
+.hist-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;}
+.hist-item-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.hist-item-date{font-size:.75rem;color:var(--muted);}
+.hist-item-treino{font-weight:600;font-size:.88rem;}
+.hist-ex-list{font-size:.78rem;color:var(--muted);line-height:1.8;}
+.hist-empty{text-align:center;padding:48px 20px;color:var(--muted);}
+.empty-icon{font-size:2rem;display:block;margin-bottom:12px;}
 
 /* ── GRÁFICO ── */
-#panel-graficos .chart-controls{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
-.select-input{background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;padding:8px 12px;cursor:pointer;}
-.select-input:focus{outline:none;border-color:var(--accent);}
-.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;position:relative;min-height:320px;}
-.chart-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.85rem;flex-direction:column;gap:8px;}
-.chart-empty .empty-icon{font-size:2rem;opacity:.3;}
+.chart-wrap{position:relative;height:260px;margin-bottom:24px;}
+.chart-select{background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;padding:8px 12px;outline:none;}
 
-/* ── NOVO TREINO ── */
-#panel-novo .novo-form{max-width:600px;}
-.form-section{margin-bottom:24px;}
-.form-section h3{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--accent);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.form-group{display:flex;flex-direction:column;gap:5px;}
-.form-group.full{grid-column:1/-1;}
-.form-group label{font-size:.7rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
-.form-group input,.form-group textarea,.form-group select{background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;padding:9px 12px;transition:border-color .2s;resize:none;}
-.form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--accent);}
-.ex-builder{margin-top:8px;}
-.ex-row{display:grid;grid-template-columns:1fr 80px 60px 60px 80px 100px auto;gap:8px;align-items:end;margin-bottom:8px;}
-.ex-row input{background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82rem;padding:7px 10px;}
-.ex-row input:focus{outline:none;border-color:var(--accent);}
-.ex-row .rm-ex{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;cursor:pointer;padding:7px 10px;font-size:.8rem;transition:all .2s;}
-.ex-row .rm-ex:hover{border-color:#e8593a;color:#e8593a;}
-.ex-row-header{display:grid;grid-template-columns:1fr 80px 60px 60px 80px 100px auto;gap:8px;margin-bottom:6px;}
-.ex-row-header span{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
-.btn-danger{border-color:#e8593a!important;color:#e8593a!important;}
-.btn-danger:hover{background:#e8593a!important;color:#fff!important;}
+/* ── TIMER ── */
+.timer-widget{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 14px;display:flex;align-items:center;gap:10px;}
+.timer-display{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--accent);min-width:56px;}
+.timer-btns button{background:none;border:1px solid var(--border);color:var(--muted);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:.75rem;transition:all .15s;}
+.timer-btns button:hover{border-color:var(--accent);color:var(--accent);}
+.timer-btns button.active{background:var(--accent);border-color:var(--accent);color:#0d0f14;}
+.timer-btns{display:flex;gap:4px;}
 
-/* MODAL OVERLAY */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;}
+/* ── MODALS ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:500;padding:20px;}
 .modal-overlay.open{display:flex;}
-.modal{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:28px;width:540px;max-width:95vw;max-height:90vh;overflow-y:auto;animation:fadeIn .2s ease;}
-.modal h3{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;margin-bottom:18px;color:var(--accent);}
-.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;}
-.btn-cancel{background:none;border:1px solid var(--border);color:var(--muted);padding:9px 20px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.875rem;transition:all .2s;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;}
+.modal h3{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;margin-bottom:20px;}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;flex-wrap:wrap;}
+.btn-cancel{background:none;border:1px solid var(--border);color:var(--muted);padding:8px 18px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.85rem;transition:all .2s;}
 .btn-cancel:hover{border-color:var(--text);color:var(--text);}
-.btn-save{background:var(--accent);border:none;color:#0d0f14;padding:9px 22px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:600;transition:opacity .2s;}
+.btn-save{background:var(--accent);border:none;color:#0d0f14;padding:8px 20px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;transition:opacity .2s;}
 .btn-save:hover{opacity:.85;}
+.reg-header{display:grid;grid-template-columns:1fr 100px 1fr;gap:8px;padding:0 4px 8px;border-bottom:1px solid var(--border);font-size:.68rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.reg-row{display:grid;grid-template-columns:1fr 100px 1fr;gap:8px;align-items:center;padding:6px 4px;border-bottom:1px solid rgba(255,255,255,.04);}
+.reg-row input{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;padding:6px 10px;outline:none;transition:border-color .2s;width:100%;}
+.reg-row input:focus{border-color:var(--accent);}
 
-/* REGISTRAR TREINO MODAL */
-.reg-ex-list{display:flex;flex-direction:column;gap:8px;max-height:350px;overflow-y:auto;margin-bottom:4px;}
-.reg-ex-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;display:grid;grid-template-columns:1fr 90px 90px;gap:10px;align-items:center;}
-.reg-ex-item .rei-name{font-size:.82rem;font-weight:500;}
-.reg-ex-item input{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82rem;padding:6px 10px;text-align:center;width:100%;}
-.reg-ex-item input:focus{outline:none;border-color:var(--accent);}
-.reg-header{display:grid;grid-template-columns:1fr 90px 90px;gap:10px;margin-bottom:6px;}
-.reg-header span{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+/* ── FICHAS ARQUIVADAS ── */
+.ficha-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden;}
+.ficha-card-header{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.ficha-card-header:hover{background:rgba(255,255,255,.02);}
+.ficha-card-body{display:none;padding:0 18px 14px;border-top:1px solid var(--border);}
+.ficha-card-body.open{display:block;}
 
-@media(max-width:700px){
-  header{padding:16px 16px 0;}
-  .nav-bar,.tabs{padding:12px 16px 0;}
-  main{margin:0 16px;padding:0 16px 24px;}
-  .ex-row{grid-template-columns:1fr 60px 50px 50px 60px 80px auto;}
-  .reg-ex-item{grid-template-columns:1fr 80px 80px;}
+/* ── GRUPO EDIT/DELETE ── */
+.grupo-actions{position:absolute;top:14px;right:14px;display:flex;gap:6px;opacity:0;transition:opacity .2s;}
+.grupo-card:hover .grupo-actions{opacity:1;}
+.grupo-action-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:.75rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.grupo-action-btn:hover{border-color:#e8593a;color:#e8593a;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .page{padding:16px;}
+  header{padding:12px 16px;}
+  .form-row{grid-template-columns:1fr;}
+  .grupos-grid{grid-template-columns:1fr;}
 }
-
-/* ══ GRUPOS DE TREINO ══ */
-.grupo-banner{background:linear-gradient(135deg,rgba(245,166,35,.08) 0%,rgba(245,166,35,.02) 100%);border:1px solid rgba(245,166,35,.2);border-radius:10px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
-.grupo-banner-title{font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:2px;color:var(--muted);}
-.grupo-banner-nome{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--accent);}
-.grupo-banner-data{font-size:.7rem;color:var(--muted);}
-.grupo-banner-actions{margin-left:auto;display:flex;gap:8px;}
-.novo-grupo-form{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:24px;}
-.novo-grupo-form h3{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--accent);margin-bottom:14px;}
-.grupo-arquivo-info{background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);border-radius:8px;padding:10px 14px;font-size:.78rem;color:var(--success);margin-top:10px;display:flex;align-items:flex-start;gap:8px;}
-.grupos-hist-list{display:flex;flex-direction:column;gap:14px;margin-top:12px;}
-.grupo-hist-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
-.grupo-hist-header{padding:12px 18px;display:flex;align-items:center;gap:12px;background:rgba(245,166,35,.05);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
-.grupo-hist-header:hover{background:rgba(245,166,35,.08);}
-.grupo-hist-nome{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--accent);}
-.grupo-hist-datas{font-size:.72rem;color:var(--muted);}
-.grupo-hist-body{padding:14px 18px;display:none;}
-.grupo-hist-body.open{display:block;}
-.grupo-hist-treinos{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
-.grupo-hist-treino-tag{font-family:'Bebas Neue',sans-serif;font-size:.8rem;letter-spacing:1px;padding:4px 12px;border-radius:20px;border:1px solid var(--border);color:var(--muted);}
-/* ══ NOVA SEQUÊNCIA ══ */
-.seq-selector { display:flex; gap:10px; align-items:center; margin-bottom:20px; flex-wrap:wrap; }
-.seq-badge { font-family:'Bebas Neue',sans-serif; font-size:.85rem; letter-spacing:1px; padding:6px 14px; border-radius:20px; border:1px solid var(--border); cursor:pointer; transition:all .2s; color:var(--muted); background:var(--surface); }
-.seq-badge.active { border-color:var(--accent); color:var(--accent); background:rgba(245,166,35,.08); }
-.seq-badge:hover { border-color:var(--accent); color:var(--accent); }
-.seq-new-btn { font-family:'DM Sans',sans-serif; font-size:.8rem; padding:6px 14px; border-radius:20px; border:1px dashed var(--border); cursor:pointer; transition:all .2s; color:var(--muted); background:none; }
-.seq-new-btn:hover { border-color:var(--success); color:var(--success); }
-
-/* Wizard de nova sequência */
-.wizard { max-width:720px; }
-.wizard-steps { display:flex; gap:0; margin-bottom:28px; }
-.wizard-step { flex:1; text-align:center; position:relative; }
-.wizard-step::after { content:''; position:absolute; top:14px; left:50%; right:-50%; height:2px; background:var(--border); z-index:0; }
-.wizard-step:last-child::after { display:none; }
-.ws-num { width:28px; height:28px; border-radius:50%; border:2px solid var(--border); background:var(--surface); display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:600; color:var(--muted); margin:0 auto 6px; position:relative; z-index:1; transition:all .3s; }
-.ws-label { font-size:.65rem; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
-.wizard-step.active .ws-num { border-color:var(--accent); color:var(--accent); background:rgba(245,166,35,.1); }
-.wizard-step.done .ws-num { border-color:var(--success); color:#0d0f14; background:var(--success); }
-.wizard-step.done::after { background:var(--success); }
-
-.wiz-page { display:none; }
-.wiz-page.active { display:block; animation:fadeIn .2s ease; }
-
-.treino-tabs-mini { display:flex; gap:6px; margin-bottom:16px; }
-.ttm-btn { font-family:'Bebas Neue',sans-serif; font-size:.9rem; letter-spacing:1px; padding:7px 18px; border:1px solid var(--border); border-bottom:none; background:var(--surface); color:var(--muted); border-radius:6px 6px 0 0; cursor:pointer; transition:all .2s; }
-.ttm-btn.active { background:var(--surface2); color:var(--accent); border-color:var(--accent); }
-.treino-tab-content { display:none; background:var(--surface2); border:1px solid var(--border); border-radius:0 8px 8px 8px; padding:16px; }
-.treino-tab-content.active { display:block; }
-
-.ex-seq-row { display:grid; grid-template-columns:1fr 90px 60px 60px 110px 32px; gap:8px; align-items:center; margin-bottom:8px; }
-.ex-seq-row input[type=text],.ex-seq-row input[type=number] { background:var(--surface); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:.8rem; padding:6px 9px; width:100%; }
-.ex-seq-row input:focus { outline:none; border-color:var(--accent); }
-.video-upload-btn { display:inline-flex; align-items:center; gap:5px; font-size:.72rem; color:var(--muted); border:1px dashed var(--border); background:none; padding:5px 9px; border-radius:6px; cursor:pointer; transition:all .2s; white-space:nowrap; overflow:hidden; max-width:110px; }
-.video-upload-btn:hover { border-color:var(--accent); color:var(--accent); }
-.video-upload-btn.has-video { border-color:var(--success); color:var(--success); border-style:solid; }
-.video-upload-btn.has-link { border-color:#3b82f6; color:#3b82f6; border-style:solid; }
-.ex-seq-header { display:grid; grid-template-columns:1fr 90px 60px 60px 110px 32px; gap:8px; margin-bottom:6px; }
-.ex-seq-header span { font-size:.62rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
-
-.wiz-actions { display:flex; gap:10px; margin-top:24px; }
-.seq-summary { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin-bottom:16px; }
-.seq-summary h4 { font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:2px; color:var(--accent); margin-bottom:10px; }
-.seq-sum-row { display:flex; justify-content:space-between; font-size:.8rem; padding:4px 0; border-bottom:1px solid rgba(255,255,255,.04); color:var(--muted); }
-.seq-sum-row span { color:var(--text); }
-
 </style>
 </head>
 <body>
 
 <header>
   <div class="logo">GYM<span>TRACK</span></div>
-  <div class="header-sub">Controle de Treinos</div>
-  <div id="grupoActiveBadge" style="display:none;align-items:center;gap:8px;padding-bottom:18px;flex-wrap:wrap;">
-    <span style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;">Grupo:</span>
-    <span id="grupoActiveNome" style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--accent);background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);padding:3px 12px;border-radius:20px;"></span>
-  </div>
+  <div class="header-breadcrumb" id="breadcrumb"></div>
   <div class="header-right">
-    <div class="timer-widget">
+    <div class="timer-widget" id="timerWidget" style="display:none;">
       <div class="timer-display" id="timerDisplay">00:00</div>
       <div class="timer-btns">
         <button id="timerStart" onclick="timerToggle()" title="Iniciar/Pausar">▶</button>
@@ -263,1847 +195,923 @@ td{padding:12px;vertical-align:middle;}
       </div>
     </div>
     <div id="save-indicator">✓ Salvo</div>
-    <div id="sync-indicator" style="display:flex;align-items:center;gap:6px;font-size:.72rem;letter-spacing:1px;color:var(--muted);">
-      <span id="sync-icon">☁</span><span id="sync-label">—</span>
-    </div>
-    <button onclick="abrirConfigSync()" title="Configurar sincronização" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:5px 10px;cursor:pointer;font-size:.75rem;transition:all .2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⚙ Sync</button>
+    <div id="sync-indicator"><span id="sync-icon">☁</span><span id="sync-label">—</span></div>
+    <button class="btn-sync-cfg" onclick="abrirConfigSync()">⚙ Sync</button>
   </div>
 </header>
 
-<div class="nav-bar" id="tabBar">
-  <button class="tab-btn active" data-tab="A">TREINO A</button>
-  <button class="tab-btn" data-tab="B">TREINO B</button>
-  <button class="tab-btn" data-tab="C">TREINO C</button>
-  <button class="tab-btn" data-tab="D">TREINO D</button>
-  <button class="tab-btn extra" data-tab="sequencias">🔄 SEQUÊNCIAS</button>
-  <button class="tab-btn extra" data-tab="historico">📋 HISTÓRICO</button>
-  <button class="tab-btn extra" data-tab="graficos">📈 EVOLUÇÃO</button>
-  <button class="tab-btn extra" data-tab="novo">＋ NOVO TREINO</button>
+<!-- ══ PAGE: HOME ══ -->
+<div class="page active" id="page-home">
+  <div style="max-width:960px;margin:0 auto;">
+    <div class="page-title">Meus Grupos de Treino</div>
+    <div class="page-subtitle">Selecione um grupo para ver os treinos ou crie um novo</div>
+    <div class="grupos-grid" id="grupos-grid">
+      <!-- cards gerados dinamicamente -->
+    </div>
+    <button class="btn-new-grupo" onclick="irParaCadastro()">
+      <span style="font-size:1.4rem;">＋</span> Novo Grupo de Treino
+    </button>
+  </div>
 </div>
 
-<main>
-
-<!-- ══ TREINO A ══ -->
-<div class="tab-panel active" data-panel="A" id="panel-A">
-  <div class="panel-header">
-    <div class="panel-tag">A</div>
-    <div class="panel-title"><h2>Treino A</h2><p>Quadríceps · Adutores · Ombros</p></div>
-    <div class="panel-actions">
-      <button class="btn-action green" onclick="registrarTreino('A')">✓ Registrar Sessão</button>
-      <button class="btn-action" onclick="openModal('A')">+ Exercício</button>
-      <button class="btn-action btn-danger" onclick="excluirTreino('A')">🗑 Excluir</button>
-    </div>
-  </div>
-  <div class="table-wrap"><table>
-    <thead><tr><th>Grupo</th><th>Exercício</th><th>Séries/Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>
-    <tbody id="tbody-A">
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 1</td></tr>
-      <tr data-tab="A" data-idx="0"><td><span class="muscle-badge">Quadríceps</span></td><td><div class="ex-name">Leg Press 45°</div></td><td class="sets-reps"><strong>4</strong> × 12 a 15</td><td><input class="carga-input" type="number" value="50" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCPoWqU2zScSZcEwk6pzBaFAZG9XIrMtV66FkMQX6s_3OI?e=2WMlrx" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="A" data-idx="1"><td><span class="muscle-badge">Quadríceps</span></td><td><div class="ex-name">Agachamento Livre</div></td><td class="sets-reps"><strong>4</strong> × 12 a 15</td><td><input class="carga-input" type="number" value="14" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBULaqWsmeCS63GMZZLQunPAesAOPPFVEE1FXs6HFc4o8Q?e=8ZJ70z" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="A" data-idx="2"><td><span class="muscle-badge">Adutores</span></td><td><div class="ex-name">Adutores</div><div class="ex-desc">Última série: 15 duplo + 15 direto</div></td><td class="sets-reps"><strong>4</strong> × 15</td><td><input class="carga-input" type="number" value="55" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDJzD2k7LCdTY4x2wwu_wU4ASOub7X1-1xfJZKAlvyocVg?e=Mh3KjL" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 2</td></tr>
-      <tr data-tab="A" data-idx="3"><td><span class="muscle-badge">Quadríceps</span></td><td><div class="ex-name">Extensora</div><div class="ex-desc">Com isometria</div></td><td class="sets-reps"><strong>3</strong> × 8</td><td><input class="carga-input" type="number" value="60" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQABk4uTCY4dQpV_OzuzUnU5ATcTn2EI4eL9TJtM8sNPYHQ?e=xjO46T" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="A" data-idx="4"><td><span class="muscle-badge">Quadríceps</span></td><td><div class="ex-name">Afundo com Pé no Step</div></td><td class="sets-reps"><strong>3</strong> × 10</td><td><input class="carga-input" type="number" value="12" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQABk4uTCY4dQpV_OzuzUnU5ATcTn2EI4eL9TJtM8sNPYHQ?e=xjO46T" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="A" data-idx="5"><td><span class="muscle-badge">Ombros</span></td><td><div class="ex-name">Ombros Alternado + Direto</div></td><td class="sets-reps"><strong>3</strong> × 6 + 6</td><td><input class="carga-input" type="number" value="7" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBWn3bHGq_0T5gqAIQD-WQTARQ-E5IGkBkumg72tAHo_bE?e=lrwMoi" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 3</td></tr>
-      <tr data-tab="A" data-idx="6"><td><span class="muscle-badge">Quadríceps</span></td><td><div class="ex-name">Agachamento com Triângulo no Cross</div></td><td class="sets-reps"><strong>3</strong> × 10</td><td><input class="carga-input" type="number" value="40" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCoMkcbpNT5RJaEC1Ua1HpjAe_LSJZyajDPeAAnznFssgQ?e=87OBC5" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="A" data-idx="7"><td><span class="muscle-badge">Ombros</span></td><td><div class="ex-name">Agachamento Triângulo Cross + Desenvolvimento</div></td><td class="sets-reps"><strong>3</strong> × 10</td><td><input class="carga-input" type="number" value="25" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCoMkcbpNT5RJaEC1Ua1HpjAe_LSJZyajDPeAAnznFssgQ?e=87OBC5" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 4</td></tr>
-      <tr data-tab="A" data-idx="8"><td><span class="muscle-badge">Ombros</span></td><td><div class="ex-name">Elevação Lateral no Cross</div><div class="ex-desc">Progressão por série</div></td><td class="sets-reps"><strong>3</strong> × 5, 6, 7</td><td><input class="carga-input" type="number" value="5" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCuxb2tAA4LQo7oUjbDiU1cAQvBXbPu2YE2Jn6FhT1Z4lE?e=nUeKBJ" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 5</td></tr>
-      <tr data-tab="A" data-idx="9"><td><span class="muscle-badge">Ombros</span></td><td><div class="ex-name">Crucifixo Invertido Unilateral</div></td><td class="sets-reps"><strong>3</strong> × 8 a 10</td><td><input class="carga-input" type="number" value="8" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDaa2hpqPaZTaNVbSbmCHRvAWS_CrwAfJusYkfnXmCuso4?e=Jlhg7W" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 6</td></tr>
-      <tr data-tab="A" data-idx="10"><td><span class="muscle-badge">Abdômen</span></td><td><div class="ex-name">Abdominal Rodinha</div></td><td class="sets-reps"><strong>3</strong> × 15</td><td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQC29SLUpMw8QqSNFkEnkpZtASp0nfD2M3aHRpkhH8JqEAM?e=2YYfTD" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-    </tbody>
-  </table></div>
-  <div class="panel-stats"><div class="stat-box"><div class="stat-val">11</div><div class="stat-label">Exercícios</div></div><div class="stat-box"><div class="stat-val">281</div><div class="stat-label">Carga Total kg</div></div></div>
-</div>
-
-<!-- ══ TREINO B ══ -->
-<div class="tab-panel" data-panel="B" id="panel-B">
-  <div class="panel-header">
-    <div class="panel-tag">B</div>
-    <div class="panel-title"><h2>Treino B</h2><p>Bíceps · Tríceps</p></div>
-    <div class="panel-actions">
-      <button class="btn-action green" onclick="registrarTreino('B')">✓ Registrar Sessão</button>
-      <button class="btn-action" onclick="openModal('B')">+ Exercício</button>
-      <button class="btn-action btn-danger" onclick="excluirTreino('B')">🗑 Excluir</button>
-    </div>
-  </div>
-  <div class="table-wrap"><table>
-    <thead><tr><th>Grupo</th><th>Exercício</th><th>Séries/Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>
-    <tbody id="tbody-B">
-      <tr class="bloco-header"><td colspan="7">▸ Tríceps</td></tr>
-      <tr data-tab="B" data-idx="0"><td><span class="muscle-badge">Tríceps</span></td><td><div class="ex-name">Francês Unilateral no Cross</div></td><td class="sets-reps"><strong>5</strong> × 10</td><td><input class="carga-input" type="number" value="15" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBclYbRMHw1Tb7p4PRfs7h5Adx3_iH-YLgbzjJY-qwcPvw?e=xOD5hs" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="B" data-idx="1"><td><span class="muscle-badge">Tríceps</span></td><td><div class="ex-name">Tríceps na Máquina</div><div class="ex-desc">4 barras</div></td><td class="sets-reps"><strong>4</strong> × 12</td><td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDoPMfLt67BRbqo-AcYfVO0AbP68Uf17ayf2SdtsvlxKrA?e=3aZZro" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="B" data-idx="2"><td><span class="muscle-badge">Tríceps</span></td><td><div class="ex-name">Francês Deitado</div></td><td class="sets-reps"><strong>3</strong> × 10</td><td><input class="carga-input" type="number" value="8" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQByPjW2-y_8S5rmsRl6_ZucAdhSAEcLxGY3T4XYaZ7uI78?e=O1ClGL" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="B" data-idx="3"><td><span class="muscle-badge">Tríceps</span></td><td><div class="ex-name">Tríceps com Barra no Cross</div></td><td class="sets-reps"><strong>2</strong> × 20</td><td><input class="carga-input" type="number" value="40" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQC5-tpe8Ua7Sr8Z-YYwoN-SAe8hA81aeQc_TWpcJ9heelk?e=oLPIxi" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="B" data-idx="4"><td><span class="muscle-badge">Tríceps</span></td><td><div class="ex-name">Flexão no Chão</div><div class="ex-desc">Até exaustão</div></td><td class="sets-reps"><strong>1</strong> × exaustão</td><td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCUQatFHVuER4S6a1YsK7UWAZAuhU-4n3Y_H4KtqILGWLk?e=kna2Wd" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr class="bloco-header"><td colspan="7">▸ Bíceps</td></tr>
-      <tr data-tab="B" data-idx="5"><td><span class="muscle-badge">Bíceps</span></td><td><div class="ex-name">Bíceps na Máquina</div><div class="ex-desc">5 barras</div></td><td class="sets-reps"><strong>5</strong> × 10</td><td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQB1Qiya_7GUTqij6N1Gya4sAaSY3vgg8PgsC6P3zTXXt9A?e=hma9Pa" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="B" data-idx="6"><td><span class="muscle-badge">Bíceps</span></td><td><div class="ex-name">Rosca Alternada</div></td><td class="sets-reps"><strong>4</strong> × 10</td><td><input class="carga-input" type="number" value="12" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBPCrXiDX78Qono_p8e8ibQAemKXyB90Yo5GiDOyY3AzVE?e=fZPlDd" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="B" data-idx="7"><td><span class="muscle-badge">Bíceps</span></td><td><div class="ex-name">Rosca Concentrada no Cross</div></td><td class="sets-reps"><strong>3</strong> × 8 a 10</td><td><input class="carga-input" type="number" value="10" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDf2jA9yEDpTabB-bQwEuvtAW-it_cVaNq_dBgbGiAGIOk?e=x3XiJY" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="B" data-idx="8"><td><span class="muscle-badge">Bíceps</span></td><td><div class="ex-name">Rosca Direta</div></td><td class="sets-reps"><strong>2</strong> × 20</td><td><input class="carga-input" type="number" value="30" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQD70oeYyJiUSo17C1XXCMbdAf4D3ya53FoKbLBMrKCB-Ec?e=KySrqS" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="B" data-idx="9"><td><span class="muscle-badge">Bíceps</span></td><td><div class="ex-name">Barra W</div><div class="ex-desc">Até exaustão</div></td><td class="sets-reps"><strong>1</strong> × exaustão</td><td><input class="carga-input" type="number" value="2.5" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCwRwqG4u7GS62z73JTCEYDAcq6zCxM3kVDONgchm3mwDw?e=ewGE5M" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-    </tbody>
-  </table></div>
-  <div class="panel-stats"><div class="stat-box"><div class="stat-val">10</div><div class="stat-label">Exercícios</div></div></div>
-</div>
-
-<!-- ══ TREINO C ══ -->
-<div class="tab-panel" data-panel="C" id="panel-C">
-  <div class="panel-header">
-    <div class="panel-tag">C</div>
-    <div class="panel-title"><h2>Treino C</h2><p>Costas · Posterior · Glúteos · Gêmeos</p></div>
-    <div class="panel-actions">
-      <button class="btn-action green" onclick="registrarTreino('C')">✓ Registrar Sessão</button>
-      <button class="btn-action" onclick="openModal('C')">+ Exercício</button>
-      <button class="btn-action btn-danger" onclick="excluirTreino('C')">🗑 Excluir</button>
-    </div>
-  </div>
-  <div class="table-wrap"><table>
-    <thead><tr><th>Grupo</th><th>Exercício</th><th>Séries/Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>
-    <tbody id="tbody-C">
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 1</td></tr>
-      <tr data-tab="C" data-idx="0"><td><span class="muscle-badge">Costas</span></td><td><div class="ex-name">Remada Sentada</div><div class="ex-desc">Aumentando 5kg a cada série</div></td><td class="sets-reps"><strong>5</strong> × 10</td><td><input class="carga-input" type="number" value="30" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDCHGQjT2R_TqizATRA4tyPAWJxqNQD5nqZoBW-kzAfKZQ?e=H1Vrgl" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="C" data-idx="1"><td><span class="muscle-badge">Costas</span></td><td><div class="ex-name">Pulley Costas</div></td><td class="sets-reps"><strong>5</strong> × 10</td><td><input class="carga-input" type="number" value="30" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDCHGQjT2R_TqizATRA4tyPAWJxqNQD5nqZoBW-kzAfKZQ?e=H1Vrgl" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="C" data-idx="2"><td><span class="muscle-badge">Gêmeos</span></td><td><div class="ex-name">Gêmeos Solear</div><div class="ex-desc">20 completos + 10 parciais por série</div></td><td class="sets-reps"><strong>5</strong> × 20+10</td><td><input class="carga-input" type="number" value="50" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQD-f72v35LLSZyI5We1jJa6AZ8FipZob_x-VrBj5V4z7QA?e=omHw1h" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 2</td></tr>
-      <tr data-tab="C" data-idx="3"><td><span class="muscle-badge">Costas</span></td><td><div class="ex-name">Pull Down</div></td><td class="sets-reps"><strong>4</strong> × 10</td><td><input class="carga-input" type="number" value="45" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCQGVqUrDbYTqm5QQarM25tATu9hKxudCBixLdeTmIRlIk?e=Zcr0xf" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="C" data-idx="4"><td><span class="muscle-badge">Costas</span></td><td><div class="ex-name">Lombar com Remada</div></td><td class="sets-reps"><strong>4</strong> × 10</td><td><input class="carga-input" type="number" value="8" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCjbzIZEi5nR6MTuS1-gx_9ATLhdIx3lSF2jm3K5fs6D2k?e=Zcj8dL" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 3</td></tr>
-      <tr data-tab="C" data-idx="5"><td><span class="muscle-badge">Gêmeos</span></td><td><div class="ex-name">Gêmeos</div></td><td class="sets-reps"><strong>4</strong> × 20</td><td><input class="carga-input" type="number" value="18" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQAhuS-N_3p7QZXWJADlf8gDAc5e26P6Fi8NmpMhjH88hxE?e=AFSpWq" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 4</td></tr>
-      <tr data-tab="C" data-idx="6"><td><span class="muscle-badge">Glúteos</span></td><td><div class="ex-name">Abdutores</div><div class="ex-desc">15 completos + 10 parciais por série</div></td><td class="sets-reps"><strong>4</strong> × 15+10</td><td><input class="carga-input" type="number" value="65" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDiB1Af2lwBRpaFmJBOyiSpAcJrMJbuIS2k_v0lL7WS7EU?e=CDd1kr" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="C" data-idx="7"><td><span class="muscle-badge">Posterior</span></td><td><div class="ex-name">Elevação de Ombros com Stiff</div></td><td class="sets-reps"><strong>4</strong> × 10</td><td><input class="carga-input" type="number" value="18" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQC6NXQHS711Q4YK2YD62gO2AWqfOTvOXymQrUarM9HKu8g?e=prR6KU" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 5</td></tr>
-      <tr data-tab="C" data-idx="8"><td><span class="muscle-badge">Abdômen</span></td><td><div class="ex-name">Abdominal Oblíquo</div></td><td class="sets-reps"><strong>4</strong> × 10 a 15</td><td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBu5E2AtqUTTZlvrNh9Y2K0AQmX2TkLKrpbjzoTUe7x-MU?e=TUtiaH" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-    </tbody>
-  </table></div>
-  <div class="panel-stats"><div class="stat-box"><div class="stat-val">9</div><div class="stat-label">Exercícios</div></div></div>
-</div>
-
-<!-- ══ TREINO D ══ -->
-<div class="tab-panel" data-panel="D" id="panel-D">
-  <div class="panel-header">
-    <div class="panel-tag">D</div>
-    <div class="panel-title"><h2>Treino D</h2><p>Peitoral · Abdômen</p></div>
-    <div class="panel-actions">
-      <button class="btn-action green" onclick="registrarTreino('D')">✓ Registrar Sessão</button>
-      <button class="btn-action" onclick="openModal('D')">+ Exercício</button>
-      <button class="btn-action btn-danger" onclick="excluirTreino('D')">🗑 Excluir</button>
-    </div>
-  </div>
-  <div class="table-wrap"><table>
-    <thead><tr><th>Grupo</th><th>Exercício</th><th>Séries/Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>
-    <tbody id="tbody-D">
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 1</td></tr>
-      <tr data-tab="D" data-idx="0"><td><span class="muscle-badge">Peitoral</span></td><td><div class="ex-name">Supino Reto</div></td><td class="sets-reps"><strong>5</strong> × 10</td><td><input class="carga-input" type="number" value="10" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDRD_rWRf5CQpEH9AEvqLTWAQI6aylXmFAs5tqp5_d71jI?e=TKzzAQ" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 2</td></tr>
-      <tr data-tab="D" data-idx="1"><td><span class="muscle-badge">Peitoral</span></td><td><div class="ex-name">Peck Deck</div></td><td class="sets-reps"><strong>4</strong> × 12</td><td><input class="carga-input" type="number" value="30" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQAQ8bGKpT7BRJelg-xVjG0XAVSNDFY5ZumG0A2TkfuVmkA?e=OAtNAr" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 3</td></tr>
-      <tr data-tab="D" data-idx="2"><td><span class="muscle-badge">Peitoral</span></td><td><div class="ex-name">Crucifixo Declinado</div></td><td class="sets-reps"><strong>3</strong> × 10</td><td><input class="carga-input" type="number" value="12" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCbtwRtpRsaQqMn-bFiZ0xLAWTylWxUK267hsW3YGr2JkE?e=Ftw9UP" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 4</td></tr>
-      <tr data-tab="D" data-idx="3"><td><span class="muscle-badge">Peitoral</span></td><td><div class="ex-name">Supino Vertical</div></td><td class="sets-reps"><strong>2</strong> × 20</td><td><input class="carga-input" type="number" value="35" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDIUfziSpShQrLbNVXz3iBdAcRsQEklWZyutgtQhpNnqv8?e=0icAmP" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 5</td></tr>
-      <tr data-tab="D" data-idx="4"><td><span class="muscle-badge">Peitoral</span></td><td><div class="ex-name">Flexão no Banco</div></td><td class="sets-reps"><strong>1</strong> × 20</td><td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQCIkNvudXgWS6n9Vcsd0pAXAXkULC3P6lXE7mwPaGrP084?e=Kaxh9g" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr class="bloco-header"><td colspan="7">▸ Bloco 6</td></tr>
-      <tr data-tab="D" data-idx="5"><td><span class="muscle-badge">Abdômen</span></td><td><div class="ex-name">Abdominal Supra</div></td><td class="sets-reps"><strong>3</strong> × 10 a 15</td><td><input class="carga-input" type="number" value="10" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQBDnI4Ed5CxRqf4v78WhJ0aAasnJ6DAtanPIfMpLxvCDJw?e=mukJfF" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-      <tr data-tab="D" data-idx="6"><td><span class="muscle-badge">Abdômen</span></td><td><div class="ex-name">Abdominal Infra</div></td><td class="sets-reps"><strong>4</strong> × 10 a 15</td><td><input class="carga-input" type="number" value="15" step="0.5" min="0"></td><td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td><td><a class="video-btn" href="https://1drv.ms/v/c/072dca4bd49d9f72/IQDtaSXU6wwPTb3ihTDnTbl9AUkK9QnzlT6VBT6r2BZfJlE?e=FKsgBD" target="_blank" rel="noopener">▶ Ver</a></td><td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>
-    </tbody>
-  </table></div>
-  <div class="panel-stats"><div class="stat-box"><div class="stat-val">7</div><div class="stat-label">Exercícios</div></div></div>
-</div>
-
-
-<!-- ══ SEQUÊNCIAS ══ -->
-<div class="tab-panel" data-panel="sequencias" id="panel-sequencias">
-  <div class="panel-header">
-    <div class="panel-tag icon">🔄</div>
-    <div class="panel-title"><h2>Sequências de Treino</h2><p>Gerencie seus ciclos de treino</p></div>
-  </div>
-
-  <!-- Selector de sequência ativa -->
-  <div class="seq-selector" id="seqSelector">
-    <span style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Sequência ativa:</span>
-    <div id="seqBadges"></div>
-    <button class="seq-new-btn" onclick="abrirWizard()">＋ Nova Sequência</button>
-  </div>
-
-  <!-- Wizard de criação -->
-  <div class="wizard" id="seqWizard" style="display:none;">
-    <div class="wizard-steps">
-      <div class="wizard-step active" id="ws0"><div class="ws-num">1</div><div class="ws-label">Identificação</div></div>
-      <div class="wizard-step" id="ws1"><div class="ws-num">2</div><div class="ws-label">Exercícios</div></div>
-      <div class="wizard-step" id="ws2"><div class="ws-num">3</div><div class="ws-label">Revisar</div></div>
+<!-- ══ PAGE: CADASTRO ══ -->
+<div class="page" id="page-cadastro">
+  <div style="max-width:760px;margin:0 auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+      <div>
+        <div class="page-title" id="cad-page-title">Novo Grupo de Treino</div>
+        <div class="page-subtitle">Defina os treinos e exercícios do grupo</div>
+      </div>
+      <button class="btn-action" onclick="irHome()">← Voltar</button>
     </div>
 
-    <!-- Página 1: Identificação -->
-    <div class="wiz-page active" id="wiz-page-0">
-      <div class="form-section">
-        <h3>Nova Sequência</h3>
-        <div class="form-grid">
-          <div class="form-group full"><label>Nome da Sequência</label><input type="text" id="seqNome" placeholder="Ex: Sequência 2 · Jul/2026"></div>
-          <div class="form-group full"><label>Descrição / Objetivo</label><textarea id="seqDesc" rows="2" placeholder="Ex: Foco em hipertrofia, carga progressiva…"></textarea></div>
+    <!-- DADOS DO GRUPO -->
+    <div class="form-section">
+      <div class="form-section-title">📋 Dados do Grupo</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nome do Grupo *</label>
+          <input type="text" id="cad-grupo-nome" placeholder="ex: Outubro 2026, Hipertrofia…">
+        </div>
+        <div class="form-group">
+          <label>Descrição (opcional)</label>
+          <input type="text" id="cad-grupo-desc" placeholder="ex: Foco em força e volume">
         </div>
       </div>
-      <div class="wiz-actions">
-        <button class="btn-action" onclick="fecharWizard()">Cancelar</button>
-        <button class="btn-action primary" onclick="wizNext(0)">Próximo →</button>
-      </div>
     </div>
 
-    <!-- Página 2: Exercícios por treino -->
-    <div class="wiz-page" id="wiz-page-1">
-      <div class="form-section">
-        <h3>Exercícios por Treino</h3>
-        <div class="treino-tabs-mini" id="treinoTabsMini">
-          <button class="ttm-btn active" onclick="switchTreinoTab('A',this)">TREINO A</button>
-          <button class="ttm-btn" onclick="switchTreinoTab('B',this)">TREINO B</button>
-          <button class="ttm-btn" onclick="switchTreinoTab('C',this)">TREINO C</button>
-          <button class="ttm-btn" onclick="switchTreinoTab('D',this)">TREINO D</button>
-        </div>
-        <div id="seqTreinoA" class="treino-tab-content active"><div class="form-group" style="margin-bottom:10px"><label>Foco do Treino A</label><input type="text" id="focoA" placeholder="Ex: Quadríceps · Ombros"></div><div class="ex-seq-header"><span>Exercício</span><span>Grupo</span><span>Séries</span><span>Reps</span><span>Vídeo</span><span></span></div><div id="exSeqA"></div><button class="btn-action" style="margin-top:6px" onclick="addSeqRow('A')">+ linha</button></div>
-        <div id="seqTreinoB" class="treino-tab-content"><div class="form-group" style="margin-bottom:10px"><label>Foco do Treino B</label><input type="text" id="focoB" placeholder="Ex: Bíceps · Tríceps"></div><div class="ex-seq-header"><span>Exercício</span><span>Grupo</span><span>Séries</span><span>Reps</span><span>Vídeo</span><span></span></div><div id="exSeqB"></div><button class="btn-action" style="margin-top:6px" onclick="addSeqRow('B')">+ linha</button></div>
-        <div id="seqTreinoC" class="treino-tab-content"><div class="form-group" style="margin-bottom:10px"><label>Foco do Treino C</label><input type="text" id="focoC" placeholder="Ex: Costas · Glúteos"></div><div class="ex-seq-header"><span>Exercício</span><span>Grupo</span><span>Séries</span><span>Reps</span><span>Vídeo</span><span></span></div><div id="exSeqC"></div><button class="btn-action" style="margin-top:6px" onclick="addSeqRow('C')">+ linha</button></div>
-        <div id="seqTreinoD" class="treino-tab-content"><div class="form-group" style="margin-bottom:10px"><label>Foco do Treino D</label><input type="text" id="focoD" placeholder="Ex: Peitoral · Abdômen"></div><div class="ex-seq-header"><span>Exercício</span><span>Grupo</span><span>Séries</span><span>Reps</span><span>Vídeo</span><span></span></div><div id="exSeqD"></div><button class="btn-action" style="margin-top:6px" onclick="addSeqRow('D')">+ linha</button></div>
-      </div>
-      <div class="wiz-actions">
-        <button class="btn-action" onclick="wizBack(1)">← Voltar</button>
-        <button class="btn-action primary" onclick="wizNext(1)">Revisar →</button>
-      </div>
-    </div>
-
-    <!-- Página 3: Revisar e criar -->
-    <div class="wiz-page" id="wiz-page-2">
-      <div id="wizSummary"></div>
-      <div class="wiz-actions">
-        <button class="btn-action" onclick="wizBack(2)">← Voltar</button>
-        <button class="btn-action primary" onclick="criarSequencia()">✓ Criar Sequência</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Painel da sequência ativa -->
-  <div id="seqActivePanel"></div>
-</div>
-
-<!-- ══ HISTÓRICO ══ -->
-<div class="tab-panel" data-panel="historico" id="panel-historico">
-  <div class="panel-header">
-    <div class="panel-tag icon">📋</div>
-    <div class="panel-title"><h2>Histórico de Treinos</h2><p>Todas as sessões registradas</p></div>
-    <div class="panel-actions">
-      <button class="btn-action" onclick="exportarHistorico()">↓ Exportar CSV</button>
-    </div>
-  </div>
-
-  <!-- Sub-tabs histórico -->
-  <div style="display:flex;gap:6px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:0;">
-    <button class="tab-btn active extra" id="histTabSessoes" onclick="switchHistTab('sessoes')" style="border-radius:8px 8px 0 0;font-size:.85rem;">📋 Sessões</button>
-    <button class="tab-btn extra" id="histTabGrupos" onclick="switchHistTab('grupos')" style="border-radius:8px 8px 0 0;font-size:.85rem;">🗂 Grupos Arquivados</button>
-    <button class="tab-btn extra" id="histTabFichas" onclick="switchHistTab('fichas')" style="border-radius:8px 8px 0 0;font-size:.85rem;">📁 Fichas Arquivadas</button>
-  </div>
-
-  <div id="hist-panel-sessoes">
-    <div id="hist-list" class="hist-list"><div class="hist-empty"><span class="empty-icon">📋</span>Nenhuma sessão registrada ainda.<br>Clique em "✓ Registrar Sessão" em qualquer treino.</div></div>
-  </div>
-
-  <div id="hist-panel-grupos" style="display:none;">
-    <div id="hist-grupos-list" class="grupos-hist-list"><div class="hist-empty"><span class="empty-icon">🗂</span>Nenhum grupo arquivado ainda.<br>Crie um novo grupo de treino para arquivar o atual.</div></div>
-  </div>
-
-  <div id="hist-panel-fichas" style="display:none;">
-    <div id="hist-fichas-list" class="grupos-hist-list"><div class="hist-empty"><span class="empty-icon">📁</span>Nenhuma ficha arquivada ainda.<br>Ao excluir um treino, escolha "Arquivar" para guardar a ficha aqui.</div></div>
-  </div>
-</div>
-
-<!-- ══ GRÁFICOS ══ -->
-<div class="tab-panel" data-panel="graficos" id="panel-graficos">
-  <div class="panel-header">
-    <div class="panel-tag icon">📈</div>
-    <div class="panel-title"><h2>Evolução de Cargas</h2><p>Progressão por exercício</p></div>
-  </div>
-  <div class="chart-controls">
-    <select class="select-input" id="chartTreino" onchange="updateChart()">
-      <option value="">Selecione o treino</option>
-      <option value="A">Treino A</option>
-      <option value="B">Treino B</option>
-      <option value="C">Treino C</option>
-      <option value="D">Treino D</option>
-    </select>
-    <select class="select-input" id="chartExercicio" onchange="renderChart()">
-      <option value="">Selecione o exercício</option>
-    </select>
-  </div>
-  <div class="chart-wrap">
-    <div class="chart-empty" id="chartEmpty"><span class="empty-icon">📈</span>Selecione um treino e exercício para ver a evolução</div>
-    <canvas id="myChart" style="display:none;"></canvas>
-  </div>
-</div>
-
-<!-- ══ NOVO TREINO ══ -->
-<div class="tab-panel" data-panel="novo" id="panel-novo">
-  <div class="panel-header">
-    <div class="panel-tag icon">＋</div>
-    <div class="panel-title"><h2>Criar Novo Treino</h2><p>Monte uma nova ficha de treino</p></div>
-  </div>
-
-  <!-- Banner do grupo ativo -->
-  <div id="novoGrupoBanner" class="grupo-banner" style="display:none;">
-    <div>
-      <div class="grupo-banner-title">Grupo de Treino Ativo</div>
-      <div class="grupo-banner-nome" id="novoGrupoNomeBanner">—</div>
-      <div class="grupo-banner-data" id="novoGrupoDataBanner"></div>
-    </div>
-    <div class="grupo-banner-actions">
-      <button class="btn-action" onclick="abrirNovoGrupo()">🗂 Novo Grupo de Treino</button>
-    </div>
-  </div>
-
-  <!-- Formulário de novo grupo (colapsável) -->
-  <div id="novoGrupoForm" class="novo-grupo-form" style="display:none;">
-    <h3>🗂 Criar Novo Grupo de Treino</h3>
-    <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px;">Os treinos atuais serão arquivados no histórico de grupos. O novo grupo começará em branco.</p>
-    <div class="form-grid">
-      <div class="form-group"><label>Nome do Grupo</label><input type="text" id="novoGrupoNome" placeholder="Ex: Mesociclo 2 · Nov/2026"></div>
-      <div class="form-group"><label>Objetivo</label><input type="text" id="novoGrupoObjetivo" placeholder="Ex: Hipertrofia com foco em carga"></div>
-    </div>
-    <div class="grupo-arquivo-info">
-      <span>ℹ️</span>
-      <span>Os exercícios dos treinos A, B, C e D atuais serão salvos no histórico de grupos. As sessões registradas no histórico serão mantidas.</span>
-    </div>
-    <div style="display:flex;gap:10px;margin-top:16px;">
-      <button class="btn-cancel" onclick="fecharNovoGrupo()">Cancelar</button>
-      <button class="btn-save" onclick="criarNovoGrupo()">✓ Criar Novo Grupo</button>
-    </div>
-  </div>
-
-  <!-- Se não tem grupo, botão para criar o primeiro -->
-  <div id="novoGrupoInicio" style="margin-bottom:20px;">
-    <div class="novo-grupo-form">
-      <h3>🗂 Criar Grupo de Treino Inicial</h3>
-      <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px;">Dê um nome ao seu grupo de treino atual antes de criar fichas.</p>
-      <div class="form-grid">
-        <div class="form-group"><label>Nome do Grupo</label><input type="text" id="grupoInicialNome" placeholder="Ex: Mesociclo 1 · Ago/2026"></div>
-        <div class="form-group"><label>Objetivo</label><input type="text" id="grupoInicialObjetivo" placeholder="Ex: Base e adaptação"></div>
-      </div>
-      <div style="margin-top:14px;">
-        <button class="btn-save" onclick="criarGrupoInicial()">✓ Definir Grupo</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="novo-form">
+    <!-- TREINOS -->
     <div class="form-section">
-      <h3>Identificação do Treino</h3>
-      <div class="form-grid">
-        <div class="form-group"><label>Código do Treino</label><input type="text" id="novoId" placeholder="Ex: E, F, Hiit..." maxlength="6"></div>
-        <div class="form-group"><label>Nome / Foco</label><input type="text" id="novoFoco" placeholder="Ex: Glúteos e Posterior"></div>
-      </div>
+      <div class="form-section-title">🏋️ Treinos</div>
+      <div id="cad-treinos-list"></div>
+      <button class="btn-add-treino" onclick="cadAddTreino()">＋ Adicionar Treino</button>
     </div>
-    <div class="form-section">
-      <h3>Exercícios</h3>
-      <div class="ex-row-header" id="exRowHeader">
-        <span>Exercício</span><span>Grupo</span><span>Séries</span><span>Reps</span><span>Carga (kg)</span><span>Vídeo</span><span></span>
-      </div>
-      <div id="exBuilder"></div>
-      <button class="btn-action" style="margin-top:8px" onclick="addExRow()">+ Adicionar linha</button>
-    </div>
-    <div class="form-section">
-      <button class="btn-action primary" onclick="criarTreino()">Criar Treino</button>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px;">
+      <button class="btn-cancel" onclick="irHome()">Cancelar</button>
+      <button class="btn-save" onclick="salvarGrupo()">✓ Salvar Grupo de Treino</button>
     </div>
   </div>
 </div>
 
-</main>
+<!-- ══ PAGE: TREINO (grupo selecionado) ══ -->
+<div class="page" id="page-treino">
+  <div style="max-width:1100px;margin:0 auto;">
 
-<!-- MODAL ADICIONAR EXERCÍCIO -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <h3 id="modalTitle">Adicionar Exercício</h3>
-    <input type="hidden" id="modalTab">
-    <div class="form-grid">
-      <div class="form-group"><label>Grupo Muscular</label><input type="text" id="fGrupo" placeholder="ex: Peito, Costas…"></div>
-      <div class="form-group"><label>Exercício</label><input type="text" id="fExercicio" placeholder="ex: Supino Reto"></div>
-      <div class="form-group full"><label>Descrição / Observações</label><textarea id="fDesc" rows="2" placeholder="Dicas de execução…"></textarea></div>
-      <div class="form-group"><label>Séries</label><input type="number" id="fSeries" placeholder="3" min="1"></div>
-      <div class="form-group"><label>Repetições</label><input type="text" id="fReps" placeholder="10-12"></div>
-      <div class="form-group"><label>Carga Inicial (kg)</label><input type="number" id="fCargaInicial" placeholder="0" min="0" step="0.5"></div>
-      <div class="form-group"><label>Nova Carga (kg)</label><input type="number" id="fCargaNova" placeholder="0" min="0" step="0.5"></div>
-      <div class="form-group full">
-        <label>Vídeo do Exercício</label>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <input type="url" id="fVideo" placeholder="Cole o link (OneDrive, YouTube…)" style="flex:1;min-width:200px;background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;padding:9px 12px;">
-          <button class="btn-action" id="fVideoUploadBtn" onclick="escolherVideoModal()" type="button" style="white-space:nowrap;">📎 Upload</button>
-        </div>
-        <div id="fVideoPreview" style="display:none;margin-top:6px;font-size:.75rem;color:var(--success);"></div>
-        <input type="hidden" id="fVideoDataUrl">
-        <input type="hidden" id="fVideoTipo">
+    <!-- ABAS DE TREINO + HISTÓRICO + EVOLUÇÃO -->
+    <div class="treino-nav" id="treino-nav"></div>
+    <div id="treino-panels"></div>
+
+    <!-- HISTÓRICO -->
+    <div class="treino-tab-content" id="panel-historico" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:0 0 12px 12px;padding:28px;">
+      <div class="hist-tabs">
+        <button class="hist-tab-btn active" onclick="switchHistTab('sessoes')">📅 Sessões</button>
+        <button class="hist-tab-btn" id="histTabFichas" onclick="switchHistTab('fichas')">📁 Fichas Arquivadas</button>
+      </div>
+      <div class="hist-panel active" id="hist-panel-sessoes">
+        <div id="hist-sessoes-list"></div>
+      </div>
+      <div class="hist-panel" id="hist-panel-fichas">
+        <div id="hist-fichas-list"></div>
       </div>
     </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
-      <button class="btn-save" onclick="saveExercise()">Salvar</button>
+
+    <!-- EVOLUÇÃO -->
+    <div class="treino-tab-content" id="panel-evolucao" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:0 0 12px 12px;padding:28px;">
+      <div class="panel-header">
+        <div class="panel-tag icon">📈</div>
+        <div class="panel-title"><h2>Evolução de Cargas</h2><p>Acompanhe seu progresso</p></div>
+      </div>
+      <div style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <select class="chart-select" id="chartExSelect" onchange="updateChart()">
+          <option value="">Selecione um exercício</option>
+        </select>
+      </div>
+      <div class="chart-wrap"><canvas id="evoChart"></canvas></div>
+      <div id="chart-empty" style="text-align:center;color:var(--muted);font-size:.85rem;display:none;">Registre sessões para ver a evolução.</div>
     </div>
+
   </div>
 </div>
 
-<!-- MODAL SYNC CONFIG -->
+<!-- ══ MODAL SYNC ══ -->
 <div class="modal-overlay" id="modalSync">
   <div class="modal" style="max-width:480px;">
     <h3>⚙ Sincronização GitHub</h3>
-    <p style="font-size:.82rem;color:var(--muted);margin-bottom:8px;line-height:1.6;">Os dados ficam salvos em <code style="background:var(--surface);padding:2px 6px;border-radius:4px;font-size:.78rem;">data.json</code> no repositório.</p>
-    <div style="font-size:.78rem;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);border-radius:8px;padding:10px 14px;margin-bottom:16px;line-height:1.7;color:var(--text);">
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:10px;line-height:1.6;">Dados salvos em <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;">data.json</code> no repositório, acessíveis em qualquer dispositivo.</p>
+    <div style="font-size:.78rem;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);border-radius:8px;padding:10px 14px;margin-bottom:16px;line-height:1.7;">
       <strong style="color:var(--accent);">Como usar:</strong><br>
-      • Alterações salvas aqui sobem ao GitHub automaticamente (1,5s)<br>
-      • Em outro dispositivo: abra o link → clique <strong>⬇ Buscar do GitHub</strong> para carregar os dados mais recentes
+      • Alterações sobem automaticamente em 1,5s<br>
+      • Em outro dispositivo: clique <strong>⬇ Buscar do GitHub</strong> para carregar
     </div>
-    <div class="form-grid">
-      <div class="form-group full">
-        <label>Token do GitHub <span style="color:#e8593a;">*</span></label>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="form-group">
+        <label>Token do GitHub *</label>
         <input type="password" id="syncToken" placeholder="ghp_..." autocomplete="off">
-        <div style="font-size:.72rem;color:var(--muted);margin-top:4px;">Salvo apenas neste dispositivo. Nunca enviado a terceiros.</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:3px;">Salvo apenas neste dispositivo.</div>
       </div>
-      <div class="form-group">
-        <label>Usuário GitHub</label>
-        <input type="text" id="syncOwner" placeholder="naubersantos21-lab">
-      </div>
-      <div class="form-group">
-        <label>Repositório</label>
-        <input type="text" id="syncRepo" placeholder="gymtrack">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group">
+          <label>Usuário GitHub</label>
+          <input type="text" id="syncOwner" placeholder="naubersantos21-lab">
+        </div>
+        <div class="form-group">
+          <label>Repositório</label>
+          <input type="text" id="syncRepo" placeholder="gymtrack">
+        </div>
       </div>
     </div>
     <div id="syncStatus" style="margin:12px 0;font-size:.8rem;display:none;padding:10px 14px;border-radius:8px;"></div>
     <div class="modal-actions" style="flex-wrap:wrap;gap:8px;">
-      <button class="btn-cancel" onclick="document.getElementById('modalSync').classList.remove('open')">Fechar</button>
-      <button class="btn-action" onclick="testarSync()" style="border-color:var(--muted);">🔍 Testar conexão</button>
-      <button class="btn-action" onclick="enviarParaGitHub()" style="border-color:var(--success);color:var(--success);">⬆ Enviar para GitHub</button>
+      <button class="btn-cancel" onclick="fecharModal('modalSync')">Fechar</button>
+      <button class="btn-action" onclick="testarSync()">🔍 Testar</button>
+      <button class="btn-action" onclick="enviarParaGitHub()" style="border-color:var(--success);color:var(--success);">⬆ Enviar</button>
       <button class="btn-action" onclick="importarDoGitHub()" style="border-color:#3b82f6;color:#3b82f6;">⬇ Buscar do GitHub</button>
-      <button class="btn-action primary" onclick="salvarConfigSync()">✓ Salvar configuração</button>
+      <button class="btn-save" onclick="salvarConfigSync()">✓ Salvar</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL EXCLUIR TREINO -->
-<div class="modal-overlay" id="modalExcluir">
-  <div class="modal" style="max-width:420px;">
-    <h3>Excluir Treino</h3>
-    <input type="hidden" id="excluirTreinoId">
-    <p style="font-size:.88rem;color:var(--muted);margin-bottom:20px;">O que deseja fazer com o <strong id="excluirTreinoNome" style="color:var(--text)"></strong>?</p>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
-      <button class="btn-action" style="justify-content:flex-start;padding:14px 18px;border-color:var(--success);color:var(--success);" onclick="confirmarExcluirTreino('arquivar')">
-        <span style="font-size:1.1rem;">📁</span>
-        <div style="text-align:left;">
-          <div style="font-weight:600;font-size:.88rem;">Arquivar em Histórico de Fichas</div>
-          <div style="font-size:.75rem;color:var(--muted);margin-top:2px;">Guarda a ficha com todos os exercícios no Histórico</div>
-        </div>
-      </button>
-      <button class="btn-action btn-danger" style="justify-content:flex-start;padding:14px 18px;" onclick="confirmarExcluirTreino('deletar')">
-        <span style="font-size:1.1rem;">🗑</span>
-        <div style="text-align:left;">
-          <div style="font-weight:600;font-size:.88rem;">Excluir definitivamente</div>
-          <div style="font-size:.75rem;color:var(--muted);margin-top:2px;">Remove o treino permanentemente, sem recuperação</div>
-        </div>
-      </button>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="document.getElementById('modalExcluir').classList.remove('open')">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL REGISTRAR SESSÃO -->
+<!-- ══ MODAL REGISTRAR SESSÃO ══ -->
 <div class="modal-overlay" id="modalReg">
   <div class="modal">
-    <h3 id="regTitle">Registrar Sessão — Treino A</h3>
-    <input type="hidden" id="regTab">
-    <div class="form-group full" style="margin-bottom:14px;">
+    <h3 id="regTitle">Registrar Sessão</h3>
+    <input type="hidden" id="regGrupoId">
+    <input type="hidden" id="regTreinoId">
+    <div class="form-group" style="margin-bottom:14px;">
       <label>Data</label>
       <input type="date" id="regData">
     </div>
     <div class="reg-header"><span>Exercício</span><span>Carga (kg)</span><span>Obs</span></div>
-    <div class="reg-ex-list" id="regExList"></div>
+    <div id="regExList"></div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeReg()">Cancelar</button>
+      <button class="btn-cancel" onclick="fecharModal('modalReg')">Cancelar</button>
       <button class="btn-save" onclick="salvarSessao()">Salvar Sessão</button>
     </div>
   </div>
 </div>
 
+<!-- ══ MODAL EXCLUIR TREINO ══ -->
+<div class="modal-overlay" id="modalExcluirTreino">
+  <div class="modal" style="max-width:420px;">
+    <h3>Excluir Treino</h3>
+    <input type="hidden" id="exclTreinoGrupoId">
+    <input type="hidden" id="exclTreinoId">
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:20px;">O que deseja fazer com <strong id="exclTreinoNome" style="color:var(--text)"></strong>?</p>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+      <button class="btn-action green" style="justify-content:flex-start;padding:14px 18px;" onclick="confirmarExcluirTreino('arquivar')">
+        <span style="font-size:1.1rem;">📁</span>
+        <div style="text-align:left;">
+          <div style="font-weight:600;font-size:.88rem;">Arquivar em Histórico de Fichas</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:2px;">Guarda a ficha no Histórico</div>
+        </div>
+      </button>
+      <button class="btn-action danger" style="justify-content:flex-start;padding:14px 18px;" onclick="confirmarExcluirTreino('deletar')">
+        <span style="font-size:1.1rem;">🗑</span>
+        <div style="text-align:left;">
+          <div style="font-weight:600;font-size:.88rem;">Excluir definitivamente</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:2px;">Remove sem recuperação</div>
+        </div>
+      </button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="fecharModal('modalExcluirTreino')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL EXCLUIR GRUPO ══ -->
+<div class="modal-overlay" id="modalExcluirGrupo">
+  <div class="modal" style="max-width:400px;">
+    <h3>Excluir Grupo</h3>
+    <input type="hidden" id="exclGrupoId">
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:20px;">Deseja excluir o grupo <strong id="exclGrupoNome" style="color:var(--text)"></strong>? Todo o histórico associado será perdido.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="fecharModal('modalExcluirGrupo')">Cancelar</button>
+      <button class="btn-action danger" onclick="confirmarExcluirGrupo()">🗑 Excluir</button>
+    </div>
+  </div>
+</div>
+
 <script>
-const SK = 'gymtrack_v3';
-const SK_SYNC = 'gymtrack_sync_cfg';
-let chartInstance = null;
-let syncDebounce = null;
-
-// ══ SYNC CONFIG ══
-function getSyncCfg() { try { return JSON.parse(localStorage.getItem(SK_SYNC) || '{}'); } catch(e) { return {}; } }
-function setSyncCfg(c) { localStorage.setItem(SK_SYNC, JSON.stringify(c)); }
-
-function syncStatus(msg, tipo) {
-  const icon = document.getElementById('sync-icon');
-  const label = document.getElementById('sync-label');
-  if (tipo === 'ok')      { icon.textContent='☁'; icon.style.color='var(--success)'; label.style.color='var(--success)'; }
-  else if (tipo === 'err'){ icon.textContent='⚠'; icon.style.color='#e8593a'; label.style.color='#e8593a'; }
-  else if (tipo === 'spin'){ icon.textContent='↻'; icon.style.color='var(--accent)'; label.style.color='var(--accent)'; }
-  else                    { icon.textContent='☁'; icon.style.color='var(--muted)'; label.style.color='var(--muted)'; }
-  label.textContent = msg;
-}
-
-async function githubRequest(method, path, body) {
-  const cfg = getSyncCfg();
-  if (!cfg.token) throw new Error('Token não configurado');
-  const url = 'https://api.github.com/repos/' + cfg.owner + '/' + cfg.repo + path;
-  const opts = { method, headers: { Authorization: 'token ' + cfg.token, 'Content-Type': 'application/json', Accept: 'application/vnd.github.v3+json' } };
-  if (body) opts.body = JSON.stringify(body);
-  const res = await fetch(url, opts);
-  if (!res.ok) { const e = await res.json().catch(()=>{}); throw new Error((e && e.message) || res.status); }
-  return res.status === 204 ? {} : res.json();
-}
-
-async function pushDataGitHub(data) {
-  const cfg = getSyncCfg();
-  if (!cfg.token || !cfg.owner || !cfg.repo) return;
-  syncStatus('Salvando…', 'spin');
-  try {
-    let sha = null;
-    try { const f = await githubRequest('GET', '/contents/data.json'); sha = f.sha; } catch(e) {}
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-    const body = { message: 'GymTrack sync ' + new Date().toISOString().slice(0,16), content, ...(sha ? {sha} : {}) };
-    await githubRequest('PUT', '/contents/data.json', body);
-    syncStatus('Sincronizado', 'ok');
-    setTimeout(() => syncStatus('GitHub', null), 3000);
-  } catch(e) {
-    syncStatus('Erro: ' + e.message, 'err');
-  }
-}
-
-async function pullDataGitHub() {
-  const cfg = getSyncCfg();
-  if (!cfg.token || !cfg.owner || !cfg.repo) return null;
-  try {
-    const f = await githubRequest('GET', '/contents/data.json');
-    const json = decodeURIComponent(escape(atob(f.content.replace(/\n/g,''))));
-    return JSON.parse(json);
-  } catch(e) {
-    // Arquivo ainda não existe no repositório — tudo normal na primeira vez
-    const msg = (e.message || '').toLowerCase();
-    if (msg.includes('404') || msg.includes('not found')) return null;
-    throw e;
-  }
-}
-
 // ══ STORAGE ══
-function getData() { try { return JSON.parse(localStorage.getItem(SK) || '{}'); } catch(e) { return {}; } }
+const SK = 'gymtrack_v4';
+const SK_SYNC = 'gymtrack_sync_cfg';
+let syncDebounce = null;
+let chartInstance = null;
+let grupoAtivo = null; // id do grupo aberto
+
+function getData() {
+  try { return JSON.parse(localStorage.getItem(SK) || '{"grupos":[]}'); }
+  catch(e) { return {grupos:[]}; }
+}
 function setData(d) {
-  d._updatedAt = Date.now(); // timestamp de quando este dispositivo salvou
+  d._updatedAt = Date.now();
   localStorage.setItem(SK, JSON.stringify(d));
-  // Debounce: envia para GitHub 1,5s após última alteração
+  showSaved();
   clearTimeout(syncDebounce);
   syncDebounce = setTimeout(() => pushDataGitHub(d), 1500);
 }
-
-function saveCargas() {
-  const d = getData();
-  d.cargas = d.cargas || {};
-  document.querySelectorAll('tr[data-tab][data-idx]').forEach(tr => {
-    const k = tr.dataset.tab + '_' + tr.dataset.idx;
-    const ins = tr.querySelectorAll('.carga-input');
-    if (ins.length >= 2) d.cargas[k] = { ci: ins[0].value, cn: ins[1].value };
-  });
-  setData(d);
-  showSaved();
-}
-
-function loadCargas() {
-  const d = getData();
-  if (!d.cargas) return;
-  document.querySelectorAll('tr[data-tab][data-idx]').forEach(tr => {
-    const k = tr.dataset.tab + '_' + tr.dataset.idx;
-    if (d.cargas[k]) {
-      const ins = tr.querySelectorAll('.carga-input');
-      if (ins[0] && d.cargas[k].ci !== '') ins[0].value = d.cargas[k].ci;
-      if (ins[1] && d.cargas[k].cn !== '') ins[1].value = d.cargas[k].cn;
-    }
-  });
-}
-
 function showSaved() {
   const el = document.getElementById('save-indicator');
   el.style.opacity = '1';
   clearTimeout(el._t);
-  el._t = setTimeout(() => el.style.opacity = '0', 2000);
+  el._t = setTimeout(() => el.style.opacity='0', 2000);
 }
 
-// ══ SYNC UI ══
+// ══ SYNC ══
+function getSyncCfg() { try { return JSON.parse(localStorage.getItem(SK_SYNC)||'{}'); } catch(e){ return {}; } }
+function setSyncCfg(c) { localStorage.setItem(SK_SYNC, JSON.stringify(c)); }
+function syncStatus(msg, tipo) {
+  const icon = document.getElementById('sync-icon');
+  const lbl  = document.getElementById('sync-label');
+  const colors = {ok:'var(--success)', err:'#e8593a', spin:'var(--accent)'};
+  const c = colors[tipo] || 'var(--muted)';
+  icon.style.color = lbl.style.color = c;
+  icon.textContent = tipo==='spin' ? '↻' : tipo==='err' ? '⚠' : '☁';
+  lbl.textContent = msg;
+}
+async function githubRequest(method, path, body) {
+  const cfg = getSyncCfg();
+  if (!cfg.token) throw new Error('Token não configurado');
+  const url = 'https://api.github.com/repos/' + cfg.owner + '/' + cfg.repo + path;
+  const opts = { method, headers: { Authorization:'token '+cfg.token, 'Content-Type':'application/json', Accept:'application/vnd.github.v3+json' } };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(url, opts);
+  if (!res.ok) { const e = await res.json().catch(()=>{}); throw new Error((e&&e.message)||res.status); }
+  return res.status===204 ? {} : res.json();
+}
+async function pushDataGitHub(data) {
+  const cfg = getSyncCfg();
+  if (!cfg.token||!cfg.owner||!cfg.repo) return;
+  syncStatus('Salvando…','spin');
+  try {
+    let sha = null;
+    try { const f = await githubRequest('GET','/contents/data.json'); sha = f.sha; } catch(e){}
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
+    await githubRequest('PUT','/contents/data.json',{ message:'GymTrack sync '+new Date().toISOString().slice(0,16), content, ...(sha?{sha}:{}) });
+    syncStatus('Sincronizado','ok');
+    setTimeout(()=>syncStatus('GitHub',null),3000);
+  } catch(e) { syncStatus('Erro: '+e.message,'err'); }
+}
+async function pullDataGitHub() {
+  const cfg = getSyncCfg();
+  if (!cfg.token||!cfg.owner||!cfg.repo) return null;
+  try {
+    const f = await githubRequest('GET','/contents/data.json');
+    return JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g,'')))));
+  } catch(e) {
+    const m = (e.message||'').toLowerCase();
+    if (m.includes('404')||m.includes('not found')) return null;
+    throw e;
+  }
+}
 function abrirConfigSync() {
   const cfg = getSyncCfg();
-  document.getElementById('syncToken').value = cfg.token || '';
-  document.getElementById('syncOwner').value = cfg.owner || 'naubersantos21-lab';
-  document.getElementById('syncRepo').value = cfg.repo || 'gymtrack';
-  document.getElementById('syncStatus').style.display = 'none';
+  document.getElementById('syncToken').value = cfg.token||'';
+  document.getElementById('syncOwner').value = cfg.owner||'naubersantos21-lab';
+  document.getElementById('syncRepo').value  = cfg.repo||'gymtrack';
+  document.getElementById('syncStatus').style.display='none';
   document.getElementById('modalSync').classList.add('open');
 }
-
 function salvarConfigSync() {
   const token = document.getElementById('syncToken').value.trim();
   const owner = document.getElementById('syncOwner').value.trim();
-  const repo = document.getElementById('syncRepo').value.trim();
-  if (!token || !owner || !repo) { mostrarSyncMsg('Preencha todos os campos.', 'err'); return; }
-  setSyncCfg({ token, owner, repo });
-  mostrarSyncMsg('Configuração salva! Dados serão sincronizados automaticamente.', 'ok');
-  syncStatus('GitHub', null);
-  setTimeout(() => document.getElementById('modalSync').classList.remove('open'), 1500);
+  const repo  = document.getElementById('syncRepo').value.trim();
+  if (!token||!owner||!repo) { mostrarSyncMsg('Preencha todos os campos.','err'); return; }
+  setSyncCfg({token,owner,repo});
+  mostrarSyncMsg('✓ Configuração salva!','ok');
+  setTimeout(()=>fecharModal('modalSync'),1200);
 }
-
-function mostrarSyncMsg(msg, tipo) {
+function mostrarSyncMsg(msg,tipo) {
   const el = document.getElementById('syncStatus');
-  el.style.display = 'block';
-  el.style.background = tipo === 'ok' ? 'rgba(52,211,153,.1)' : tipo === 'err' ? 'rgba(232,89,58,.1)' : 'rgba(245,166,35,.1)';
-  el.style.border = '1px solid ' + (tipo === 'ok' ? 'rgba(52,211,153,.3)' : tipo === 'err' ? 'rgba(232,89,58,.3)' : 'rgba(245,166,35,.3)');
-  el.style.color = tipo === 'ok' ? 'var(--success)' : tipo === 'err' ? '#e8593a' : 'var(--accent)';
+  el.style.display='block';
+  el.style.background = tipo==='ok'?'rgba(52,211,153,.1)':tipo==='err'?'rgba(232,89,58,.1)':'rgba(245,166,35,.1)';
+  el.style.border = '1px solid '+(tipo==='ok'?'rgba(52,211,153,.3)':tipo==='err'?'rgba(232,89,58,.3)':'rgba(245,166,35,.3)');
+  el.style.color = tipo==='ok'?'var(--success)':tipo==='err'?'#e8593a':'var(--accent)';
   el.textContent = msg;
 }
-
 async function testarSync() {
-  const token = document.getElementById('syncToken').value.trim();
-  const owner = document.getElementById('syncOwner').value.trim();
-  const repo = document.getElementById('syncRepo').value.trim();
-  if (!token || !owner || !repo) { mostrarSyncMsg('Preencha todos os campos primeiro.', 'err'); return; }
-  mostrarSyncMsg('Testando conexão…', 'spin');
-  // Salva temporariamente para usar em githubRequest
-  const oldCfg = getSyncCfg();
-  setSyncCfg({ token, owner, repo });
-  try {
-    await githubRequest('GET', '');
-    mostrarSyncMsg('✓ Conexão OK! Repositório encontrado.', 'ok');
-  } catch(e) {
-    mostrarSyncMsg('✗ Erro: ' + e.message, 'err');
-    setSyncCfg(oldCfg); // reverte se falhou
-  }
+  const token=document.getElementById('syncToken').value.trim();
+  const owner=document.getElementById('syncOwner').value.trim();
+  const repo=document.getElementById('syncRepo').value.trim();
+  if(!token||!owner||!repo){mostrarSyncMsg('Preencha todos os campos.','err');return;}
+  mostrarSyncMsg('Testando…','spin');
+  const old=getSyncCfg(); setSyncCfg({token,owner,repo});
+  try { await githubRequest('GET',''); mostrarSyncMsg('✓ Conexão OK!','ok'); }
+  catch(e) { mostrarSyncMsg('✗ '+e.message,'err'); setSyncCfg(old); }
 }
-
 async function enviarParaGitHub() {
-  mostrarSyncMsg('Enviando dados para o GitHub…', 'spin');
-  try {
-    const token = document.getElementById('syncToken').value.trim();
-    const owner = document.getElementById('syncOwner').value.trim();
-    const repo = document.getElementById('syncRepo').value.trim();
-    if (!token || !owner || !repo) { mostrarSyncMsg('Salve a configuração primeiro.', 'err'); return; }
-    setSyncCfg({ token, owner, repo });
-    await pushDataGitHub(getData());
-    mostrarSyncMsg('✓ Dados enviados ao GitHub com sucesso!', 'ok');
-  } catch(e) {
-    mostrarSyncMsg('✗ Erro: ' + e.message, 'err');
-  }
+  const token=document.getElementById('syncToken').value.trim();
+  const owner=document.getElementById('syncOwner').value.trim();
+  const repo=document.getElementById('syncRepo').value.trim();
+  if(!token||!owner||!repo){mostrarSyncMsg('Salve a configuração primeiro.','err');return;}
+  setSyncCfg({token,owner,repo});
+  mostrarSyncMsg('Enviando…','spin');
+  try { await pushDataGitHub(getData()); mostrarSyncMsg('✓ Dados enviados!','ok'); }
+  catch(e){mostrarSyncMsg('✗ '+e.message,'err');}
 }
-
 async function importarDoGitHub() {
-  mostrarSyncMsg('Buscando dados do GitHub…', 'spin');
+  const token=document.getElementById('syncToken').value.trim();
+  const owner=document.getElementById('syncOwner').value.trim();
+  const repo=document.getElementById('syncRepo').value.trim();
+  if(!token||!owner||!repo){mostrarSyncMsg('Salve a configuração primeiro.','err');return;}
+  setSyncCfg({token,owner,repo});
+  mostrarSyncMsg('Buscando dados…','spin');
   try {
-    const token = document.getElementById('syncToken').value.trim();
-    const owner = document.getElementById('syncOwner').value.trim();
-    const repo = document.getElementById('syncRepo').value.trim();
-    if (!token || !owner || !repo) { mostrarSyncMsg('Salve a configuração primeiro.', 'err'); return; }
-    setSyncCfg({ token, owner, repo });
     const remoto = await pullDataGitHub();
-    if (!remoto) {
-      // data.json ainda não existe — envia os dados locais para o GitHub
-      mostrarSyncMsg('Enviando dados locais para o GitHub…', 'spin');
-      await pushDataGitHub(getData());
-      mostrarSyncMsg('✓ Dados enviados ao GitHub! Sincronização ativa.', 'ok');
-      return;
-    }
-    // Substituir local pelo remoto e recarregar
+    if (!remoto) { mostrarSyncMsg('Nenhum dado no GitHub ainda. Use ⬆ Enviar primeiro.','spin'); return; }
     localStorage.setItem(SK, JSON.stringify(remoto));
-    mostrarSyncMsg('✓ Dados importados! Recarregando…', 'ok');
-    setTimeout(() => location.reload(), 1200);
-  } catch(e) {
-    mostrarSyncMsg('✗ Erro: ' + e.message, 'err');
+    mostrarSyncMsg('✓ Dados carregados! Recarregando…','ok');
+    setTimeout(()=>location.reload(),1000);
+  } catch(e){mostrarSyncMsg('✗ '+e.message,'err');}
+}
+function initSync() {
+  const cfg = getSyncCfg();
+  if (!cfg.token) { syncStatus('Não configurado',null); return; }
+  syncStatus('GitHub',null);
+}
+
+// ══ NAVEGAÇÃO ══
+function irHome() {
+  grupoAtivo = null;
+  showPage('page-home');
+  setBreadcrumb([]);
+  document.getElementById('timerWidget').style.display='none';
+  renderHome();
+}
+function irParaCadastro(grupoId=null) {
+  cadEditGrupoId = grupoId;
+  if (grupoId) {
+    const d = getData();
+    const g = d.grupos.find(g=>g.id===grupoId);
+    if (g) cadCarregarGrupo(g);
+    document.getElementById('cad-page-title').textContent = 'Editar Grupo de Treino';
+  } else {
+    cadReset();
+    document.getElementById('cad-page-title').textContent = 'Novo Grupo de Treino';
+  }
+  showPage('page-cadastro');
+  setBreadcrumb([{label:'Home', fn:'irHome()'},'Novo Grupo']);
+}
+function irParaTreino(grupoId) {
+  grupoAtivo = grupoId;
+  const d = getData();
+  const g = d.grupos.find(g=>g.id===grupoId);
+  if (!g) return;
+  showPage('page-treino');
+  setBreadcrumb([{label:'Home', fn:'irHome()'},g.nome]);
+  document.getElementById('timerWidget').style.display='flex';
+  renderTreinoPage(g, d);
+}
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function setBreadcrumb(items) {
+  const el = document.getElementById('breadcrumb');
+  el.innerHTML = items.map((it,i) => {
+    if (typeof it === 'string') return '<span>'+it+'</span>';
+    return (i>0?'<span class="breadcrumb-sep">›</span>':'')+'<button class="breadcrumb-link" onclick="'+it.fn+'">'+it.label+'</button>';
+  }).join('<span class="breadcrumb-sep">›</span>');
+}
+function fecharModal(id){ document.getElementById(id).classList.remove('open'); }
+
+// ══ HOME ══
+function renderHome() {
+  const d = getData();
+  const grid = document.getElementById('grupos-grid');
+  if (!d.grupos||!d.grupos.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);font-size:.9rem;">Nenhum grupo cadastrado ainda. Crie seu primeiro grupo!</div>';
+    return;
+  }
+  const colors = ['#f5a623','#3b82f6','#a855f7','#e8593a','#34d399','#ec4899','#14b8a6'];
+  grid.innerHTML = d.grupos.map((g,i) => {
+    const cor = colors[i%colors.length];
+    const badges = (g.treinos||[]).map(t=>`<span class="grupo-treino-badge" style="border-color:${cor}44;color:${cor};">${t.nome}</span>`).join('');
+    return `<div class="grupo-card" onclick="irParaTreino('${g.id}')" style="--card-color:${cor};">
+      <div class="grupo-actions" onclick="event.stopPropagation()">
+        <button class="grupo-action-btn" onclick="irParaCadastro('${g.id}')" title="Editar">✏</button>
+        <button class="grupo-action-btn" onclick="pedirExcluirGrupo('${g.id}')" title="Excluir">✕</button>
+      </div>
+      <div style="width:36px;height:4px;border-radius:4px;background:${cor};margin-bottom:14px;"></div>
+      <div class="grupo-card-name" style="color:${cor}">${g.nome}</div>
+      <div class="grupo-card-meta">${g.descricao||''}</div>
+      <div class="grupo-treinos">${badges}</div>
+    </div>`;
+  }).join('');
+  // fix: after setting innerHTML, the ::before color needs inline style
+  grid.querySelectorAll('.grupo-card').forEach((card,i)=>{
+    card.style.setProperty('--card-color', colors[i%colors.length]);
+  });
+}
+
+// ══ CADASTRO ══
+let cadEditGrupoId = null;
+let cadTreinoCount = 0;
+
+function cadReset() {
+  cadEditGrupoId = null;
+  cadTreinoCount = 0;
+  document.getElementById('cad-grupo-nome').value = '';
+  document.getElementById('cad-grupo-desc').value = '';
+  document.getElementById('cad-treinos-list').innerHTML = '';
+}
+
+function cadCarregarGrupo(g) {
+  cadTreinoCount = 0;
+  document.getElementById('cad-grupo-nome').value = g.nome;
+  document.getElementById('cad-grupo-desc').value = g.descricao||'';
+  const list = document.getElementById('cad-treinos-list');
+  list.innerHTML = '';
+  (g.treinos||[]).forEach(t => cadAddTreino(t));
+}
+
+function cadAddTreino(dados=null) {
+  const tid = 'treino_' + (++cadTreinoCount);
+  const div = document.createElement('div');
+  div.className = 'treino-secao';
+  div.id = 'cad-' + tid;
+  div.innerHTML = `
+    <div class="treino-secao-header">
+      <div class="treino-secao-title">Treino ${cadTreinoCount}</div>
+      <button class="btn-remove-treino" onclick="document.getElementById('cad-${tid}').remove()">✕ Remover treino</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nome do Treino *</label>
+        <input type="text" id="${tid}-nome" placeholder="ex: Treino A, Peito+Tríceps…" value="${dados?dados.nome:''}">
+      </div>
+      <div class="form-group">
+        <label>Foco Muscular</label>
+        <input type="text" id="${tid}-foco" placeholder="ex: Quadríceps · Ombros" value="${dados?dados.foco||'':''}">
+      </div>
+    </div>
+    <div id="${tid}-exercicios"></div>
+    <button class="btn-add-ex" onclick="cadAddExercicio('${tid}')">＋ Adicionar Exercício</button>
+  `;
+  document.getElementById('cad-treinos-list').appendChild(div);
+  if (dados && dados.exercicios) dados.exercicios.forEach(ex => cadAddExercicio(tid, ex));
+  else cadAddExercicio(tid);
+}
+
+let cadExCount = 0;
+function cadAddExercicio(tid, dados=null) {
+  const eid = 'ex_' + (++cadExCount);
+  const div = document.createElement('div');
+  div.className = 'exercicio-card';
+  div.id = eid;
+  div.innerHTML = `
+    <div class="exercicio-card-title">
+      <span>Exercício</span>
+      <button class="btn-remove-ex" onclick="document.getElementById('${eid}').remove()" title="Remover">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Exercício *</label>
+        <input type="text" id="${eid}-nome" placeholder="ex: Leg Press 45°" value="${dados?dados.nome:''}">
+      </div>
+      <div class="form-group">
+        <label>Grupo Muscular</label>
+        <input type="text" id="${eid}-grupo" placeholder="ex: Quadríceps" value="${dados?dados.grupo||'':''}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Séries</label>
+        <input type="number" id="${eid}-series" placeholder="4" min="1" value="${dados?dados.series||'':''}">
+      </div>
+      <div class="form-group">
+        <label>Repetições</label>
+        <input type="text" id="${eid}-reps" placeholder="12 a 15" value="${dados?dados.reps||'':''}">
+      </div>
+      <div class="form-group">
+        <label>Carga Inicial (kg)</label>
+        <input type="number" id="${eid}-carga" placeholder="0" min="0" step="0.5" value="${dados?dados.cargaInicial||'':''}">
+      </div>
+    </div>
+    <div class="form-row full">
+      <div class="form-group">
+        <label>Observações</label>
+        <textarea id="${eid}-obs" rows="2" placeholder="Dicas de execução…">${dados?dados.obs||'':''}</textarea>
+      </div>
+    </div>
+    <div class="form-row full">
+      <div class="form-group">
+        <label>Link de Vídeo (opcional)</label>
+        <input type="url" id="${eid}-video" placeholder="https://youtube.com/…" value="${dados?dados.video||'':''}">
+      </div>
+    </div>
+  `;
+  document.getElementById(tid + '-exercicios').appendChild(div);
+}
+
+function salvarGrupo() {
+  const nome = document.getElementById('cad-grupo-nome').value.trim();
+  if (!nome) { alert('Informe o nome do grupo.'); return; }
+
+  const treinos = [];
+  document.querySelectorAll('#cad-treinos-list .treino-secao').forEach(sec => {
+    const tid = sec.id.replace('cad-','');
+    const tnome = document.getElementById(tid+'-nome')?.value?.trim()||'';
+    if (!tnome) return;
+    const exercicios = [];
+    sec.querySelectorAll('.exercicio-card').forEach(ec => {
+      const eid = ec.id;
+      const enome = document.getElementById(eid+'-nome')?.value?.trim()||'';
+      if (!enome) return;
+      exercicios.push({
+        nome: enome,
+        grupo: document.getElementById(eid+'-grupo')?.value?.trim()||'',
+        series: document.getElementById(eid+'-series')?.value||'',
+        reps: document.getElementById(eid+'-reps')?.value?.trim()||'',
+        cargaInicial: document.getElementById(eid+'-carga')?.value||'',
+        obs: document.getElementById(eid+'-obs')?.value?.trim()||'',
+        video: document.getElementById(eid+'-video')?.value?.trim()||''
+      });
+    });
+    treinos.push({ id: tid, nome: tnome, foco: document.getElementById(tid+'-foco')?.value?.trim()||'', exercicios });
+  });
+
+  const d = getData();
+  if (cadEditGrupoId) {
+    const idx = d.grupos.findIndex(g=>g.id===cadEditGrupoId);
+    if (idx>=0) { d.grupos[idx].nome=nome; d.grupos[idx].descricao=document.getElementById('cad-grupo-desc').value.trim(); d.grupos[idx].treinos=treinos; }
+  } else {
+    d.grupos.push({ id:'g_'+Date.now(), nome, descricao:document.getElementById('cad-grupo-desc').value.trim(), treinos, criadoEm:new Date().toISOString().slice(0,10) });
+  }
+  setData(d);
+  irHome();
+}
+
+// ══ PÁGINA DE TREINO ══
+function renderTreinoPage(g, d) {
+  const nav = document.getElementById('treino-nav');
+  const panels = document.getElementById('treino-panels');
+
+  // Limpar
+  nav.innerHTML = '';
+  panels.innerHTML = '';
+  document.getElementById('panel-historico').style.display='none';
+  document.getElementById('panel-evolucao').style.display='none';
+
+  const colors = ['#f5a623','#3b82f6','#a855f7','#e8593a','#34d399','#ec4899','#14b8a6'];
+
+  // Abas dos treinos
+  (g.treinos||[]).forEach((t,i) => {
+    const cor = colors[i%colors.length];
+    const btn = document.createElement('button');
+    btn.className = 'treino-tab-btn' + (i===0?' active':'');
+    btn.dataset.treinoId = t.id;
+    btn.textContent = t.nome;
+    btn.style.cssText = i===0?`border-bottom-color:${cor};color:${cor};`:'';
+    btn.onclick = () => switchTreinoTab(t.id, cor, btn);
+    nav.appendChild(btn);
+  });
+
+  // Aba Histórico
+  const btnH = document.createElement('button');
+  btnH.className = 'treino-tab-btn';
+  btnH.dataset.treinoId = '__historico';
+  btnH.innerHTML = '📅 Histórico';
+  btnH.onclick = () => switchTreinoTab('__historico','var(--muted)',btnH);
+  nav.appendChild(btnH);
+
+  // Aba Evolução
+  const btnE = document.createElement('button');
+  btnE.className = 'treino-tab-btn';
+  btnE.dataset.treinoId = '__evolucao';
+  btnE.innerHTML = '📈 Evolução';
+  btnE.onclick = () => switchTreinoTab('__evolucao','var(--muted)',btnE);
+  nav.appendChild(btnE);
+
+  // Painéis de treino
+  (g.treinos||[]).forEach((t,i) => {
+    const cor = colors[i%colors.length];
+    const panel = document.createElement('div');
+    panel.className = 'treino-tab-content' + (i===0?' active':'');
+    panel.id = 'panel-treino-'+t.id;
+    panel.style.cssText='background:var(--surface2);border:1px solid var(--border);border-radius:0 0 12px 12px;';
+
+    const exRows = (t.exercicios||[]).map((ex,ei) => {
+      const vidCell = ex.video
+        ? `<a class="video-btn" href="${ex.video}" target="_blank" rel="noopener" style="border-color:#3b82f6;color:#3b82f6;">▶ Ver</a>`
+        : `<span style="color:var(--muted);font-size:.75rem;">—</span>`;
+      const setsReps = (ex.series?(ex.series+'×'):'') + (ex.reps||'');
+      return `<tr data-grupo-id="${g.id}" data-treino-id="${t.id}" data-ex-idx="${ei}">
+        <td><span class="muscle-badge" style="background:${cor}18;color:${cor}">${ex.grupo||'—'}</span></td>
+        <td><div class="ex-name">${ex.nome}</div>${ex.obs?`<div class="ex-desc">${ex.obs}</div>`:''}</td>
+        <td><span class="sets-reps">${setsReps}</span></td>
+        <td><input class="carga-input" type="number" min="0" step="0.5" placeholder="—" data-tipo="ci" value="${ex.cargaInicial||''}"></td>
+        <td><input class="carga-input" type="number" min="0" step="0.5" placeholder="—" data-tipo="cn"></td>
+        <td>${vidCell}</td>
+      </tr>`;
+    }).join('');
+
+    panel.innerHTML = `
+      <div class="panel-header" style="padding:28px 28px 0;">
+        <div class="panel-tag" style="background:${cor}18;color:${cor}">${t.nome.charAt(0)}</div>
+        <div class="panel-title"><h2>${t.nome}</h2><p>${t.foco||''}</p></div>
+        <div class="panel-actions">
+          <button class="btn-action green" onclick="abrirRegistro('${g.id}','${t.id}')">✓ Registrar Sessão</button>
+          <button class="btn-action danger" onclick="pedirExcluirTreino('${g.id}','${t.id}','${t.nome}')">🗑 Excluir</button>
+        </div>
+      </div>
+      <div class="table-wrap" style="padding:0 28px 28px;">
+        <table>
+          <thead><tr>
+            <th>Grupo</th><th>Exercício</th><th>Séries/Reps</th>
+            <th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th>
+          </tr></thead>
+          <tbody>${exRows}</tbody>
+        </table>
+      </div>
+      <div class="panel-stats" style="padding:0 28px 28px;">
+        <div class="stat-box"><div class="stat-val">${(t.exercicios||[]).length}</div><div class="stat-label">Exercícios</div></div>
+      </div>`;
+    panels.appendChild(panel);
+  });
+
+  // Carregar nova carga salva
+  loadNovasCargas(g.id);
+
+  // Preencher select de exercícios na evolução
+  const sel = document.getElementById('chartExSelect');
+  sel.innerHTML = '<option value="">Selecione um exercício</option>';
+  (g.treinos||[]).forEach(t => (t.exercicios||[]).forEach((ex,ei) => {
+    const opt = document.createElement('option');
+    opt.value = g.id+'__'+t.id+'__'+ei;
+    opt.textContent = (t.nome?t.nome+' — ':'') + ex.nome;
+    sel.appendChild(opt);
+  }));
+}
+
+function switchTreinoTab(id, cor, btnClicked) {
+  // Desativar todas as abas
+  document.querySelectorAll('.treino-tab-btn').forEach(b=>{ b.classList.remove('active'); b.style.cssText=''; });
+  document.querySelectorAll('.treino-tab-content').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-historico').style.display='none';
+  document.getElementById('panel-evolucao').style.display='none';
+
+  btnClicked.classList.add('active');
+  btnClicked.style.cssText = `border-bottom-color:${cor};color:${cor};`;
+
+  if (id==='__historico') {
+    document.getElementById('panel-historico').style.display='block';
+    document.getElementById('panel-historico').classList.add('active');
+    renderHistorico();
+  } else if (id==='__evolucao') {
+    document.getElementById('panel-evolucao').style.display='block';
+    document.getElementById('panel-evolucao').classList.add('active');
+    updateChart();
+  } else {
+    const p = document.getElementById('panel-treino-'+id);
+    if (p) p.classList.add('active');
   }
 }
 
-async function initSync() {
-  const cfg = getSyncCfg();
-  if (!cfg.token) { syncStatus('Não configurado', null); return; }
-  // Na inicialização apenas exibe o status — não sobe nem baixa automaticamente
-  // O upload acontece via setData() (debounce 1,5s) a cada alteração
-  // O download é manual via botão "Importar do GitHub"
-  syncStatus('GitHub', null);
-}
-
-
-// ══ TABS ══
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    const t = btn.dataset.tab;
-    document.getElementById('panel-' + t).classList.add('active');
-    if (t === 'historico') renderHistorico();
-    if (t === 'graficos') updateChart();
-    if (t === 'novo') initNovoForm();
+// ══ NOVA CARGA (salva no data) ══
+function loadNovasCargas(grupoId) {
+  const d = getData();
+  const nc = (d.novasCargas||{})[grupoId]||{};
+  document.querySelectorAll(`tr[data-grupo-id="${grupoId}"]`).forEach(tr => {
+    const tid = tr.dataset.treinoId;
+    const ei  = tr.dataset.exIdx;
+    const key = tid+'_'+ei;
+    const cn  = tr.querySelector('.carga-input[data-tipo="cn"]');
+    if (cn && nc[key] !== undefined) cn.value = nc[key];
   });
-});
+}
 
 document.addEventListener('change', e => {
-  if (e.target.classList.contains('carga-input')) saveCargas();
+  if (!e.target.classList.contains('carga-input') || e.target.dataset.tipo!=='cn') return;
+  const tr = e.target.closest('tr');
+  if (!tr) return;
+  const grupoId = tr.dataset.grupoId;
+  const treinoId = tr.dataset.treinoId;
+  const ei = tr.dataset.exIdx;
+  const d = getData();
+  d.novasCargas = d.novasCargas||{};
+  d.novasCargas[grupoId] = d.novasCargas[grupoId]||{};
+  d.novasCargas[grupoId][treinoId+'_'+ei] = e.target.value;
+  setData(d);
 });
 
-// ══ TIMER ══
-let timerSec = 0, timerRunning = false, timerInt = null;
-function timerToggle() {
-  timerRunning = !timerRunning;
-  const btn = document.getElementById('timerStart');
-  if (timerRunning) {
-    btn.textContent = '⏸'; btn.classList.add('active');
-    timerInt = setInterval(() => { timerSec++; updateTimerDisplay(); }, 1000);
-  } else {
-    btn.textContent = '▶'; btn.classList.remove('active');
-    clearInterval(timerInt);
-  }
-}
-function timerReset() {
-  clearInterval(timerInt); timerRunning = false; timerSec = 0;
-  document.getElementById('timerStart').textContent = '▶';
-  document.getElementById('timerStart').classList.remove('active');
-  updateTimerDisplay();
-}
-function updateTimerDisplay() {
-  const m = String(Math.floor(timerSec / 60)).padStart(2,'0');
-  const s = String(timerSec % 60).padStart(2,'0');
-  document.getElementById('timerDisplay').textContent = m + ':' + s;
-}
-
-// ══ ROWS ══
-function delRow(btn) {
-  if (confirm('Remover este exercício?')) { btn.closest('tr').remove(); saveCargas(); }
-}
-function addVideoInline(tab, idx, btn) {
-  const url = prompt('Cole o link do vídeo:');
-  if (url && url.trim()) btn.outerHTML = '<a class="video-btn" href="' + url.trim() + '" target="_blank" rel="noopener">▶ Ver</a>';
-}
-
-// ══ MODAL EXERCÍCIO ══
-let modalVideoData = null; // { name, dataUrl, type }
-
-function openModal(tab) {
-  document.getElementById('modalTitle').textContent = 'Adicionar Exercício — Treino ' + tab;
-  document.getElementById('modalTab').value = tab;
-  ['fGrupo','fExercicio','fDesc','fSeries','fReps','fCargaInicial','fCargaNova','fVideo'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('fVideoDataUrl').value = '';
-  document.getElementById('fVideoTipo').value = '';
-  document.getElementById('fVideoPreview').style.display = 'none';
-  document.getElementById('fVideoUploadBtn').textContent = '📎 Upload';
-  document.getElementById('fVideoUploadBtn').classList.remove('has-video','has-link');
-  modalVideoData = null;
-  document.getElementById('modalOverlay').classList.add('open');
-}
-function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
-document.getElementById('modalOverlay').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
-
-function escolherVideoModal() {
-  const choice = confirm('Clique OK para fazer upload de arquivo de vídeo.\nClique Cancelar para colar um link (URL).');
-  if (choice) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'video/*';
-    input.onchange = () => {
-      const file = input.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        modalVideoData = { name: file.name, dataUrl: e.target.result, type: 'file' };
-        const btn = document.getElementById('fVideoUploadBtn');
-        btn.textContent = '✅ ' + file.name.substring(0,14) + (file.name.length>14?'…':'');
-        btn.classList.add('has-video');
-        const prev = document.getElementById('fVideoPreview');
-        prev.textContent = '📁 Arquivo: ' + file.name;
-        prev.style.display = 'block';
-        document.getElementById('fVideo').value = '';
-      };
-      reader.readAsDataURL(file);
-    };
-    input.click();
-  } else {
-    const url = prompt('Cole o link do vídeo (OneDrive, YouTube, etc):');
-    if (url && url.trim()) {
-      modalVideoData = { name: url.trim(), dataUrl: url.trim(), type: 'link' };
-      document.getElementById('fVideo').value = url.trim();
-      const btn = document.getElementById('fVideoUploadBtn');
-      btn.textContent = '🔗 Link salvo';
-      btn.classList.remove('has-video'); btn.classList.add('has-link');
-      document.getElementById('fVideoPreview').style.display = 'none';
-    }
-  }
-}
-
-function saveExercise() {
-  const tab = document.getElementById('modalTab').value;
-  const grupo = document.getElementById('fGrupo').value.trim();
-  const nome = document.getElementById('fExercicio').value.trim();
-  if (!grupo || !nome) { alert('Preencha grupo e exercício.'); return; }
-  const desc = document.getElementById('fDesc').value.trim();
-  const ser = document.getElementById('fSeries').value || '—';
-  const reps = document.getElementById('fReps').value || '—';
-  const ci = document.getElementById('fCargaInicial').value;
-  const cn = document.getElementById('fCargaNova').value;
-  // Prioridade: upload/link via botão; fallback: input URL
-  let vid = null;
-  if (modalVideoData) {
-    vid = modalVideoData;
-  } else {
-    const url = document.getElementById('fVideo').value.trim();
-    if (url) vid = { name: url, dataUrl: url, type: 'link' };
-  }
-
-  const tbody = document.getElementById('tbody-' + tab);
-  tbody.querySelectorAll('.empty-row').forEach(r => r.remove());
-  const idx = tbody.querySelectorAll('tr[data-tab]').length;
-
-  let vc;
-  if (vid) {
-    if (vid.type === 'file') {
-      vc = '<a class="video-btn" href="' + vid.dataUrl + '" target="_blank" rel="noopener">▶ Ver</a>';
-    } else {
-      vc = '<a class="video-btn" href="' + vid.dataUrl + '" target="_blank" rel="noopener" style="border-color:#3b82f6;color:#3b82f6">🔗 Ver</a>';
-    }
-  } else {
-    vc = '<button class="video-btn" onclick="addVideoInline(\'' + tab + '\',' + idx + ',this)">+ Vídeo</button>';
-  }
-
-  const tr = document.createElement('tr');
-  tr.dataset.tab = tab; tr.dataset.idx = idx;
-  tr.innerHTML = '<td><span class="muscle-badge">' + grupo + '</span></td>' +
-    '<td><div class="ex-name">' + nome + '</div>' + (desc ? '<div class="ex-desc">' + desc + '</div>' : '') + '</td>' +
-    '<td class="sets-reps"><strong>' + ser + '</strong> × ' + reps + '</td>' +
-    '<td><input class="carga-input" type="number" value="' + ci + '" step="0.5" min="0"></td>' +
-    '<td><input class="carga-input carga-nova" type="number" value="' + cn + '" step="0.5" min="0" placeholder="—"></td>' +
-    '<td>' + vc + '</td><td><button class="del-btn" onclick="delRow(this)">✕</button></td>';
-  tbody.appendChild(tr);
-  saveCargas(); closeModal();
-}
-
 // ══ REGISTRAR SESSÃO ══
-function registrarTreino(tab) {
-  document.getElementById('regTitle').textContent = 'Registrar Sessão — Treino ' + tab;
-  document.getElementById('regTab').value = tab;
+function abrirRegistro(grupoId, treinoId) {
+  const d = getData();
+  const g = d.grupos.find(g=>g.id===grupoId);
+  const t = g?.treinos?.find(t=>t.id===treinoId);
+  if (!t) return;
+  document.getElementById('regGrupoId').value = grupoId;
+  document.getElementById('regTreinoId').value = treinoId;
+  document.getElementById('regTitle').textContent = 'Registrar Sessão — ' + t.nome;
   document.getElementById('regData').value = new Date().toISOString().slice(0,10);
-  const rows = document.querySelectorAll('#tbody-' + tab + ' tr[data-tab]');
-  let html = '';
-  rows.forEach(tr => {
-    const nome = tr.querySelector('.ex-name') ? tr.querySelector('.ex-name').textContent : '';
-    const ci = tr.querySelectorAll('.carga-input')[0] ? tr.querySelectorAll('.carga-input')[0].value : '';
-    const cn = tr.querySelectorAll('.carga-input')[1] ? tr.querySelectorAll('.carga-input')[1].value : '';
-    const val = cn || ci || '';
-    html += '<div class="reg-ex-item"><div class="rei-name">' + nome + '</div>' +
-      '<input type="number" step="0.5" min="0" value="' + val + '" placeholder="kg">' +
-      '<input type="text" placeholder="obs" style="font-size:.75rem">' + '</div>';
-  });
-  document.getElementById('regExList').innerHTML = html || '<p style="color:var(--muted);font-size:.85rem;padding:10px">Nenhum exercício encontrado.</p>';
+  const nc = (d.novasCargas||{})[grupoId]||{};
+  document.getElementById('regExList').innerHTML = (t.exercicios||[]).map((ex,ei) => {
+    const cargaAtual = nc[treinoId+'_'+ei] || ex.cargaInicial || '';
+    return `<div class="reg-row">
+      <span style="font-size:.85rem;">${ex.nome}</span>
+      <input type="number" min="0" step="0.5" placeholder="kg" value="${cargaAtual}" id="reg-carga-${ei}">
+      <input type="text" placeholder="Obs…" id="reg-obs-${ei}">
+    </div>`;
+  }).join('');
   document.getElementById('modalReg').classList.add('open');
 }
-function closeReg() { document.getElementById('modalReg').classList.remove('open'); }
-document.getElementById('modalReg').addEventListener('click', e => { if(e.target===e.currentTarget) closeReg(); });
 
 function salvarSessao() {
-  const tab = document.getElementById('regTab').value;
-  const data = document.getElementById('regData').value;
-  if (!data) { alert('Selecione a data.'); return; }
-  const items = document.querySelectorAll('#regExList .reg-ex-item');
-  const exercicios = [];
-  items.forEach(item => {
-    const nome = item.querySelector('.rei-name').textContent;
-    const carga = item.querySelectorAll('input')[0].value;
-    const obs = item.querySelectorAll('input')[1].value;
-    if (nome) exercicios.push({ nome, carga: parseFloat(carga) || 0, obs });
-  });
+  const grupoId  = document.getElementById('regGrupoId').value;
+  const treinoId = document.getElementById('regTreinoId').value;
+  const data     = document.getElementById('regData').value;
   const d = getData();
-  d.historico = d.historico || [];
-  const grupoId = d.grupoAtivo || null;
-  d.historico.unshift({ id: Date.now(), tab, data, exercicios, grupoId });
+  const g = d.grupos.find(g=>g.id===grupoId);
+  const t = g?.treinos?.find(t=>t.id===treinoId);
+  if (!t) return;
+  const exercicios = (t.exercicios||[]).map((ex,ei) => ({
+    nome: ex.nome,
+    carga: document.getElementById('reg-carga-'+ei)?.value||'',
+    obs:   document.getElementById('reg-obs-'+ei)?.value||''
+  }));
+  d.historico = d.historico||[];
+  d.historico.unshift({ id:'s_'+Date.now(), grupoId, treinoId, treinoNome:t.nome, grupoNome:g.nome, data, exercicios });
   setData(d);
-  closeReg();
-  showSaved();
-  alert('Sessão registrada com sucesso! ✅');
+  fecharModal('modalReg');
+  if (document.getElementById('panel-historico').classList.contains('active')) renderHistorico();
 }
 
 // ══ HISTÓRICO ══
+function switchHistTab(tab) {
+  document.querySelectorAll('.hist-tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.hist-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector(`.hist-tab-btn[onclick*="${tab}"]`).classList.add('active');
+  document.getElementById('hist-panel-'+tab).classList.add('active');
+  if (tab==='fichas') renderFichasArquivadas();
+}
 function renderHistorico() {
   const d = getData();
-  const hist = d.historico || [];
-  const el = document.getElementById('hist-list');
-  if (!hist.length) {
-    el.innerHTML = '<div class="hist-empty"><span class="empty-icon">📋</span>Nenhuma sessão registrada ainda.<br>Clique em "✓ Registrar Sessão" em qualquer treino.</div>';
-    return;
-  }
-  const colors = {A:'A',B:'B',C:'C',D:'D'};
-  el.innerHTML = hist.map((s,i) => {
-    const dt = s.data ? new Date(s.data + 'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short',year:'numeric'}) : '—';
-    const exHtml = s.exercicios.map(ex =>
-      '<div class="hist-entry"><div class="he-name">' + ex.nome + '</div>' +
-      '<div class="he-vals">' + (ex.carga ? '<span>' + ex.carga + ' kg</span>' : '') + (ex.obs ? '<span style="color:var(--muted)">' + ex.obs + '</span>' : '') + '</div></div>'
-    ).join('');
-    const cls = colors[s.tab] || 'A';
-    return '<div class="hist-card"><div class="hist-card-header">' +
-      '<div class="hist-badge ' + cls + '">'+s.tab+'</div>' +
-      '<div><div class="hist-title">Treino ' + s.tab + '</div><div class="hist-date">' + dt + '</div></div>' +
-      '<button class="hist-del" onclick="deletarSessao(' + i + ')" title="Remover">✕</button>' +
-      '</div><div class="hist-entries">' + exHtml + '</div></div>';
-  }).join('');
+  const sessoes = (d.historico||[]).filter(s => !grupoAtivo || s.grupoId===grupoAtivo);
+  const cont = document.getElementById('hist-sessoes-list');
+  if (!sessoes.length) { cont.innerHTML='<div class="hist-empty"><span class="empty-icon">📅</span>Nenhuma sessão registrada ainda.</div>'; return; }
+  cont.innerHTML = sessoes.map(s => `
+    <div class="hist-item">
+      <div class="hist-item-header">
+        <span class="hist-item-treino">${s.treinoNome} — ${s.grupoNome||''}</span>
+        <span class="hist-item-date">${s.data}</span>
+      </div>
+      <div class="hist-ex-list">${s.exercicios.map(e=>`${e.nome}${e.carga?' · '+e.carga+'kg':''}${e.obs?' · '+e.obs:''}`).join('<br>')}</div>
+    </div>`).join('');
+}
+function renderFichasArquivadas() {
+  const d = getData();
+  const fichas = (d.fichasArquivadas||[]).filter(f=>!grupoAtivo||f.grupoId===grupoAtivo);
+  const cont = document.getElementById('hist-fichas-list');
+  if (!fichas.length) { cont.innerHTML='<div class="hist-empty"><span class="empty-icon">📁</span>Nenhuma ficha arquivada.</div>'; return; }
+  cont.innerHTML = fichas.map((f,fi) => `
+    <div class="ficha-card">
+      <div class="ficha-card-header" onclick="toggleFicha(${fi})">
+        <div><strong>${f.nome}</strong> <span style="font-size:.75rem;color:var(--muted);">${f.foco||''}</span></div>
+        <span style="font-size:.75rem;color:var(--muted);">Arquivado em ${f.arquivadoEm} ▾</span>
+      </div>
+      <div class="ficha-card-body" id="ficha-body-${fi}">
+        <table style="margin-top:10px;font-size:.8rem;"><thead><tr><th>Grupo</th><th>Exercício</th><th>Séries/Reps</th><th>Carga</th></tr></thead>
+        <tbody>${(f.exercicios||[]).map(ex=>`<tr><td>${ex.grupo||''}</td><td>${ex.nome}</td><td>${ex.setsReps||''}</td><td>${ex.cargaInicial||''}${ex.cargaNova?' → '+ex.cargaNova:''}</td></tr>`).join('')}</tbody></table>
+      </div>
+    </div>`).join('');
+}
+function toggleFicha(i) {
+  const b = document.getElementById('ficha-body-'+i);
+  if (b) b.classList.toggle('open');
 }
 
-function deletarSessao(i) {
-  if (!confirm('Remover esta sessão?')) return;
-  const d = getData();
-  d.historico.splice(i, 1);
-  setData(d);
-  renderHistorico();
+// ══ EXCLUIR TREINO ══
+function pedirExcluirTreino(grupoId, treinoId, nome) {
+  document.getElementById('exclTreinoGrupoId').value = grupoId;
+  document.getElementById('exclTreinoId').value = treinoId;
+  document.getElementById('exclTreinoNome').textContent = nome;
+  document.getElementById('modalExcluirTreino').classList.add('open');
 }
-
-function exportarHistorico() {
+function confirmarExcluirTreino(acao) {
+  const grupoId  = document.getElementById('exclTreinoGrupoId').value;
+  const treinoId = document.getElementById('exclTreinoId').value;
+  fecharModal('modalExcluirTreino');
   const d = getData();
-  const hist = d.historico || [];
-  if (!hist.length) { alert('Nenhum histórico para exportar.'); return; }
-  let csv = 'Data,Treino,Exercício,Carga (kg),Obs\n';
-  hist.forEach(s => {
-    s.exercicios.forEach(ex => {
-      csv += '"' + s.data + '","' + s.tab + '","' + ex.nome + '","' + ex.carga + '","' + (ex.obs||'') + '"\n';
+  const g = d.grupos.find(g=>g.id===grupoId);
+  if (!g) return;
+  const t = g.treinos.find(t=>t.id===treinoId);
+
+  if (acao==='arquivar' && t) {
+    d.fichasArquivadas = d.fichasArquivadas||[];
+    d.fichasArquivadas.unshift({
+      id:'f_'+Date.now(), grupoId, treinoId, nome:t.nome, foco:t.foco||'',
+      grupoNome: g.nome, arquivadoEm:new Date().toISOString().slice(0,10),
+      exercicios:(t.exercicios||[]).map(ex=>({
+        nome:ex.nome, grupo:ex.grupo||'', setsReps:(ex.series?ex.series+'×':'')+(ex.reps||''),
+        cargaInicial:ex.cargaInicial||'',
+        cargaNova:((d.novasCargas||{})[grupoId]||{})[treinoId+'_'+((t.exercicios||[]).indexOf(ex))]||''
+      }))
     });
-  });
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'gymtrack_historico.csv';
-  a.style.display = 'none';
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+  }
+  g.treinos = g.treinos.filter(t=>t.id!==treinoId);
+  setData(d);
+  irParaTreino(grupoId);
+  toast('📁 Treino '+(acao==='arquivar'?'arquivado':'excluído')+'.');
+}
+
+// ══ EXCLUIR GRUPO ══
+function pedirExcluirGrupo(grupoId) {
+  const d = getData();
+  const g = d.grupos.find(g=>g.id===grupoId);
+  if (!g) return;
+  document.getElementById('exclGrupoId').value = grupoId;
+  document.getElementById('exclGrupoNome').textContent = g.nome;
+  document.getElementById('modalExcluirGrupo').classList.add('open');
+}
+function confirmarExcluirGrupo() {
+  const grupoId = document.getElementById('exclGrupoId').value;
+  fecharModal('modalExcluirGrupo');
+  const d = getData();
+  d.grupos = d.grupos.filter(g=>g.id!==grupoId);
+  setData(d);
+  irHome();
+  toast('Grupo excluído.');
 }
 
 // ══ GRÁFICO ══
 function updateChart() {
-  const tab = document.getElementById('chartTreino').value;
-  const selEx = document.getElementById('chartExercicio');
-  selEx.innerHTML = '<option value="">Selecione o exercício</option>';
-  if (!tab) { renderChart(); return; }
+  const val = document.getElementById('chartExSelect').value;
+  const empty = document.getElementById('chart-empty');
+  if (!val||!grupoAtivo) { if(chartInstance){chartInstance.destroy();chartInstance=null;} empty.style.display='block'; return; }
+  const [gid,tid,ei] = val.split('__');
   const d = getData();
-  const hist = (d.historico || []).filter(s => s.tab === tab);
-  const nomes = new Set();
-  hist.forEach(s => s.exercicios.forEach(ex => { if (ex.carga > 0) nomes.add(ex.nome); }));
-  nomes.forEach(n => {
-    const o = document.createElement('option'); o.value = n; o.textContent = n; selEx.appendChild(o);
-  });
-  renderChart();
-}
-
-function renderChart() {
-  const tab = document.getElementById('chartTreino').value;
-  const exNome = document.getElementById('chartExercicio').value;
-  const empty = document.getElementById('chartEmpty');
-  const canvas = document.getElementById('myChart');
-  if (!tab || !exNome) { empty.style.display='flex'; canvas.style.display='none'; return; }
-  const d = getData();
-  const hist = (d.historico || []).filter(s => s.tab === tab).reverse();
-  const pontos = [];
-  hist.forEach(s => {
-    const ex = s.exercicios.find(e => e.nome === exNome);
-    if (ex && ex.carga > 0) pontos.push({ x: s.data, y: ex.carga });
-  });
-  if (!pontos.length) { empty.style.display='flex'; canvas.style.display='none'; return; }
-  empty.style.display='none'; canvas.style.display='block';
+  const sessoes = (d.historico||[]).filter(s=>s.grupoId===gid&&s.treinoId===tid).reverse();
+  const labels=[], cargas=[];
+  sessoes.forEach(s=>{ const ex=s.exercicios[parseInt(ei)]; if(ex&&ex.carga){labels.push(s.data);cargas.push(parseFloat(ex.carga)||0);} });
+  empty.style.display = labels.length?'none':'block';
+  if (!labels.length) { if(chartInstance){chartInstance.destroy();chartInstance=null;} return; }
   if (chartInstance) chartInstance.destroy();
-  const tabColors = {A:'#f5a623',B:'#3b82f6',C:'#a855f7',D:'#e8593a'};
-  const color = tabColors[tab] || '#f5a623';
-  chartInstance = new Chart(canvas, {
-    type: 'line',
-    data: {
-      labels: pontos.map(p => new Date(p.x + 'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})),
-      datasets: [{
-        label: exNome + ' (kg)',
-        data: pontos.map(p => p.y),
-        borderColor: color,
-        backgroundColor: color + '22',
-        borderWidth: 2.5,
-        pointBackgroundColor: color,
-        pointRadius: 5,
-        tension: 0.3,
-        fill: true,
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { labels: { color: '#e8eaf0', font: { family: 'DM Sans' } } },
-        tooltip: { backgroundColor: '#1e2330', borderColor: '#2a2f3d', borderWidth: 1, titleColor: '#e8eaf0', bodyColor: '#e8eaf0' }
-      },
-      scales: {
-        x: { ticks: { color: '#6b7280' }, grid: { color: '#2a2f3d' } },
-        y: { ticks: { color: '#6b7280' }, grid: { color: '#2a2f3d' }, beginAtZero: false }
-      }
-    }
+  const ctx = document.getElementById('evoChart').getContext('2d');
+  chartInstance = new Chart(ctx,{
+    type:'line',
+    data:{ labels, datasets:[{label:'Carga (kg)',data:cargas,borderColor:'#f5a623',backgroundColor:'rgba(245,166,35,.1)',tension:.3,fill:true,pointBackgroundColor:'#f5a623',pointRadius:5}] },
+    options:{ responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#6b7280'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#6b7280'},grid:{color:'rgba(255,255,255,.04)'}}}}
   });
 }
 
-// ══ GRUPOS DE TREINO ══
-let novoExVideoData = {}; // idx -> {name, dataUrl, type}
-
-function getGrupoAtivo() {
-  const d = getData();
-  const grupos = d.grupos || [];
-  const id = d.grupoAtivo;
-  return grupos.find(g => g.id === id) || null;
+// ══ TIMER ══
+let timerSec=0,timerRunning=false,timerInt=null;
+function timerToggle(){
+  timerRunning=!timerRunning;
+  const btn=document.getElementById('timerStart');
+  if(timerRunning){btn.textContent='⏸';btn.classList.add('active');timerInt=setInterval(()=>{timerSec++;updateTimerDisplay();},1000);}
+  else{btn.textContent='▶';btn.classList.remove('active');clearInterval(timerInt);}
 }
+function timerReset(){clearInterval(timerInt);timerRunning=false;timerSec=0;document.getElementById('timerStart').textContent='▶';document.getElementById('timerStart').classList.remove('active');updateTimerDisplay();}
+function updateTimerDisplay(){const m=String(Math.floor(timerSec/60)).padStart(2,'0');const s=String(timerSec%60).padStart(2,'0');document.getElementById('timerDisplay').textContent=m+':'+s;}
 
-function updateGrupoBanner() {
-  const grupo = getGrupoAtivo();
-  const badge = document.getElementById('grupoActiveBadge');
-  const nomeEl = document.getElementById('grupoActiveNome');
-  if (grupo) {
-    badge.style.display = 'flex';
-    nomeEl.textContent = grupo.nome;
-  } else {
-    badge.style.display = 'none';
-  }
-}
-
-function initNovoFormGrupo() {
-  const grupo = getGrupoAtivo();
-  const bannerEl = document.getElementById('novoGrupoBanner');
-  const inicioEl = document.getElementById('novoGrupoInicio');
-  if (grupo) {
-    bannerEl.style.display = 'flex';
-    document.getElementById('novoGrupoNomeBanner').textContent = grupo.nome;
-    document.getElementById('novoGrupoDataBanner').textContent = 'Criado em ' + new Date(grupo.criadoEm + 'T12:00:00').toLocaleDateString('pt-BR');
-    inicioEl.style.display = 'none';
-  } else {
-    bannerEl.style.display = 'none';
-    inicioEl.style.display = 'block';
-  }
-}
-
-function abrirNovoGrupo() {
-  document.getElementById('novoGrupoForm').style.display = 'block';
-  document.getElementById('novoGrupoNome').value = '';
-  document.getElementById('novoGrupoObjetivo').value = '';
-  document.getElementById('novoGrupoForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function fecharNovoGrupo() {
-  document.getElementById('novoGrupoForm').style.display = 'none';
-}
-
-function criarGrupoInicial() {
-  const nome = document.getElementById('grupoInicialNome').value.trim();
-  if (!nome) { alert('Dê um nome ao grupo de treino.'); return; }
-  const objetivo = document.getElementById('grupoInicialObjetivo').value.trim();
-  const d = getData();
-  d.grupos = d.grupos || [];
-  const grupo = {
-    id: Date.now(),
-    nome,
-    objetivo,
-    criadoEm: new Date().toISOString().slice(0, 10),
-    arquivadoEm: null,
-    treinos: null // treinos arquivados (null = atual)
-  };
-  d.grupos.push(grupo);
-  d.grupoAtivo = grupo.id;
-  setData(d);
-  initNovoFormGrupo();
-  updateGrupoBanner();
-  showSaved();
-  alert('Grupo "' + nome + '" definido! ✅');
-}
-
-function criarNovoGrupo() {
-  const nome = document.getElementById('novoGrupoNome').value.trim();
-  if (!nome) { alert('Dê um nome ao novo grupo.'); return; }
-  const objetivo = document.getElementById('novoGrupoObjetivo').value.trim();
-
-  const d = getData();
-  d.grupos = d.grupos || [];
-
-  // Arquivar grupo atual: capturar configuração dos treinos A,B,C,D
-  const grupoAtualId = d.grupoAtivo;
-  if (grupoAtualId) {
-    const grupoAtual = d.grupos.find(g => g.id === grupoAtualId);
-    if (grupoAtual) {
-      grupoAtual.arquivadoEm = new Date().toISOString().slice(0, 10);
-      // Capturar dados dos treinos estáticos (A,B,C,D) do DOM
-      grupoAtual.treinos = ['A','B','C','D'].map(tab => {
-        const rows = document.querySelectorAll('#tbody-' + tab + ' tr[data-tab]');
-        const exercicios = [];
-        rows.forEach(tr => {
-          const nome = tr.querySelector('.ex-name') ? tr.querySelector('.ex-name').textContent : '';
-          const grupo = tr.querySelector('.muscle-badge') ? tr.querySelector('.muscle-badge').textContent : '';
-          const setsReps = tr.querySelector('.sets-reps');
-          let series = '', reps = '';
-          if (setsReps) {
-            series = setsReps.querySelector('strong') ? setsReps.querySelector('strong').textContent : '';
-            reps = setsReps.textContent.replace(series + ' × ', '').trim();
-          }
-          const ci = tr.querySelectorAll('.carga-input')[0] ? tr.querySelectorAll('.carga-input')[0].value : '';
-          const videoEl = tr.querySelector('.video-btn');
-          const video = videoEl ? { type: 'link', dataUrl: videoEl.href || videoEl.getAttribute('href'), name: videoEl.textContent } : null;
-          if (nome) exercicios.push({ nome, grupo, series, reps, cargaInicial: ci, video });
-        });
-        return { tab, exercicios };
-      });
-    }
-  }
-
-  // Criar novo grupo
-  const novoGrupo = {
-    id: Date.now(),
-    nome,
-    objetivo,
-    criadoEm: new Date().toISOString().slice(0, 10),
-    arquivadoEm: null,
-    treinos: null
-  };
-  d.grupos.push(novoGrupo);
-  d.grupoAtivo = novoGrupo.id;
-  setData(d);
-
-  fecharNovoGrupo();
-  initNovoFormGrupo();
-  updateGrupoBanner();
-  showSaved();
-  alert('Novo grupo "' + nome + '" criado!\nOs treinos anteriores foram arquivados. ✅');
-}
-
-function switchHistTab(tab) {
-  document.getElementById('hist-panel-sessoes').style.display = tab === 'sessoes' ? 'block' : 'none';
-  document.getElementById('hist-panel-grupos').style.display = tab === 'grupos' ? 'block' : 'none';
-  document.getElementById('hist-panel-fichas').style.display = tab === 'fichas' ? 'block' : 'none';
-  document.getElementById('histTabSessoes').classList.toggle('active', tab === 'sessoes');
-  document.getElementById('histTabGrupos').classList.toggle('active', tab === 'grupos');
-  document.getElementById('histTabFichas').classList.toggle('active', tab === 'fichas');
-  if (tab === 'fichas') renderFichasArquivadas();
-  if (tab === 'grupos') renderGruposArquivados();
-}
-
-function renderGruposArquivados() {
-  const d = getData();
-  const grupos = (d.grupos || []).filter(g => g.arquivadoEm !== null);
-  const el = document.getElementById('hist-grupos-list');
-  if (!grupos.length) {
-    el.innerHTML = '<div class="hist-empty"><span class="empty-icon">🗂</span>Nenhum grupo arquivado ainda.<br>Crie um novo grupo de treino para arquivar o atual.</div>';
-    return;
-  }
-  el.innerHTML = grupos.slice().reverse().map((grupo, i) => {
-    const totalEx = (grupo.treinos || []).reduce((s, t) => s + t.exercicios.length, 0);
-    const treinoTags = (grupo.treinos || []).filter(t => t.exercicios.length > 0)
-      .map(t => '<span class="grupo-hist-treino-tag">TREINO ' + t.tab + ' · ' + t.exercicios.length + ' ex</span>')
-      .join('');
-    const exRows = (grupo.treinos || []).map(t => {
-      if (!t.exercicios.length) return '';
-      const exHtml = t.exercicios.map(ex =>
-        '<div class="hist-entry"><div class="he-name">' + ex.nome + '</div>' +
-        '<div class="he-vals"><span style="color:var(--muted)">' + ex.grupo + '</span>' +
-        (ex.cargaInicial ? ' · <span>' + ex.cargaInicial + ' kg</span>' : '') + '</div></div>'
-      ).join('');
-      return '<div style="margin-bottom:14px"><div style="font-family:Bebas Neue,sans-serif;font-size:.9rem;letter-spacing:2px;color:var(--muted);margin-bottom:8px">TREINO ' + t.tab + '</div>' +
-        '<div class="hist-entries">' + exHtml + '</div></div>';
-    }).join('');
-
-    const uid = 'ghb' + grupo.id;
-    return '<div class="grupo-hist-card">' +
-      '<div class="grupo-hist-header" onclick="toggleGrupoHist(\'' + uid + '\')">' +
-      '<div style="flex:1"><div class="grupo-hist-nome">' + grupo.nome + '</div>' +
-      '<div class="grupo-hist-datas">Criado: ' + new Date(grupo.criadoEm+'T12:00:00').toLocaleDateString('pt-BR') +
-      (grupo.arquivadoEm ? ' · Arquivado: ' + new Date(grupo.arquivadoEm+'T12:00:00').toLocaleDateString('pt-BR') : '') +
-      (grupo.objetivo ? ' · ' + grupo.objetivo : '') + '</div>' +
-      '</div>' +
-      '<span style="color:var(--muted);font-size:.8rem">' + totalEx + ' exercícios</span>' +
-      '<span style="color:var(--muted);margin-left:10px;font-size:.8rem">▸</span>' +
-      '</div>' +
-      '<div class="grupo-hist-body" id="' + uid + '">' +
-      '<div class="grupo-hist-treinos" style="margin-bottom:14px">' + treinoTags + '</div>' +
-      exRows +
-      '</div>' +
-      '</div>';
-  }).join('');
-}
-
-function toggleGrupoHist(id) {
-  const el = document.getElementById(id);
-  el.classList.toggle('open');
-  const arrow = el.previousElementSibling.querySelector('span:last-child');
-  if (arrow) arrow.textContent = el.classList.contains('open') ? '▾' : '▸';
-}
-
-// ══ NOVO TREINO ══
-function initNovoForm() {
-  document.getElementById('novoId').value = '';
-  document.getElementById('novoFoco').value = '';
-  document.getElementById('exBuilder').innerHTML = '';
-  novoExVideoData = {};
-  addExRow(); addExRow(); addExRow();
-  initNovoFormGrupo();
-}
-
-function addExRow() {
-  const idx = document.getElementById('exBuilder').children.length;
-  const div = document.createElement('div');
-  div.className = 'ex-row';
-  div.style.gridTemplateColumns = '1fr 80px 60px 60px 100px auto';
-  div.innerHTML = '<input type="text" placeholder="Nome do exercício">' +
-    '<input type="text" placeholder="Grupo">' +
-    '<input type="number" placeholder="3" min="1">' +
-    '<input type="text" placeholder="10-12">' +
-    '<input type="number" placeholder="0" min="0" step="0.5" title="Carga inicial em kg">' +
-    '<button class="video-upload-btn" type="button" onclick="escolherVideoExRow(this,' + idx + ')" title="Upload ou link de vídeo">📎 Vídeo</button>' +
-    '<button class="rm-ex" onclick="this.closest(\'.ex-row\').remove()">✕</button>';
-  document.getElementById('exBuilder').appendChild(div);
-}
-
-function escolherVideoExRow(btn, idx) {
-  const choice = confirm('Clique OK para fazer upload de arquivo de vídeo.\nClique Cancelar para colar um link (URL).');
-  if (choice) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'video/*';
-    input.onchange = () => {
-      const file = input.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        novoExVideoData[idx] = { name: file.name, dataUrl: e.target.result, type: 'file' };
-        btn.textContent = '✅ ' + file.name.substring(0,10) + (file.name.length>10?'…':'');
-        btn.classList.add('has-video');
-      };
-      reader.readAsDataURL(file);
-    };
-    input.click();
-  } else {
-    const url = prompt('Cole o link do vídeo (OneDrive, YouTube, etc):');
-    if (url && url.trim()) {
-      novoExVideoData[idx] = { name: url.trim(), dataUrl: url.trim(), type: 'link' };
-      btn.textContent = '🔗 Link';
-      btn.classList.remove('has-video');
-      btn.classList.add('has-link');
-    }
-  }
-}
-
-function criarTreino() {
-  const id = document.getElementById('novoId').value.trim().toUpperCase();
-  const foco = document.getElementById('novoFoco').value.trim();
-  if (!id || !foco) { alert('Preencha o código e o foco do treino.'); return; }
-  if (document.getElementById('panel-' + id)) { alert('Já existe um treino com esse código. Use outro nome.'); return; }
-  const rows = document.querySelectorAll('#exBuilder .ex-row');
-  const exercicios = [];
-  rows.forEach((row, idx) => {
-    const ins = row.querySelectorAll('input[type=text],input[type=number]');
-    const nome = ins[0].value.trim();
-    if (nome) exercicios.push({
-      nome,
-      grupo: ins[1].value.trim()||'Geral',
-      series: ins[2].value||'3',
-      reps: ins[3].value||'10',
-      cargaInicial: ins[4].value||'',
-      video: novoExVideoData[idx] || null
-    });
-  });
-  if (!exercicios.length) { alert('Adicione pelo menos um exercício.'); return; }
-
-  // Add tab button
-  const tabBar = document.getElementById('tabBar');
-  const newBtn = document.createElement('button');
-  newBtn.className = 'tab-btn extra';
-  newBtn.dataset.tab = id;
-  newBtn.textContent = 'TREINO ' + id;
-  newBtn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    newBtn.classList.add('active');
-    document.getElementById('panel-' + id).classList.add('active');
-  });
-  tabBar.insertBefore(newBtn, tabBar.querySelector('[data-tab="historico"]'));
-
-  // Build panel
-  const panel = document.createElement('div');
-  panel.className = 'tab-panel';
-  panel.dataset.panel = id;
-  panel.id = 'panel-' + id;
-  const color = '#' + Math.floor(Math.random()*0xffffff).toString(16).padStart(6,'0');
-  let exRows = exercicios.map((ex, i) => {
-    let vidCell;
-    if (ex.video) {
-      if (ex.video.type === 'file') {
-        vidCell = '<a class="video-btn" href="' + ex.video.dataUrl + '" target="_blank" rel="noopener">▶ Ver</a>';
-      } else {
-        vidCell = '<a class="video-btn" href="' + ex.video.dataUrl + '" target="_blank" rel="noopener" style="border-color:#3b82f6;color:#3b82f6">🔗 Ver</a>';
-      }
-    } else {
-      vidCell = '<button class="video-btn" onclick="addVideoInline(\'' + id + '\',' + i + ',this)">+ Vídeo</button>';
-    }
-    return '<tr data-tab="' + id + '" data-idx="' + i + '">' +
-      '<td><span class="muscle-badge" style="background:' + color + '22;color:' + color + '">' + ex.grupo + '</span></td>' +
-      '<td><div class="ex-name">' + ex.nome + '</div></td>' +
-      '<td class="sets-reps"><strong>' + ex.series + '</strong> × ' + ex.reps + '</td>' +
-      '<td><input class="carga-input" type="number" value="' + (ex.cargaInicial||'') + '" step="0.5" min="0" placeholder="—"></td>' +
-      '<td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>' +
-      '<td>' + vidCell + '</td>' +
-      '<td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>';
-  }).join('');
-
-  panel.innerHTML = '<div class="panel-header">' +
-    '<div class="panel-tag" style="background:' + color + '22;color:' + color + '">' + id + '</div>' +
-    '<div class="panel-title"><h2>Treino ' + id + '</h2><p>' + foco + '</p></div>' +
-    '<div class="panel-actions">' +
-    '<button class="btn-action green" onclick="registrarTreino(\'' + id + '\')">✓ Registrar Sessão</button>' +
-    '<button class="btn-action" onclick="openModal(\'' + id + '\')">+ Exercício</button>' +
-    '<button class="btn-action btn-danger" onclick="excluirTreino(\'' + id + '\')">🗑 Excluir</button>' +
-    '</div></div>' +
-    '<div class="table-wrap"><table>' +
-    '<thead><tr><th>Grupo</th><th>Exercício</th><th>Séries/Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>' +
-    '<tbody id="tbody-' + id + '">' + exRows + '</tbody></table></div>' +
-    '<div class="panel-stats"><div class="stat-box"><div class="stat-val">' + exercicios.length + '</div><div class="stat-label">Exercícios</div></div></div>';
-
-  document.querySelector('main').appendChild(panel);
-
-  // Persistir treino no localStorage
-  const d2 = getData();
-  d2.extraTreinos = d2.extraTreinos || [];
-  // Remove se já existia (update)
-  d2.extraTreinos = d2.extraTreinos.filter(t => t.id !== id);
-  d2.extraTreinos.push({ id, foco, exercicios, color });
-  setData(d2);
-
-  // Switch to new tab
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  newBtn.classList.add('active');
-  panel.classList.add('active');
-  document.getElementById('novoId').value = '';
-  document.getElementById('novoFoco').value = '';
-  document.getElementById('exBuilder').innerHTML = '';
-}
-
-
-// ══ CARREGAR TREINOS EXTRAS SALVOS ══
-function loadExtraTreinos() {
-  const d = getData();
-
-  // Suprimir treinos estáticos (A/B/C/D) que foram excluídos
-  (d.treinosRemovidos || []).forEach(id => {
-    const tabBtn = document.querySelector('.tab-btn[data-tab="' + id + '"]');
-    const panel = document.getElementById('panel-' + id);
-    if (tabBtn) tabBtn.remove();
-    if (panel) panel.remove();
-  });
-
-  (d.extraTreinos || []).forEach(t => {
-    if (document.getElementById('panel-' + t.id)) return; // já existe
-    const color = t.color || '#888888';
-    let exRows = (t.exercicios || []).map((ex, i) => {
-      let vidCell;
-      if (ex.video) {
-        if (ex.video.type === 'file') {
-          vidCell = '<a class="video-btn" href="' + ex.video.dataUrl + '" target="_blank" rel="noopener">▶ Ver</a>';
-        } else {
-          vidCell = '<a class="video-btn" href="' + ex.video.dataUrl + '" target="_blank" rel="noopener" style="border-color:#3b82f6;color:#3b82f6">🔗 Ver</a>';
-        }
-      } else {
-        vidCell = '<button class="video-btn" onclick="addVideoInline(\'' + t.id + '\',' + i + ',this)">+ Vídeo</button>';
-      }
-      return '<tr data-tab="' + t.id + '" data-idx="' + i + '">' +
-        '<td><span class="muscle-badge" style="background:' + color + '22;color:' + color + '">' + ex.grupo + '</span></td>' +
-        '<td><div class="ex-name">' + ex.nome + '</div></td>' +
-        '<td class="sets-reps"><strong>' + ex.series + '</strong> × ' + ex.reps + '</td>' +
-        '<td><input class="carga-input" type="number" value="' + (ex.cargaInicial||'') + '" step="0.5" min="0" placeholder="—"></td>' +
-        '<td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—"></td>' +
-        '<td>' + vidCell + '</td>' +
-        '<td><button class="del-btn" onclick="delRow(this)">✕</button></td></tr>';
-    }).join('');
-
-    const tabBar = document.getElementById('tabBar');
-    const newBtn = document.createElement('button');
-    newBtn.className = 'tab-btn extra';
-    newBtn.dataset.tab = t.id;
-    newBtn.textContent = 'TREINO ' + t.id;
-    newBtn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      newBtn.classList.add('active');
-      panel.classList.add('active');
-    });
-    tabBar.insertBefore(newBtn, tabBar.querySelector('[data-tab="historico"]'));
-
-    const panel = document.createElement('div');
-    panel.className = 'tab-panel';
-    panel.dataset.panel = t.id;
-    panel.id = 'panel-' + t.id;
-    panel.innerHTML = '<div class="panel-header">' +
-      '<div class="panel-tag" style="background:' + color + '22;color:' + color + '">' + t.id + '</div>' +
-      '<div class="panel-title"><h2>Treino ' + t.id + '</h2><p>' + t.foco + '</p></div>' +
-      '<div class="panel-actions">' +
-      '<button class="btn-action green" onclick="registrarTreino(\'' + t.id + '\')">✓ Registrar Sessão</button>' +
-      '<button class="btn-action" onclick="openModal(\'' + t.id + '\')">+ Exercício</button>' +
-      '<button class="btn-action btn-danger" onclick="excluirTreino(\'' + t.id + '\')">🗑 Excluir</button>' +
-      '</div></div>' +
-      '<div class="table-wrap"><table>' +
-      '<thead><tr><th>Grupo</th><th>Exercício</th><th>Séries/Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>' +
-      '<tbody id="tbody-' + t.id + '">' + exRows + '</tbody></table></div>' +
-      '<div class="panel-stats"><div class="stat-box"><div class="stat-val">' + (t.exercicios||[]).length + '</div><div class="stat-label">Exercícios</div></div></div>';
-    document.querySelector('main').appendChild(panel);
-  });
-}
-
-// ══ EXCLUIR TREINO ══
-function excluirTreino(id) {
-  // Pegar nome do treino
-  const panel = document.getElementById('panel-' + id);
-  let nome = 'Treino ' + id;
-  if (panel) {
-    const h2 = panel.querySelector('.panel-title h2');
-    const sub = panel.querySelector('.panel-title p');
-    if (h2) nome = h2.textContent + (sub ? ' — ' + sub.textContent : '');
-  }
-  document.getElementById('excluirTreinoId').value = id;
-  document.getElementById('excluirTreinoNome').textContent = nome;
-  document.getElementById('modalExcluir').classList.add('open');
-}
-
-function confirmarExcluirTreino(acao) {
-  const id = document.getElementById('excluirTreinoId').value;
-  document.getElementById('modalExcluir').classList.remove('open');
-
-  if (acao === 'arquivar') {
-    // Capturar ficha completa do DOM
-    const panel = document.getElementById('panel-' + id);
-    const exercicios = [];
-    if (panel) {
-      panel.querySelectorAll('tbody tr[data-tab]').forEach(tr => {
-        const nome = tr.querySelector('.ex-name')?.textContent || '';
-        const grupo = tr.querySelector('.muscle-badge')?.textContent || '';
-        const setsReps = tr.querySelector('.sets-reps')?.textContent?.trim() || '';
-        const inputs = tr.querySelectorAll('.carga-input');
-        const cargaInicial = inputs[0]?.value || '';
-        const cargaNova = inputs[1]?.value || '';
-        const videoEl = tr.querySelector('.video-btn');
-        const video = videoEl ? { href: videoEl.getAttribute('href') || '', label: videoEl.textContent.trim() } : null;
-        if (nome) exercicios.push({ nome, grupo, setsReps, cargaInicial, cargaNova, video });
-      });
-    }
-    const h2 = panel?.querySelector('.panel-title h2')?.textContent || ('Treino ' + id);
-    const sub = panel?.querySelector('.panel-title p')?.textContent || '';
-    const ficha = {
-      id: Date.now(),
-      treinoId: id,
-      nome: h2,
-      foco: sub,
-      arquivadoEm: new Date().toISOString().slice(0, 10),
-      exercicios
-    };
-    const d = getData();
-    d.fichasArquivadas = d.fichasArquivadas || [];
-    d.fichasArquivadas.unshift(ficha);
-    // Remover cargas e extra
-    const prefix = id + '_';
-    Object.keys(d.cargas || {}).forEach(k => { if (k.startsWith(prefix)) delete d.cargas[k]; });
-    d.extraTreinos = (d.extraTreinos || []).filter(t => t.id !== id);
-    setData(d);
-    _removerPainelTreino(id);
-    showSaved();
-    // Feedback
-    const feedback = document.createElement('div');
-    feedback.textContent = '📁 Ficha arquivada no Histórico de Fichas';
-    feedback.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--success);color:var(--success);padding:10px 24px;border-radius:8px;font-size:.82rem;z-index:999;animation:fadeIn .3s ease';
-    document.body.appendChild(feedback);
-    setTimeout(() => feedback.remove(), 2800);
-  } else {
-    // Excluir definitivo
-    const d = getData();
-    const prefix = id + '_';
-    Object.keys(d.cargas || {}).forEach(k => { if (k.startsWith(prefix)) delete d.cargas[k]; });
-    d.extraTreinos = (d.extraTreinos || []).filter(t => t.id !== id);
-    setData(d);
-    _removerPainelTreino(id);
-    showSaved();
-  }
-}
-
-function _removerPainelTreino(id) {
-  const tabBtn = document.querySelector('.tab-btn[data-tab="' + id + '"]');
-  if (tabBtn) {
-    const wasActive = tabBtn.classList.contains('active');
-    tabBtn.remove();
-    const panel = document.getElementById('panel-' + id);
-    if (panel) panel.remove();
-    if (wasActive) {
-      const firstTab = document.querySelector('.tab-btn');
-      if (firstTab) {
-        firstTab.classList.add('active');
-        const fp = document.querySelector('.tab-panel[data-panel="' + firstTab.dataset.tab + '"]') ||
-                   document.getElementById('panel-' + firstTab.dataset.tab);
-        if (fp) fp.classList.add('active');
-      }
-    }
-  }
-  // Se for treino estático (A/B/C/D), persistir a remoção para outros dispositivos
-  const estaticos = ['A','B','C','D'];
-  if (estaticos.includes(id)) {
-    const d = getData();
-    d.treinosRemovidos = d.treinosRemovidos || [];
-    if (!d.treinosRemovidos.includes(id)) {
-      d.treinosRemovidos.push(id);
-      setData(d); // sobe pro GitHub via debounce
-    }
-  }
-}
-
-function renderFichasArquivadas() {
-  const d = getData();
-  const fichas = d.fichasArquivadas || [];
-  const container = document.getElementById('hist-fichas-list');
-  if (!fichas.length) {
-    container.innerHTML = '<div class="hist-empty"><span class="empty-icon">📁</span>Nenhuma ficha arquivada ainda.<br>Ao excluir um treino, escolha "Arquivar" para guardar a ficha aqui.</div>';
-    return;
-  }
-  container.innerHTML = fichas.map((f, fi) => {
-    const exRows = f.exercicios.map(ex => {
-      const vid = ex.video && ex.video.href
-        ? '<a class="video-btn" href="' + ex.video.href + '" target="_blank" rel="noopener" style="font-size:.7rem;">' + ex.video.label + '</a>'
-        : '<span style="color:var(--muted);font-size:.72rem;">—</span>';
-      const carga = ex.cargaInicial ? ex.cargaInicial + ' kg' : (ex.cargaNova ? ex.cargaNova + ' kg' : '—');
-      return '<tr style="border-bottom:1px solid rgba(255,255,255,.04);">' +
-        '<td style="padding:8px 10px;font-size:.78rem;"><span style="background:rgba(245,166,35,.1);color:var(--accent);font-size:.68rem;padding:2px 8px;border-radius:12px;">' + ex.grupo + '</span></td>' +
-        '<td style="padding:8px 10px;font-size:.82rem;font-weight:500;">' + ex.nome + '</td>' +
-        '<td style="padding:8px 10px;font-size:.78rem;color:var(--muted);">' + ex.setsReps + '</td>' +
-        '<td style="padding:8px 10px;font-size:.78rem;color:var(--success);">' + carga + '</td>' +
-        '<td style="padding:8px 10px;">' + vid + '</td></tr>';
-    }).join('');
-    return '<div class="grupo-hist-card">' +
-      '<div class="grupo-hist-header" onclick="this.nextElementSibling.classList.toggle(\'open\')">' +
-      '<span style="font-size:1.1rem;">📁</span>' +
-      '<div>' +
-        '<div class="grupo-hist-nome">' + f.nome + (f.foco ? ' <span style="font-family:\'DM Sans\';font-size:.75rem;font-weight:400;color:var(--muted);letter-spacing:0;">— ' + f.foco + '</span>' : '') + '</div>' +
-        '<div class="grupo-hist-datas">Arquivado em ' + f.arquivadoEm + ' · ' + f.exercicios.length + ' exercícios</div>' +
-      '</div>' +
-      '<button class="hist-del" style="margin-left:auto;" onclick="event.stopPropagation();deletarFichaArquivada(' + fi + ')" title="Remover ficha">✕</button>' +
-      '</div>' +
-      '<div class="grupo-hist-body">' +
-        '<div class="table-wrap"><table style="width:100%;">' +
-        '<thead><tr>' +
-          '<th style="font-size:.65rem;color:var(--muted);padding:6px 10px;">Grupo</th>' +
-          '<th style="font-size:.65rem;color:var(--muted);padding:6px 10px;">Exercício</th>' +
-          '<th style="font-size:.65rem;color:var(--muted);padding:6px 10px;">Séries/Reps</th>' +
-          '<th style="font-size:.65rem;color:var(--muted);padding:6px 10px;">Carga</th>' +
-          '<th style="font-size:.65rem;color:var(--muted);padding:6px 10px;">Vídeo</th>' +
-        '</tr></thead>' +
-        '<tbody>' + exRows + '</tbody></table></div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-
-function deletarFichaArquivada(idx) {
-  if (!confirm('Remover esta ficha do histórico?')) return;
-  const d = getData();
-  d.fichasArquivadas = d.fichasArquivadas || [];
-  d.fichasArquivadas.splice(idx, 1);
-  setData(d);
-  renderFichasArquivadas();
-}
-
-// ══ SEQUÊNCIAS ══
-let seqVideoData = {}; // tab -> idx -> {name, dataUrl}
-
-function abrirWizard() {
-  document.getElementById('seqWizard').style.display = 'block';
-  document.getElementById('seqActivePanel').style.display = 'none';
-  document.getElementById('seqSelector').style.display = 'none';
-  wizGoTo(0);
-  // init rows
-  ['A','B','C','D'].forEach(t => {
-    document.getElementById('exSeq'+t).innerHTML = '';
-    document.getElementById('foco'+t).value = '';
-    addSeqRow(t); addSeqRow(t); addSeqRow(t);
-  });
-  document.getElementById('seqNome').value = '';
-  document.getElementById('seqDesc').value = '';
-  seqVideoData = {};
-  switchTreinoTab('A', document.querySelector('.ttm-btn'));
-}
-
-function fecharWizard() {
-  document.getElementById('seqWizard').style.display = 'none';
-  document.getElementById('seqSelector').style.display = 'flex';
-  document.getElementById('seqActivePanel').style.display = 'block';
-}
-
-function wizGoTo(page) {
-  [0,1,2].forEach(i => {
-    document.getElementById('wiz-page-'+i).classList.toggle('active', i===page);
-    const ws = document.getElementById('ws'+i);
-    ws.classList.remove('active','done');
-    if (i < page) ws.classList.add('done');
-    if (i === page) ws.classList.add('active');
-  });
-}
-
-function wizNext(from) {
-  if (from === 0) {
-    if (!document.getElementById('seqNome').value.trim()) { alert('Dê um nome à sequência.'); return; }
-  }
-  if (from === 1) {
-    buildSummary();
-  }
-  wizGoTo(from + 1);
-}
-
-function wizBack(from) { wizGoTo(from - 1); }
-
-function switchTreinoTab(t, btn) {
-  document.querySelectorAll('.ttm-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.treino-tab-content').forEach(c => c.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('seqTreino'+t).classList.add('active');
-}
-
-function addSeqRow(t) {
-  const idx = document.getElementById('exSeq'+t).children.length;
-  const div = document.createElement('div');
-  div.className = 'ex-seq-row';
-  div.dataset.idx = idx;
-  div.innerHTML =
-    '<input type="text" placeholder="Nome do exercício">' +
-    '<input type="text" placeholder="Grupo">' +
-    '<input type="number" placeholder="3" min="1" style="width:100%">' +
-    '<input type="text" placeholder="10-12">' +
-    '<button class="video-upload-btn" onclick="escolherVideo(this,\''+t+'\','+idx+')" title="Upload ou link de vídeo">📎 Vídeo</button>' +
-    '<button class="rm-ex" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;cursor:pointer;padding:4px 8px;font-size:.8rem;transition:all .2s" onmouseover="this.style.color=\'#e8593a\'" onmouseout="this.style.color=\'\'" onclick="this.closest(\'.ex-seq-row\').remove()">✕</button>';
-  document.getElementById('exSeq'+t).appendChild(div);
-}
-
-function escolherVideo(btn, tab, idx) {
-  const key = tab + '_' + idx;
-  const choice = confirm('Clique OK para fazer upload de arquivo de vídeo.\nClique Cancelar para colar um link (URL).');
-  if (choice) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'video/*';
-    input.onchange = () => {
-      const file = input.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        seqVideoData[key] = { name: file.name, dataUrl: e.target.result, type: 'file' };
-        btn.textContent = '✅ ' + file.name.substring(0,12) + (file.name.length>12?'…':'');
-        btn.classList.add('has-video');
-      };
-      reader.readAsDataURL(file);
-    };
-    input.click();
-  } else {
-    const url = prompt('Cole o link do vídeo (OneDrive, YouTube, etc):');
-    if (url && url.trim()) {
-      seqVideoData[key] = { name: url.trim(), dataUrl: url.trim(), type: 'link' };
-      btn.textContent = '🔗 Link';
-      btn.classList.remove('has-video');
-      btn.classList.add('has-link');
-    }
-  }
-}
-
-function getSeqExercicios(t) {
-  const rows = document.querySelectorAll('#exSeq'+t+' .ex-seq-row');
-  const result = [];
-  rows.forEach((row, i) => {
-    const ins = row.querySelectorAll('input');
-    const nome = ins[0].value.trim();
-    if (!nome) return;
-    const key = t + '_' + i;
-    result.push({
-      nome,
-      grupo: ins[1].value.trim() || 'Geral',
-      series: ins[2].value || '3',
-      reps: ins[3].value || '10',
-      video: seqVideoData[key] || null
-    });
-  });
-  return result;
-}
-
-function buildSummary() {
-  const nome = document.getElementById('seqNome').value.trim();
-  const desc = document.getElementById('seqDesc').value.trim();
-  const treinos = ['A','B','C','D'].map(t => ({
-    tab: t,
-    foco: document.getElementById('foco'+t).value.trim(),
-    exercicios: getSeqExercicios(t)
-  }));
-  let html = '<div class="seq-summary"><h4>' + nome + '</h4>';
-  if (desc) html += '<div class="seq-sum-row">Objetivo <span>' + desc + '</span></div>';
-  treinos.forEach(tr => {
-    if (!tr.exercicios.length) return;
-    html += '<div class="seq-sum-row" style="margin-top:8px;font-weight:600;color:var(--text)">Treino ' + tr.tab + (tr.foco ? ' — ' + tr.foco : '') + ' <span>' + tr.exercicios.length + ' exercícios</span></div>';
-    tr.exercicios.forEach(ex => {
-      html += '<div class="seq-sum-row" style="padding-left:12px">' + ex.nome + ' <span>' + ex.series + '×' + ex.reps + (ex.video ? ' 🎬' : '') + '</span></div>';
-    });
-  });
-  html += '</div>';
-  document.getElementById('wizSummary').innerHTML = html;
-}
-
-function criarSequencia() {
-  const nome = document.getElementById('seqNome').value.trim();
-  const desc = document.getElementById('seqDesc').value.trim();
-  const treinos = ['A','B','C','D'].map(t => ({
-    tab: t,
-    foco: document.getElementById('foco'+t).value.trim(),
-    exercicios: getSeqExercicios(t)
-  }));
-  const totalEx = treinos.reduce((s,t) => s + t.exercicios.length, 0);
-  if (!totalEx) { alert('Adicione pelo menos um exercício.'); return; }
-
-  const d = getData();
-  d.sequencias = d.sequencias || [];
-  const seq = { id: Date.now(), nome, desc, criadaEm: new Date().toISOString().slice(0,10), treinos, ativa: true };
-  // deactivate others
-  d.sequencias.forEach(s => s.ativa = false);
-  d.sequencias.push(seq);
-  setData(d);
-
-  fecharWizard();
-  renderSequencias();
-  showSaved();
-  alert('Sequência "' + nome + '" criada com sucesso! ✅');
-}
-
-function renderSequencias() {
-  const d = getData();
-  const seqs = d.sequencias || [];
-  const badgesEl = document.getElementById('seqBadges');
-  badgesEl.innerHTML = '';
-
-  if (!seqs.length) {
-    badgesEl.innerHTML = '<span style="font-size:.8rem;color:var(--muted)">Nenhuma sequência ainda.</span>';
-    document.getElementById('seqActivePanel').innerHTML = '';
-    return;
-  }
-
-  seqs.forEach((seq, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'seq-badge' + (seq.ativa ? ' active' : '');
-    btn.textContent = seq.nome;
-    btn.onclick = () => {
-      d.sequencias.forEach(s => s.ativa = false);
-      d.sequencias[i].ativa = true;
-      setData(d);
-      renderSequencias();
-    };
-    badgesEl.appendChild(btn);
-  });
-
-  const ativa = seqs.find(s => s.ativa) || seqs[seqs.length-1];
-  renderSeqPanel(ativa);
-  document.getElementById('seqSelector').style.display = 'flex';
-  document.getElementById('seqActivePanel').style.display = 'block';
-}
-
-const TAB_COLORS = {A:'#f5a623',B:'#3b82f6',C:'#a855f7',D:'#e8593a'};
-
-function renderSeqPanel(seq) {
-  const el = document.getElementById('seqActivePanel');
-  if (!seq) { el.innerHTML = ''; return; }
-
-  // Build inner tabs for A/B/C/D
-  const tabs = seq.treinos.filter(t => t.exercicios.length > 0);
-  if (!tabs.length) { el.innerHTML = '<p style="color:var(--muted);padding:20px 0">Nenhum exercício nesta sequência.</p>'; return; }
-
-  let tabBtns = tabs.map((t,i) =>
-    '<button class="ttm-btn' + (i===0?' active':'') + '" style="' + (i===0?'color:'+TAB_COLORS[t.tab]+';border-color:'+TAB_COLORS[t.tab]:'') + '" ' +
-    'onclick="switchSeqTab(this,\'seq-tc-'+t.tab+seq.id+'\',\''+TAB_COLORS[t.tab]+'\')">' +
-    'TREINO ' + t.tab + '</button>'
-  ).join('');
-
-  let tabContents = tabs.map((t, i) => {
-    const color = TAB_COLORS[t.tab];
-    const rows = t.exercicios.map((ex, j) => {
-      let vidCell = '';
-      if (ex.video) {
-        if (ex.video.type === 'file') {
-          vidCell = '<a class="video-btn" href="' + ex.video.dataUrl + '" target="_blank" rel="noopener" style="border-color:' + color + ';color:' + color + '">▶ Ver</a>';
-        } else {
-          vidCell = '<a class="video-btn" href="' + ex.video.dataUrl + '" target="_blank" rel="noopener" style="border-color:#3b82f6;color:#3b82f6">🔗 Ver</a>';
-        }
-      } else {
-        vidCell = '<span style="font-size:.75rem;color:var(--muted)">—</span>';
-      }
-      return '<tr data-tab="seq'+seq.id+t.tab+'" data-idx="'+j+'">' +
-        '<td><span class="muscle-badge" style="background:'+color+'22;color:'+color+'">'+ex.grupo+'</span></td>' +
-        '<td><div class="ex-name">'+ex.nome+'</div></td>' +
-        '<td class="sets-reps"><strong>'+ex.series+'</strong> × '+ex.reps+'</td>' +
-        '<td><input class="carga-input" type="number" value="" step="0.5" min="0" placeholder="—" onchange="saveCargas()"></td>' +
-        '<td><input class="carga-input carga-nova" type="number" value="" step="0.5" min="0" placeholder="—" onchange="saveCargas()"></td>' +
-        '<td>'+vidCell+'</td>' +
-        '<td></td>' +
-        '</tr>';
-    }).join('');
-
-    return '<div id="seq-tc-'+t.tab+seq.id+'" class="treino-tab-content' + (i===0?' active':'') + '">' +
-      (t.foco ? '<p style="font-size:.75rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">'+t.foco+'</p>' : '') +
-      '<div class="table-wrap"><table>' +
-      '<thead><tr><th>Grupo</th><th>Exercício</th><th>Séries/Reps</th><th>Carga Inicial</th><th>Nova Carga</th><th>Vídeo</th><th></th></tr></thead>' +
-      '<tbody id="seqtbody-'+t.tab+seq.id+'">' + rows + '</tbody></table></div>' +
-      '<div style="margin-top:12px"><button class="btn-action green" onclick="registrarTreino(\'seq'+seq.id+t.tab+'\')">✓ Registrar Sessão</button></div>' +
-      '</div>';
-  }).join('');
-
-  el.innerHTML =
-    '<div style="margin-bottom:8px">' +
-    '<div style="font-family:Bebas Neue,sans-serif;font-size:1.3rem;letter-spacing:2px;color:var(--text)">' + seq.nome + '</div>' +
-    (seq.desc ? '<div style="font-size:.78rem;color:var(--muted);margin-top:2px">'+seq.desc+'</div>' : '') +
-    '<div style="font-size:.7rem;color:var(--muted);margin-top:4px">Criada em ' + new Date(seq.criadaEm+'T12:00:00').toLocaleDateString('pt-BR') + '</div>' +
-    '</div>' +
-    '<div class="treino-tabs-mini">' + tabBtns + '</div>' +
-    tabContents;
-
-  loadCargas();
-}
-
-function switchSeqTab(btn, targetId, color) {
-  const allBtns = btn.closest('.treino-tabs-mini').querySelectorAll('.ttm-btn');
-  allBtns.forEach(b => { b.classList.remove('active'); b.style.color=''; b.style.borderColor=''; });
-  btn.classList.add('active');
-  btn.style.color = color;
-  btn.style.borderColor = color;
-  const parent = btn.closest('.tab-panel') || document.getElementById('seqActivePanel');
-  parent.querySelectorAll('.treino-tab-content').forEach(c => c.classList.remove('active'));
-  document.getElementById(targetId).classList.add('active');
+// ══ TOAST ══
+function toast(msg){
+  const el=document.createElement('div');
+  el.textContent=msg;
+  el.style.cssText='position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px 24px;border-radius:8px;font-size:.82rem;z-index:999;animation:fadeIn .3s ease;white-space:nowrap;';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),2800);
 }
 
 // ══ INIT ══
-window.addEventListener('DOMContentLoaded', () => {
-  // Auto-configure sync on first load if no config exists
-  const existingCfg = getSyncCfg();
-  if (!existingCfg.token) {
-    setSyncCfg({ token: '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', owner: 'naubersantos21-lab', repo: 'gymtrack' });
+window.addEventListener('DOMContentLoaded', async () => {
+  // Auto-configura sync se ainda não configurado
+  if (!getSyncCfg().token) {
+    setSyncCfg({ token:'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', owner:'naubersantos21-lab', repo:'gymtrack' });
+  }
+  initSync();
+
+  // Sync automático: compara timestamps e aplica remoto se for mais recente
+  syncStatus('Verificando…','spin');
+  try {
+    const remoto = await pullDataGitHub();
+    if (remoto) {
+      const local = getData();
+      const tsRemoto = remoto._updatedAt || 0;
+      const tsLocal  = local._updatedAt  || 0;
+      if (tsRemoto > tsLocal) {
+        // Remoto é mais recente — aplica sem reload
+        localStorage.setItem(SK, JSON.stringify(remoto));
+        syncStatus('Atualizado ✓','ok');
+        setTimeout(()=>syncStatus('GitHub',null), 2500);
+      } else {
+        syncStatus('GitHub',null);
+      }
+    } else {
+      // Nenhum dado no GitHub ainda — envia o local
+      syncStatus('GitHub',null);
+      const local = getData();
+      if (local.grupos && local.grupos.length) pushDataGitHub(local);
+    }
+  } catch(e) {
+    syncStatus('Erro sync','err');
   }
 
-  loadCargas();
-  loadExtraTreinos();
-  initNovoForm();
-  renderSequencias();
-  updateGrupoBanner();
-  document.getElementById('regData').value = new Date().toISOString().slice(0,10);
-  // Sequências tab click
-  document.querySelector('[data-tab="sequencias"]').addEventListener('click', renderSequencias);
-  // Novo tab click
-  document.querySelector('[data-tab="novo"]').addEventListener('click', () => {
-    setTimeout(initNovoFormGrupo, 50);
-  });
-
-  // Startup GitHub sync — pull remote data so this device is up-to-date
-  initSync();
+  irHome();
 });
 </script>
 </body>
