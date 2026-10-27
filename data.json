@@ -1,3 +1,29 @@
 {
-  "grupos": []
+  "grupos": [
+    {
+      "id": "g_1793099334562",
+      "nome": "Outubro 2026",
+      "descricao": "Menos repetições mais intensidade",
+      "treinos": [
+        {
+          "id": "treino_1",
+          "nome": "A",
+          "foco": "Peitoral e Triceps",
+          "exercicios": [
+            {
+              "nome": "Crucifixo inclinado",
+              "grupo": "Peitoral",
+              "series": "3",
+              "reps": "8-10",
+              "cargaInicial": "12",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBxWWuPzFSaRZwD6gcQNEHVAYDfshZHOpWzL7Hg-Q2KTfk"
+            }
+          ]
+        }
+      ],
+      "criadoEm": "2026-10-27"
+    }
+  ],
+  "_updatedAt": 1793099334562
 }
