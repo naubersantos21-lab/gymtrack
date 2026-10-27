@@ -18,6 +18,42 @@
               "cargaInicial": "12",
               "obs": "",
               "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBxWWuPzFSaRZwD6gcQNEHVAYDfshZHOpWzL7Hg-Q2KTfk"
+            },
+            {
+              "nome": "Supino declinado smith",
+              "grupo": "Peitoral",
+              "series": "3",
+              "reps": "10",
+              "cargaInicial": "20",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBIZ7jDHBaGQb9y99oiQvuwAYVl35HBSi1AAyTaSW68-I8"
+            },
+            {
+              "nome": "Gross over combinação",
+              "grupo": "Tríceps",
+              "series": "3",
+              "reps": "15",
+              "cargaInicial": "20",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQCZKZOT1fm4QYHhGvqJ_slAAZEef_Y9k07Gcqwpha5tbaQ"
+            },
+            {
+              "nome": "Pull over",
+              "grupo": "Peitoral",
+              "series": "3",
+              "reps": "15",
+              "cargaInicial": "2.5",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQAA5AryQjybTaeb9CxR9wFzAdVEAajqaojBgzcJKRFaFjA"
+            },
+            {
+              "nome": "Supino reto",
+              "grupo": "Peitoral",
+              "series": "3",
+              "reps": "6",
+              "cargaInicial": "15",
+              "obs": "Diminuir peso a cada série: 15/10/5",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQAhi1yOa8nJTIV8Rfk4_2KzARl4YTdncEml6VCBACAh5Qc"
             }
           ]
         }
@@ -25,5 +61,5 @@
       "criadoEm": "2026-10-27"
     }
   ],
-  "_updatedAt": 1793099334562
+  "_updatedAt": 1793099632421
 }
