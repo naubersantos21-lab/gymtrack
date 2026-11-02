@@ -7,7 +7,7 @@
       "treinos": [
         {
           "id": "treino_1",
-          "nome": "A",
+          "nome": "TREINO A",
           "foco": "Peitoral e Triceps",
           "exercicios": [
             {
@@ -110,10 +110,80 @@
               "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBSFqo9JwQxSYdRJEka8zAbAe4RK8iyJniQdXdrsIThekU?e=Y8wmWo"
             }
           ]
+        },
+        {
+          "id": "treino_2",
+          "nome": "TREINO B",
+          "foco": "Quadríceps, Flexores e Glúteos",
+          "exercicios": [
+            {
+              "nome": "Extensora Máquina",
+              "grupo": "Quadríceps",
+              "series": "3",
+              "reps": "20",
+              "cargaInicial": "65",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQAfwdCV_0w3SLGC5jLRlzu9AfBSbNVL2uP7KrkSRGAGlec?e=RsGKbr"
+            },
+            {
+              "nome": "Agachamento smith",
+              "grupo": "Quadríceps",
+              "series": "3",
+              "reps": "12",
+              "cargaInicial": "10",
+              "obs": "Pés na anilha centralizados no cross",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQDnijBK1hF3QbBzXUK4npELASLFFYch-r4ROagGIgmksLI?e=JDCTlt"
+            },
+            {
+              "nome": "Búlgaro com halter",
+              "grupo": "Quadríceps",
+              "series": "3",
+              "reps": "12",
+              "cargaInicial": "16",
+              "obs": "Halter na mão contrária. Uma repetição com halter na mão e outra com ele no chão.",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQCghENd_Bs1TpyHoXKTy7AUAWWsPyi60vRWWJOMaHm95mA?e=orTjh1"
+            },
+            {
+              "nome": "Elevação Pélvica",
+              "grupo": "Flexores e Glúteos",
+              "series": "3",
+              "reps": "12",
+              "cargaInicial": "20",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQDnk-F2aj_NSbKGlKGyO--EATChuSHGwxKPLJ86RxdVQU4?e=xS7tcs"
+            },
+            {
+              "nome": "Flexão sentada unilateral",
+              "grupo": "Flexores e Glúteos",
+              "series": "3",
+              "reps": "12",
+              "cargaInicial": "35",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQCZ9K8CA4K_R76AVM1js5YJAcmErAUwHu45ZustKpPxkAY?e=Rf2d2o"
+            },
+            {
+              "nome": "Stiff",
+              "grupo": "Flexores e Glúteos",
+              "series": "3",
+              "reps": "12",
+              "cargaInicial": "20",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBh6gRWBpcFT7uX6Rql1cy7ASQIuLrlb0jHUJ9TsW7tGYg?e=xIDpye"
+            },
+            {
+              "nome": "Adutores máquina",
+              "grupo": "Adutores",
+              "series": "5",
+              "reps": "12",
+              "cargaInicial": "65",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQDI-KOMZCHZSqdub73J3wkIAfbZEfIQ1ZUcCM5jU7pUhKE?e=4aNGRk"
+            }
+          ]
         }
       ],
       "criadoEm": "2026-10-27"
     }
   ],
-  "_updatedAt": 1793630456058
+  "_updatedAt": 1793630850697
 }
