@@ -180,10 +180,125 @@
               "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQDI-KOMZCHZSqdub73J3wkIAfbZEfIQ1ZUcCM5jU7pUhKE?e=4aNGRk"
             }
           ]
+        },
+        {
+          "id": "treino_3",
+          "nome": "TREINO C",
+          "foco": "Costas, Ombros e Gêmeos",
+          "exercicios": [
+            {
+              "nome": "Remada invertida",
+              "grupo": "Costas",
+              "series": "3",
+              "reps": "15",
+              "cargaInicial": "0",
+              "obs": "Barra livre",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQDD7InrQGFATZZ2ZGwYWRfoAdyXRxh0RjPTYv5RQbs341c?e=wU8uU6"
+            },
+            {
+              "nome": "Remada unilateral",
+              "grupo": "Costas",
+              "series": "1",
+              "reps": "10/8/6",
+              "cargaInicial": "14",
+              "obs": "Série crescente: a cada séria aumentar o peso e reduzir a quantidade de repetições",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBcLD7vZuW1Q41HPEaO1Dz2AV7ScvLXN88f6o5XfoQvN10?e=XW4UOg"
+            },
+            {
+              "nome": "Pulley frente triângulo",
+              "grupo": "Costas",
+              "series": "3",
+              "reps": "10 + 20",
+              "cargaInicial": "70",
+              "obs": "10x carga total + 20x metade da carga",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBFUVWEDHtMTZCoWj1FxvjNAZk6cMEblGkMsODffn3-DkQ?e=uRWmzH"
+            },
+            {
+              "nome": "Remada curvada barra livre",
+              "grupo": "Costas",
+              "series": "3",
+              "reps": "12",
+              "cargaInicial": "10",
+              "obs": "A cada repetição, fazer a remada e voltar para a posição inicial",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQAQxo7ZZp1HSZvsCwRMdauBATGVsC5LpzhGVw8CTwso-jg?e=NIhqEe"
+            },
+            {
+              "nome": "Puxada alta na polia baixa",
+              "grupo": "Ombros",
+              "series": "3",
+              "reps": "15",
+              "cargaInicial": "20",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQCZdz53_N0oRoLJfUwjdOGjASZwmRKCm0XSvBPZBdzzqUM?e=WXwy0s"
+            },
+            {
+              "nome": "Desenvolvimento máquina",
+              "grupo": "Ombros",
+              "series": "3",
+              "reps": "6/8/10",
+              "cargaInicial": "35",
+              "obs": "Pirâmide com uma série com a pegada aberta e outra com a pegada fechada. A cada série, reduzir o peso e aumentar as repetições",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBf-1FbodHWTaD_5EYL96zDAYzxmWJIKrT1SGeSjzU8eV0?e=q9vjS3"
+            },
+            {
+              "nome": "Desenvolvimento Arnald",
+              "grupo": "Ombros",
+              "series": "3",
+              "reps": "10",
+              "cargaInicial": "10",
+              "obs": "Rotação alternada",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBSHtlZyv4VQoQ8L6v3Lkn1AajooWWZB4r8CPb9B1aLQOU?e=oiE2XY"
+            },
+            {
+              "nome": "Crucifixo invertido",
+              "grupo": "Ombros",
+              "series": "3",
+              "reps": "15",
+              "cargaInicial": "10",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQACy2ILLGWaSLKIx3GGsYZPAYwqjnlR5eVwauCdCh_Y3TE?e=wyDxwe"
+            },
+            {
+              "nome": "Gêmeos no leg press",
+              "grupo": "Gêmeos",
+              "series": "3",
+              "reps": "15+15",
+              "cargaInicial": "60",
+              "obs": "15x com a ponta do calcanhar + 15x com os pés abertos",
+              "video": ""
+            },
+            {
+              "nome": "Gêmeos solear",
+              "grupo": "Gêmeos",
+              "series": "4",
+              "reps": "10 a 15",
+              "cargaInicial": "70",
+              "obs": "Insistência dupla",
+              "video": ""
+            },
+            {
+              "nome": "Abdominal Infra",
+              "grupo": "Abdômen",
+              "series": "5",
+              "reps": "10",
+              "cargaInicial": "",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBc1lC8F3DTS6jx_Z_qgGmtAaqCLnpDEOkAGZYKPvd6V40?e=qJo94m"
+            },
+            {
+              "nome": "Prancha",
+              "grupo": "Abdômen",
+              "series": "3",
+              "reps": "45s a 1min",
+              "cargaInicial": "",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBc1lC8F3DTS6jx_Z_qgGmtAaqCLnpDEOkAGZYKPvd6V40?e=qJo94m"
+            }
+          ]
         }
       ],
       "criadoEm": "2026-10-27"
     }
   ],
-  "_updatedAt": 1793630850697
+  "_updatedAt": 1793631778924
 }
