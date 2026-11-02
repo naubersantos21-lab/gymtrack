@@ -295,10 +295,116 @@
               "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBc1lC8F3DTS6jx_Z_qgGmtAaqCLnpDEOkAGZYKPvd6V40?e=qJo94m"
             }
           ]
+        },
+        {
+          "id": "treino_4",
+          "nome": "TREINO D",
+          "foco": "Bíceps e Resistência de Pernas",
+          "exercicios": [
+            {
+              "nome": "Rosca direta no cross",
+              "grupo": "Bíceps",
+              "series": "4",
+              "reps": "6-8",
+              "cargaInicial": "45",
+              "obs": "8x com a carga completa + 8x com meia carga apenas rotação no punho",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQDAAkpRUQGxQpXbd16q-lAwAR0LoCKqvI5M-eRdLPDaGwo?e=8ggdt8"
+            },
+            {
+              "nome": "Rosca martelo 'V'",
+              "grupo": "Bíceps",
+              "series": "4",
+              "reps": "6 a 8",
+              "cargaInicial": "12",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQCvf0aC6dU6S5youD9bL0XFASOKnUHnL5zci-rHWyyvv6k?e=ajgVmx"
+            },
+            {
+              "nome": "Rosca concentrada",
+              "grupo": "Bíceps",
+              "series": "4",
+              "reps": "6 a 8",
+              "cargaInicial": "14",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQDmslu9CDOoQYb-tVhcCaDYAbEBGUpPN722R31IIf1hJxI?e=YbDLke"
+            },
+            {
+              "nome": "Rosca Zottman",
+              "grupo": "Bíceps",
+              "series": "3",
+              "reps": "15",
+              "cargaInicial": "6",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQB0M0iKmqdiSbiGisKFyzvZAaOzWt09E90ylKIzz9Q_GWk?e=iXUHUF"
+            },
+            {
+              "nome": "Lombar",
+              "grupo": "Lombar",
+              "series": "4",
+              "reps": "10",
+              "cargaInicial": "10",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQD7G2iaCrq7SrzqPaLfNXlMAVl1APw0ou0yL-0utgjRrRA?e=3qxJEY"
+            },
+            {
+              "nome": "Extensora máquina",
+              "grupo": "Quadríceps",
+              "series": "2",
+              "reps": "20",
+              "cargaInicial": "65",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQAgdL-Nl51eQLA66C6eMkrEAUimjKuMXEFSZOY4OM-ohMU?e=b3FS45"
+            },
+            {
+              "nome": "Agachamento smith",
+              "grupo": "Quadríceps",
+              "series": "2",
+              "reps": "20",
+              "cargaInicial": "10",
+              "obs": "Pés na anilha centralizados no cross",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQBdhHXRIy9TRKbOfD0Rwv7UAZYl0szZTgs1C38wzTcw5AA?e=xkPBqZ"
+            },
+            {
+              "nome": "Elevação pélvica",
+              "grupo": "Flexores e Glúteos",
+              "series": "2",
+              "reps": "20",
+              "cargaInicial": "20",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQCGOrFWL87tSInTpsDw4fCWAdefqNI_8LxdfHwEx86fDDk?e=qWWhe5"
+            },
+            {
+              "nome": "Flexão sentada unilateral",
+              "grupo": "Flexores e Glúteos",
+              "series": "2",
+              "reps": "20",
+              "cargaInicial": "35",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQCCogCavEnCRZSPs9GsK19bAe9Iry_C5tJ5ABeXIIoS664?e=JrTblX"
+            },
+            {
+              "nome": "Stiff",
+              "grupo": "Flexores e Glúteos",
+              "series": "2",
+              "reps": "20",
+              "cargaInicial": "20",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQA7Od8NJBJERrqSHiP5l0COAa6xHvGph7c0iRq1lX2P-Ek?e=w32aJY"
+            },
+            {
+              "nome": "Adutores máquina",
+              "grupo": "Adutores",
+              "series": "2",
+              "reps": "20",
+              "cargaInicial": "65",
+              "obs": "",
+              "video": "https://1drv.ms/v/c/072dca4bd49d9f72/IQDKFHKACLY-QI9PFkcPpd70Af_lWNAlxcQYFh7aL4Z2wLo?e=duFG30"
+            }
+          ]
         }
       ],
       "criadoEm": "2026-10-27"
     }
   ],
-  "_updatedAt": 1793631778924
+  "_updatedAt": 1793632437754
 }
