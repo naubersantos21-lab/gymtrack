@@ -406,5 +406,72 @@
       "criadoEm": "2026-10-27"
     }
   ],
-  "_updatedAt": 1793632709254
+  "_updatedAt": 1793930922277,
+  "historico": [
+    {
+      "id": "s_1793930922276",
+      "grupoId": "g_1793099334562",
+      "treinoId": "treino_1",
+      "treinoNome": "TREINO A",
+      "grupoNome": "Outubro 2026",
+      "data": "2026-11-06",
+      "exercicios": [
+        {
+          "nome": "Crucifixo inclinado",
+          "carga": "12",
+          "obs": ""
+        },
+        {
+          "nome": "Supino declinado smith",
+          "carga": "20",
+          "obs": ""
+        },
+        {
+          "nome": "Cross over combinação",
+          "carga": "20",
+          "obs": ""
+        },
+        {
+          "nome": "Pull over",
+          "carga": "2.5",
+          "obs": ""
+        },
+        {
+          "nome": "Supino reto",
+          "carga": "15",
+          "obs": ""
+        },
+        {
+          "nome": "Corda polia baixa",
+          "carga": "20",
+          "obs": ""
+        },
+        {
+          "nome": "Cruzado unilateral",
+          "carga": "10",
+          "obs": ""
+        },
+        {
+          "nome": "Pulley supinado",
+          "carga": "30",
+          "obs": ""
+        },
+        {
+          "nome": "Gravitron",
+          "carga": "48",
+          "obs": ""
+        },
+        {
+          "nome": "Abdominal Supra",
+          "carga": "5",
+          "obs": ""
+        },
+        {
+          "nome": "Abdominal Supra Curtinho",
+          "carga": "0",
+          "obs": ""
+        }
+      ]
+    }
+  ]
 }
