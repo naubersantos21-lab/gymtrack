@@ -406,8 +406,78 @@
       "criadoEm": "2026-10-27"
     }
   ],
-  "_updatedAt": 1794272115453,
+  "_updatedAt": 1794276663714,
   "historico": [
+    {
+      "id": "s_1794276663712",
+      "grupoId": "g_1793099334562",
+      "treinoId": "treino_3",
+      "treinoNome": "TREINO C",
+      "grupoNome": "Outubro 2026",
+      "data": "2026-11-10",
+      "exercicios": [
+        {
+          "nome": "Remada invertida",
+          "carga": "0",
+          "obs": ""
+        },
+        {
+          "nome": "Remada unilateral",
+          "carga": "16",
+          "obs": ""
+        },
+        {
+          "nome": "Pulley frente triângulo",
+          "carga": "70",
+          "obs": ""
+        },
+        {
+          "nome": "Remada curvada barra livre",
+          "carga": "10",
+          "obs": ""
+        },
+        {
+          "nome": "Puxada alta na polia baixa",
+          "carga": "20",
+          "obs": ""
+        },
+        {
+          "nome": "Desenvolvimento máquina",
+          "carga": "35",
+          "obs": ""
+        },
+        {
+          "nome": "Desenvolvimento Arnald",
+          "carga": "10",
+          "obs": ""
+        },
+        {
+          "nome": "Crucifixo invertido",
+          "carga": "10",
+          "obs": ""
+        },
+        {
+          "nome": "Gêmeos no leg press",
+          "carga": "60",
+          "obs": ""
+        },
+        {
+          "nome": "Gêmeos solear",
+          "carga": "70",
+          "obs": ""
+        },
+        {
+          "nome": "Abdominal Infra",
+          "carga": "",
+          "obs": ""
+        },
+        {
+          "nome": "Prancha",
+          "carga": "",
+          "obs": ""
+        }
+      ]
+    },
     {
       "id": "s_1794058277349",
       "grupoId": "g_1793099334562",
